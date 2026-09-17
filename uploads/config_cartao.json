@@ -1,0 +1,11 @@
+{
+    "largura": 120,
+    "altura": 95,
+    "cor_fundo": "linear-gradient(135deg, #FF8C00, #FFA500)",
+    "cor_texto": "#ffffff",
+    "cor_destaque": "#FF8C00",
+    "logo": "insignia_angola.png",
+    "mostrar_controle_pagamentos": true,
+    "mostrar_codigo_barras": true,
+    "mostrar_ano_letivo": true
+}

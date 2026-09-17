@@ -1,0 +1,13 @@
+{
+    "name": "softgest_web/softgest_web",
+    "description": "Sistema SoftGest Web",
+    "type": "project",
+    "require": {
+        "phpoffice/phpspreadsheet": "^1.29"
+    },
+    "config": {
+        "http_proxy": null,
+        "https_proxy": null,
+        "proxy": null
+    }
+}

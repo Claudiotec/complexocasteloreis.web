@@ -1,0 +1,73 @@
+php
+// PASTA DE DESTINO - Dentro do projeto
+define('SYNC_FOLDER', 'C:/xampp/htdocs/softgest_web/sync_backup/');
+Opção 2: Para uma pasta no disco C:
+php
+// PASTA DE DESTINO - Disco C:
+define('SYNC_FOLDER', 'C:/Backup_SoftGest/');
+Opção 3: Para uma pasta no disco D:
+php
+// PASTA DE DESTINO - Disco D:
+define('SYNC_FOLDER', 'D:/Sincronizacao/');
+Opção 4: Para uma pasta em rede
+php
+// PASTA DE DESTINO - Rede (mapeada)
+define('SYNC_FOLDER', 'Z:/Backup/');
+Opção 5: Para uma pasta no desktop
+php
+// PASTA DE DESTINO - Desktop
+define('SYNC_FOLDER', 'C:/Users/' . getenv('USERNAME') . '/Desktop/Sync_SoftGest/');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+🔍 VERIFICAR O CAMINHO ATUAL
+Para ver qual caminho está sendo usado, acesse:
+
+text
+http://localhost/softgest_web/config/sync_auto_start.php
+E veja no topo da página:
+
+text
+📁 Pasta: F:\Nova pasta\
+💡 SUGESTÃO DE CAMINHOS
+Para desenvolvimento local:
+
+php
+define('SYNC_FOLDER', 'C:/xampp/htdocs/softgest_web/storage/sync/');
+Para backup em outro disco:
+
+php
+define('SYNC_FOLDER', 'D:/Backups/SoftGest/');
+Para uma pasta compartilhada na rede:
+
+php
+define('SYNC_FOLDER', '//SERVER/Backup/SoftGest/');

@@ -1,0 +1,310 @@
+
+    <!DOCTYPE html>
+    <html lang="pt">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fatura - FAT-20260703-000009</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 20px;
+                background: #f5f5f5;
+            }
+            .fatura-container {
+                max-width: 800px;
+                margin: 0 auto;
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+                padding: 40px;
+            }
+            .cabecalho {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 3px solid #c9a84c;
+                padding-bottom: 20px;
+                margin-bottom: 25px;
+            }
+            .logo-area {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+            .logo {
+                width: 60px;
+                height: 60px;
+                background: #c9a84c;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 28px;
+                font-weight: bold;
+            }
+            .titulo-fatura {
+                font-size: 28px;
+                font-weight: bold;
+                color: #1a2332;
+            }
+            .numero-fatura {
+                font-size: 14px;
+                color: #94a3b8;
+                text-align: right;
+            }
+            .numero-fatura strong {
+                color: #1a2332;
+            }
+            .info-escola {
+                background: #f8fafc;
+                padding: 15px 20px;
+                border-radius: 8px;
+                margin-bottom: 25px;
+                border-left: 4px solid #c9a84c;
+            }
+            .info-escola h2 {
+                margin: 0 0 5px 0;
+                color: #1a2332;
+                font-size: 18px;
+            }
+            .info-escola p {
+                margin: 3px 0;
+                color: #4a5568;
+                font-size: 13px;
+            }
+            .info-escola .nif {
+                display: inline-block;
+                border: 1px solid #1a2332;
+                padding: 3px 10px;
+                border-radius: 4px;
+                font-size: 12px;
+                margin-top: 5px;
+                font-weight: bold;
+            }
+            .dados-aluno {
+                background: #fef9e8;
+                border: 1px solid #fde68a;
+                border-radius: 8px;
+                padding: 15px 20px;
+                margin-bottom: 25px;
+            }
+            .dados-aluno h3 {
+                margin: 0 0 10px 0;
+                color: #78350f;
+                font-size: 15px;
+                border-bottom: 1px solid #fde68a;
+                padding-bottom: 8px;
+            }
+            .dados-aluno .linha {
+                display: flex;
+                justify-content: space-between;
+                margin: 5px 0;
+                font-size: 14px;
+            }
+            .dados-aluno .label {
+                color: #78350f;
+                font-weight: 600;
+            }
+            .dados-aluno .valor {
+                color: #1a2332;
+            }
+            .tabela-itens {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 25px;
+            }
+            .tabela-itens th {
+                background: #f1f5f9;
+                color: #1a2332;
+                padding: 10px 12px;
+                text-align: left;
+                font-size: 13px;
+                font-weight: 600;
+                border-bottom: 2px solid #e2e8f0;
+            }
+            .tabela-itens td {
+                padding: 10px 12px;
+                border-bottom: 1px solid #e2e8f0;
+                font-size: 14px;
+                color: #1a2332;
+            }
+            .tabela-itens .text-right {
+                text-align: right;
+            }
+            .tabela-itens .total-row {
+                background: #f8fafc;
+                font-weight: bold;
+            }
+            .tabela-itens .total-row td {
+                border-top: 2px solid #1a2332;
+                padding: 12px;
+                font-size: 16px;
+            }
+            .tabela-itens .total-row .label-total {
+                color: #1a2332;
+            }
+            .tabela-itens .total-row .valor-total {
+                color: #e74c3c;
+                font-size: 18px;
+            }
+            .info-adicional {
+                background: #f8fafc;
+                padding: 15px 20px;
+                border-radius: 8px;
+                margin-top: 20px;
+                border-left: 4px solid #c9a84c;
+            }
+            .info-adicional p {
+                margin: 5px 0;
+                font-size: 13px;
+                color: #4a5568;
+            }
+            .info-adicional strong {
+                color: #1a2332;
+            }
+            .assinatura {
+                margin-top: 40px;
+                text-align: center;
+                padding-top: 20px;
+                border-top: 1px solid #e2e8f0;
+            }
+            .assinatura .linha {
+                width: 300px;
+                border-top: 1px solid #1a2332;
+                margin: 10px auto 5px auto;
+            }
+            .assinatura p {
+                color: #4a5568;
+                font-size: 13px;
+                margin: 5px 0;
+            }
+            .footer {
+                margin-top: 30px;
+                text-align: center;
+                font-size: 12px;
+                color: #94a3b8;
+                border-top: 1px solid #e2e8f0;
+                padding-top: 15px;
+            }
+            .badge-status {
+                display: inline-block;
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+                background: #d1fae5;
+                color: #065f46;
+            }
+            @media print {
+                body { background: white; padding: 0; }
+                .fatura-container { box-shadow: none; padding: 20px; }
+                .no-print { display: none; }
+            }
+            @media (max-width: 600px) {
+                .fatura-container { padding: 20px; }
+                .cabecalho { flex-direction: column; text-align: center; }
+                .dados-aluno .linha { flex-direction: column; }
+                .tabela-itens { font-size: 12px; }
+                .tabela-itens th, .tabela-itens td { padding: 6px 8px; }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="fatura-container">
+            <!-- Cabeçalho -->
+            <div class="cabecalho">
+                <div class="logo-area">
+                    <div class="logo">🏫</div>
+                    <div>
+                        <div class="titulo-fatura">FATURA</div>
+                        <div style="font-size: 12px; color: #94a3b8;">Documento de pagamento</div>
+                    </div>
+                </div>
+                <div class="numero-fatura">
+                    <strong>Nº:</strong> FAT-20260703-000009<br>
+                    <strong>Data:</strong> 03/07/2026 16:35:42
+                </div>
+            </div>
+
+            <!-- Informações da Escola -->
+            <div class="info-escola">
+                <h2>Sistema Escolar</h2>
+                <p>📍 </p>
+                <p>📞  | ✉ </p>
+                <div class="nif">NIF: </div>
+            </div>
+
+            <!-- Dados do Aluno -->
+            <div class="dados-aluno">
+                <h3>👨‍🎓 DADOS DO ALUNO</h3>
+                <div class="linha">
+                    <span><span class="label">Nome:</span> <span class="valor">João Domingos</span></span>
+                    <span><span class="label">ID:</span> <span class="valor">#44</span></span>
+                </div>
+                <div class="linha">
+                    <span><span class="label">Classe:</span> <span class="valor">3ª</span></span>
+                    <span><span class="label">Turma:</span> <span class="valor"></span></span>
+                </div>
+                <div class="linha"><span class="label">Gênero:</span> <span class="valor">Masculino</span></div>
+            </div>
+
+            <!-- Tabela de Itens -->
+            <table class="tabela-itens">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Descrição</th>
+                        <th>Forma de Pagamento</th>
+                        <th class="text-right">Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Mensalidade 6º Ano</td>
+                        <td>dinheiro</td>
+                        <td class="text-right">400,00 Kz</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="3" class="label-total">TOTAL A PAGAR</td>
+                        <td class="text-right valor-total">400,00 Kz</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Informações Adicionais -->
+            <div class="info-adicional">
+                <p><strong>📅 Data de Pagamento:</strong> 03/07/2026</p>
+                <p><strong>📄 Referência:</strong> 989</p>
+                
+                <p><strong>✅ Status:</strong> <span class="badge-status">Pago</span></p>
+            </div>
+
+            <!-- Assinatura -->
+            <div class="assinatura">
+                <p>Assinatura do Responsável</p>
+                <div class="linha"></div>
+                <p style="font-size: 11px; color: #94a3b8;">_________________________________</p>
+            </div>
+
+            <!-- Rodapé -->
+            <div class="footer">
+                <p>Documento emitido eletronicamente - Sistema Escolar © 2026</p>
+                <p>Este documento serve como comprovante de pagamento</p>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;" class="no-print">
+            <button onclick="window.print()" style="padding: 10px 30px; background: #c9a84c; color: #1a2332; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;">
+                🖨️ Imprimir Fatura
+            </button>
+            <button onclick="window.close()" style="padding: 10px 30px; background: #f1f5f9; color: #4a5568; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-left: 10px;">
+                ✕ Fechar
+            </button>
+        </div>
+    </body>
+    </html>
+    

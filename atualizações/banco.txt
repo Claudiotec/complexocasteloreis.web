@@ -1,0 +1,309 @@
+-- =============================================
+-- SCRIPT COMPLETO PARA RECRIAR AS TABELAS DO RH
+-- =============================================
+
+-- Desabilitar verificação de chaves estrangeiras
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- =============================================
+-- 1. REMOVER TABELAS EXISTENTES (ordem correta)
+-- =============================================
+
+-- Remover tabelas filhas primeiro
+DROP TABLE IF EXISTS presenca_qr;
+DROP TABLE IF EXISTS qr_codes_diarios;
+DROP TABLE IF EXISTS horarios_trabalho;
+DROP TABLE IF EXISTS forca_trabalho;
+
+-- =============================================
+-- 2. RECRIAR TABELA FORCA_TRABALHO
+-- =============================================
+
+CREATE TABLE forca_trabalho (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    numero_ordem VARCHAR(10),
+    numero_instituicao VARCHAR(20),
+    numero_agente VARCHAR(20),
+    nome_completo VARCHAR(200) NOT NULL,
+    categoria_actual VARCHAR(100),
+    instituicao VARCHAR(200),
+    funcao VARCHAR(100),
+    disciplina VARCHAR(100),
+    formacao_disciplina VARCHAR(50),
+    data_inicio_funcao DATE,
+    data_inicio_instituicao DATE,
+    bi VARCHAR(30) UNIQUE,
+    data_nascimento DATE,
+    genero CHAR(1),
+    habilitacoes VARCHAR(100),
+    especialidade_medio VARCHAR(100),
+    especialidade_superior VARCHAR(100),
+    contacto VARCHAR(20),
+    municipio VARCHAR(100),
+    email VARCHAR(100),
+    status ENUM('ativo', 'inativo', 'ferias') DEFAULT 'ativo',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_nome (nome_completo),
+    INDEX idx_status (status),
+    INDEX idx_bi (bi),
+    INDEX idx_agente (numero_agente)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- 3. RECRIAR TABELA HORARIOS_TRABALHO
+-- =============================================
+
+CREATE TABLE horarios_trabalho (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    funcionario_id INT NOT NULL,
+    dia_semana ENUM('segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo') NOT NULL,
+    hora_entrada TIME NOT NULL,
+    hora_saida TIME NOT NULL,
+    hora_intervalo_inicio TIME NOT NULL,
+    hora_intervalo_fim TIME NOT NULL,
+    carga_horaria DECIMAL(5,2),
+    turno ENUM('manha', 'tarde', 'noite', 'integral') DEFAULT 'manha',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (funcionario_id) REFERENCES forca_trabalho(id) ON DELETE CASCADE,
+    INDEX idx_funcionario (funcionario_id),
+    INDEX idx_dia (dia_semana),
+    UNIQUE KEY unique_horario (funcionario_id, dia_semana)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- 4. RECRIAR TABELA QR_CODES_DIARIOS
+-- =============================================
+
+CREATE TABLE qr_codes_diarios (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    funcionario_id INT NOT NULL,
+    data DATE NOT NULL,
+    qr_code TEXT,
+    token VARCHAR(64) UNIQUE,
+    expiracao TIMESTAMP,
+    gerado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (funcionario_id) REFERENCES forca_trabalho(id) ON DELETE CASCADE,
+    INDEX idx_funcionario_data (funcionario_id, data),
+    INDEX idx_token (token),
+    INDEX idx_expiracao (expiracao)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- 5. RECRIAR TABELA PRESENCA_QR
+-- =============================================
+
+CREATE TABLE presenca_qr (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    funcionario_id INT NOT NULL,
+    data DATE NOT NULL,
+    hora_entrada TIME,
+    hora_saida TIME,
+    status ENUM('presente', 'ausente', 'atraso', 'justificado') DEFAULT 'ausente',
+    qr_code TEXT,
+    qr_scanned BOOLEAN DEFAULT FALSE,
+    qr_scan_time TIMESTAMP NULL,
+    horas_trabalhadas DECIMAL(5,2),
+    observacao TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (funcionario_id) REFERENCES forca_trabalho(id) ON DELETE CASCADE,
+    INDEX idx_funcionario_data (funcionario_id, data),
+    INDEX idx_status (status),
+    INDEX idx_data (data),
+    UNIQUE KEY unique_presenca_dia (funcionario_id, data)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- 6. RECRIAR TABELA FUNCIONARIOS (se existir)
+-- =============================================
+
+-- Se você ainda tem a tabela funcionarios antiga, pode mantê-la
+-- ou migrar os dados depois
+
+-- =============================================
+-- 7. REATIVAR VERIFICAÇÃO DE CHAVES ESTRANGEIRAS
+-- =============================================
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- =============================================
+-- 8. INSERIR DADOS DE EXEMPLO (opcional)
+-- =============================================
+
+INSERT INTO forca_trabalho (
+    numero_ordem, numero_instituicao, numero_agente, nome_completo, 
+    categoria_actual, instituicao, funcao, disciplina, formacao_disciplina,
+    data_inicio_funcao, data_inicio_instituicao, bi, data_nascimento,
+    genero, habilitacoes, especialidade_medio, especialidade_superior,
+    contacto, municipio, email, status
+) VALUES 
+('1', '6006', '89327219', 'Leontina Nawambo Maliti Correia', 
+ 'Prof. Do Ens. Prim. E Sec. Do 12º Grau', '[Eqt] Complexo Escolar Nº 6006 - Jambondo',
+ 'Directora', '===', 'Não', '2011-09-02', '2011-09-22',
+ '002172786LA036', '1980-11-06', 'F', 'Licenciada',
+ 'Geo/História', 'Psic. Organizacional', '931495177', 'Viana',
+ 'leontinamalite@gmail.com', 'ativo'),
+
+('2', '6006', '11572290', 'Afonso Sebastião Paca',
+ 'Prof. Do Ens. Prim. E Sec. Do 11º Grau', '[Eqt] Complexo Escolar Nº 6006 - Jambondo',
+ 'Subd. Pedagógico', '===', 'Não', '2005-07-01', '2011-02-27',
+ '000039306UE036', '1973-09-29', 'M', 'Licenciado',
+ 'Elect. Ind. E Aut.', 'Ensino Primário', '925307484', 'Viana',
+ 'afonsosebastiaopaca@gmail.com', 'ativo'),
+
+('3', '6006', '6267750', 'Abel António Quibiana',
+ 'Prof. Do Ens. Prim. E Sec. Do 10º Grau', '[Eqt] Complexo Escolar Nº 6006 - Jambondo',
+ 'Subd. Administrativo', '===', 'Não', '1990-11-09', '2015-12-15',
+ '001963799BO031', '1963-07-15', 'M', 'Técnico Médio',
+ 'Ciências Físicas', '==', '923748972', 'Cabiri',
+ NULL, 'ativo');
+
+-- =============================================
+-- 9. VERIFICAR DADOS INSERIDOS
+-- =============================================
+
+SELECT * FROM forca_trabalho;
+
+-- Mostrar estrutura das tabelas
+SHOW CREATE TABLE forca_trabalho;
+SHOW CREATE TABLE horarios_trabalho;
+SHOW CREATE TABLE qr_codes_diarios;
+SHOW CREATE TABLE presenca_qr;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- ============================================
+-- TABELA DE MENSAGENS
+-- ============================================
+CREATE TABLE IF NOT EXISTS mensagens (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    remetente_id INT NOT NULL,
+    destinatario_id INT NULL,
+    assunto VARCHAR(200) NOT NULL,
+    mensagem TEXT NOT NULL,
+    tipo ENUM('publica', 'privada') DEFAULT 'publica',
+    status ENUM('lida', 'nao_lida') DEFAULT 'nao_lida',
+    data_envio DATETIME DEFAULT CURRENT_TIMESTAMP,
+    data_leitura DATETIME NULL,
+    respondendo_a INT NULL,
+    FOREIGN KEY (remetente_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    FOREIGN KEY (destinatario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    FOREIGN KEY (respondendo_a) REFERENCES mensagens(id) ON DELETE SET NULL,
+    INDEX idx_destinatario (destinatario_id),
+    INDEX idx_data_envio (data_envio)
+);
+
+-- ============================================
+-- TABELA DE ARQUIVOS ANEXADOS
+-- ============================================
+CREATE TABLE IF NOT EXISTS mensagens_anexos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    mensagem_id INT NOT NULL,
+    nome_original VARCHAR(255) NOT NULL,
+    nome_arquivo VARCHAR(255) NOT NULL,
+    caminho VARCHAR(500) NOT NULL,
+    tipo_arquivo VARCHAR(100) NOT NULL,
+    tamanho INT NOT NULL,
+    data_upload DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (mensagem_id) REFERENCES mensagens(id) ON DELETE CASCADE,
+    INDEX idx_mensagem (mensagem_id)
+);
+
+
+
+
+-- ============================================
+-- CRIAR TABELA horarios_trabalho
+-- ============================================
+CREATE TABLE IF NOT EXISTS horarios_trabalho (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    funcionario_id INT NOT NULL,
+    dia_semana VARCHAR(20) NOT NULL,
+    hora_entrada TIME NOT NULL,
+    hora_saida TIME NOT NULL,
+    hora_intervalo_inicio TIME NOT NULL,
+    hora_intervalo_fim TIME NOT NULL,
+    carga_horaria DECIMAL(5,2) NOT NULL,
+    turno VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    INDEX idx_funcionario_id (funcionario_id),
+    INDEX idx_dia_semana (dia_semana),
+    INDEX idx_turno (turno),
+    
+    FOREIGN KEY (funcionario_id) REFERENCES forca_trabalho(id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================
+-- DADOS DE TESTE (opcional)
+-- ============================================
+INSERT INTO horarios_trabalho 
+(funcionario_id, dia_semana, hora_entrada, hora_saida, hora_intervalo_inicio, hora_intervalo_fim, carga_horaria, turno) 
+VALUES 
+(1, 'segunda', '08:00:00', '17:00:00', '12:00:00', '13:00:00', 8.00, 'manha'),
+(1, 'terca', '08:00:00', '17:00:00', '12:00:00', '13:00:00', 8.00, 'manha'),
+(1, 'quarta', '08:00:00', '17:00:00', '12:00:00', '13:00:00', 8.00, 'manha'),
+(2, 'segunda', '14:00:00', '22:00:00', '18:00:00', '19:00:00', 7.00, 'tarde');
+
+
+
+
+
+
+
+
+
+-- Criar a tabela de fechamento diário
+CREATE TABLE IF NOT EXISTS fechamento_diario (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    data DATE NOT NULL,
+    hora_fechamento TIME NOT NULL,
+    total_funcionarios INT DEFAULT 0,
+    presentes INT DEFAULT 0,
+    ausentes INT DEFAULT 0,
+    anulados INT DEFAULT 0,
+    realizado_por INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_data (data)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Verificar se a tabela foi criada
+DESCRIBE fechamento_diario;
+
+
+
+
+
+
+
+ALTER TABLE funcionarios 
+ADD COLUMN num_agente VARCHAR(50) AFTER id,
+ADD COLUMN categoria_actual VARCHAR(100) AFTER nome,
+ADD COLUMN instituicao_salario VARCHAR(200) AFTER categoria_actual,
+ADD COLUMN funcao_instituicao VARCHAR(200) AFTER instituicao_salario,
+ADD COLUMN disciplina_lecciona VARCHAR(200) AFTER funcao_instituicao,
+ADD COLUMN formacao_disciplina VARCHAR(200) AFTER disciplina_lecciona,
+ADD COLUMN data_inicio_funcao DATE AFTER formacao_disciplina,
+ADD COLUMN data_inicio_instituicao DATE AFTER data_inicio_funcao,
+ADD COLUMN num_bi VARCHAR(30) AFTER data_inicio_instituicao,
+ADD COLUMN data_nascimento DATE AFTER num_bi,
+ADD COLUMN genero CHAR(1) AFTER data_nascimento,
+ADD COLUMN habilitacoes_literarias VARCHAR(100) AFTER genero,
+ADD COLUMN especialidade_medio VARCHAR(200) AFTER habilitacoes_literarias,
+ADD COLUMN especialidade_superior VARCHAR(200) AFTER especialidade_medio,
+ADD COLUMN contacto_telefonico VARCHAR(20) AFTER especialidade_superior,
+ADD COLUMN municipio_residencia VARCHAR(100) AFTER contacto_telefonico,
+ADD COLUMN salario_base DECIMAL(15,2) AFTER email,
+ADD COLUMN iban VARCHAR(34) AFTER salario_base;

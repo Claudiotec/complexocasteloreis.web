@@ -1,0 +1,95 @@
+# ============================================================
+# SOFTGEST WEB - PROTEÇÃO DE ARQUIVOS
+# ============================================================
+
+# Ativar motor de reescrita
+RewriteEngine On
+
+# ============================================================
+# PROTEÇÃO CONTRA LISTAGEM DE DIRETÓRIOS
+# ============================================================
+Options -Indexes
+
+# ============================================================
+# PÁGINA INICIAL
+# ============================================================
+DirectoryIndex index.php login.php
+
+# ============================================================
+# PROTEÇÃO DE ARQUIVOS SENSÍVEIS
+# ============================================================
+<FilesMatch "\.(sql|log|ini|config|json|yml|yaml|md|sh|bat|py)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# ============================================================
+# PROTEÇÃO DE ARQUIVOS DE CONFIGURAÇÃO
+# ============================================================
+<Files "database.php">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "security.php">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# ============================================================
+# PROTEÇÃO CONTRA ACESSO DIRETO A PASTAS
+# ============================================================
+RedirectMatch 403 ^/softgest_web/config/.*$
+RedirectMatch 403 ^/softgest_web/includes/.*$
+RedirectMatch 403 ^/softgest_web/sql/.*$
+RedirectMatch 403 ^/softgest_web/protect/.*$
+
+# ============================================================
+# PROTEÇÃO CONTRA HOTLINKING (IMAGENS)
+# ============================================================
+RewriteCond %{HTTP_REFERER} !^$
+RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?localhost [NC]
+RewriteRule \.(jpg|jpeg|png|gif|svg|webp|ico)$ - [F,L]
+
+# ============================================================
+# PREVENÇÃO DE INJEÇÃO DE CÓDIGO
+# ============================================================
+RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
+RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
+RewriteRule .* index.php [F,L]
+
+# ============================================================
+# BLOQUEAR ACESSO A ARQUIVOS OCULTOS
+# ============================================================
+RedirectMatch 403 /\..*$
+
+# ============================================================
+# COMPRESSÃO GZIP
+# ============================================================
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json text/plain text/xml
+</IfModule>
+
+# ============================================================
+# CACHE DE ARQUIVOS ESTÁTICOS
+# ============================================================
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+</IfModule>
+
+# ============================================================
+# SEGURANÇA DE CABEÇALHOS
+# ============================================================
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "DENY"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "no-referrer-when-downgrade"
+</IfModule>

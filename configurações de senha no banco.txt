@@ -1,0 +1,3174 @@
+Entendi! Você quer que o phpMyAdmin não peça mais senha e entre direto. Vamos resolver isso de forma definitiva.
+
+🔧 SOLUÇÃO DEFINITIVA
+Passo 1: Edite o arquivo config.inc.php
+Localize o arquivo:
+
+XAMPP: C:\xampp\phpMyAdmin\config.inc.php
+
+WAMP: C:\wamp\apps\phpmyadminX.X.X\config.inc.php
+
+Laragon: C:\laragon\etc\apps\phpMyAdmin\config.inc.php
+
+Substitua TODO o conteúdo pelo código abaixo:
+
+php
+<?php
+/*
+ * phpMyAdmin - Sem Senha (Desenvolvimento Local)
+ */
+
+$i = 0;
+$i++;
+
+/* ========== CONFIGURAÇÃO PRINCIPAL ========== */
+$cfg['Servers'][$i]['auth_type'] = 'config';
+$cfg['Servers'][$i]['user'] = 'root';
+$cfg['Servers'][$i]['password'] = '';
+$cfg['Servers'][$i]['AllowNoPassword'] = true;
+
+/* ========== CONEXÃO COM O SERVIDOR ========== */
+$cfg['Servers'][$i]['host'] = 'localhost';
+$cfg['Servers'][$i]['port'] = '3306';
+$cfg['Servers'][$i]['socket'] = '';
+$cfg['Servers'][$i]['connect_type'] = 'tcp';
+$cfg['Servers'][$i]['extension'] = 'mysqli';
+$cfg['Servers'][$i]['compress'] = false;
+
+/* ========== CHAVE DE CRIPTOGRAFIA ========== */
+$cfg['blowfish_secret'] = 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6';
+
+/* ========== IDIOMA ========== */
+$cfg['DefaultLang'] = 'pt_BR';
+$cfg['ServerDefault'] = 1;
+
+/* ========== SEGURANÇA ========== */
+$cfg['LoginCookieValidity'] = 14400;
+$cfg['LoginCookieStore'] = 0;
+$cfg['LoginCookieDeleteAll'] = true;
+$cfg['ShowPhpInfo'] = false;
+$cfg['ShowChgPassword'] = true;
+$cfg['ShowCreateDb'] = true;
+$cfg['UploadDir'] = '';
+$cfg['SaveDir'] = '';
+$cfg['PmaNoRelation_DisableWarning'] = true;
+
+/* ========== FINAL ========== */
+?>
+Passo 2: Salve o arquivo
+IMPORTANTE: Após salvar, feche o arquivo.
+
+Passo 3: Limpe tudo
+Reinicie o servidor:
+
+XAMPP: Pare e inicie Apache + MySQL
+
+WAMP: Clique em "Restart All Services"
+
+Limpe o cache do navegador:
+
+Pressione Ctrl + Shift + Delete
+
+Selecione "Cookies e dados de site"
+
+Clique em "Limpar dados"
+
+Use uma janela anônima/privada para testar
+
+Passo 4: Teste
+Acesse: http://localhost/phpmyadmin/
+
+Deverá entrar DIRETO, sem pedir login!
+
+⚠️ Se ainda pedir login
+Verifique se está usando o arquivo correto:
+Abra o arquivo config.inc.php
+
+Veja se as primeiras linhas têm auth_type = 'config'
+
+Não confunda com config.sample.inc.php (esse é só exemplo)
+
+Se você tem múltiplas configurações:
+Procure por outros arquivos config.inc.php:
+
+Na pasta principal do phpMyAdmin
+
+Dentro de subpastas
+
+Em C:\xampp\phpMyAdmin\config\
+
+Se o problema persistir:
+Crie um arquivo config.inc.php novo com este conteúdo mínimo:
+
+php
+<?php
+$cfg['Servers'][1]['auth_type'] = 'config';
+$cfg['Servers'][1]['user'] = 'root';
+$cfg['Servers'][1]['password'] = '';
+$cfg['Servers'][1]['AllowNoPassword'] = true;
+$cfg['blowfish_secret'] = 'qualquercoisa1234567890';
+?>
+🎯 Resultado Esperado
+Após seguir todos os passos, ao acessar http://localhost/phpmyadmin/ você verá diretamente o painel do phpMyAdmin, sem nenhuma tela de login!
+
+Aviso: Isso é para DESENVOLVIMENTO LOCAL apenas. Em produção, NUNCA faça isso!
+
+Funcionou? Se ainda estiver pedindo senha, me diga qual passo deu problema que te ajudo a resolver! 🚀
+
+mostra como remover mysql
+Perfeito! Agora entendi: você quer remover/completamente desinstalar o MySQL para depois reinstalar sem senha. Vou te mostrar como fazer isso de forma limpa.
+
+🗑️ DESINSTALAR COMPLETAMENTE O MYSQL
+Método 1: XAMPP (mais comum)
+Passo 1: Parar os serviços
+Abra o Painel do XAMPP
+
+Clique em Stop no MySQL
+
+Clique em Stop no Apache (opcional)
+
+Passo 2: Remover dados do MySQL
+Vá até a pasta do XAMPP: C:\xampp
+
+Delete a pasta: C:\xampp\mysql\data
+
+Delete o arquivo: C:\xampp\mysql\bin\mysql.ini (se existir)
+
+Passo 3: Desinstalar o serviço (se instalado como serviço)
+Abra o Prompt de Comando como Administrador e execute:
+
+cmd
+cd C:\xampp\mysql\bin
+mysqld --remove
+Passo 4: Reinstalar limpo
+Reinicie o XAMPP (ou o computador)
+
+Abra o Painel do XAMPP
+
+Clique em Start no MySQL
+
+O XAMPP vai recriar a pasta data automaticamente
+
+Método 2: WAMP
+Passo 1: Parar serviços
+Clique no ícone do WAMP na bandeja do sistema
+
+Selecione Stop All Services
+
+Passo 2: Remover dados
+Vá até C:\wamp64\bin\mysql\mysqlX.X.X\data (X.X.X é a versão)
+
+Delete TODOS os arquivos dessa pasta
+
+Não delete a pasta data em si, apenas o conteúdo
+
+Passo 3: Reiniciar
+Clique no ícone do WAMP
+
+Selecione Start All Services
+
+O WAMP vai recriar os bancos de dados padrão
+
+Método 3: MySQL Instalado Separadamente (Windows)
+Passo 1: Parar o serviço
+Abra o Prompt de Comando como Administrador:
+
+cmd
+net stop MySQL
+Passo 2: Remover o serviço
+cmd
+mysqld --remove
+Passo 3: Desinstalar pelo Windows
+Abra Painel de Controle → Programas e Recursos
+
+Encontre MySQL Server
+
+Clique em Desinstalar
+
+Passo 4: Remover pastas manualmente
+Delete estas pastas se existirem:
+
+C:\Program Files\MySQL
+
+C:\Program Files (x86)\MySQL
+
+C:\ProgramData\MySQL (pasta oculta)
+
+C:\Users\SeuUsuario\AppData\Local\MySQL
+
+Passo 5: Limpar o Registro (OPCIONAL - Cuidado!)
+Abra o Regedit (tecla Windows + R, digite regedit) e delete:
+
+text
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\MySQL
+⚠️ CUIDADO: Mexer no registro pode danificar o Windows. Só faça se tiver certeza!
+
+🔄 REINSTALAR SEM SENHA
+XAMPP - Instalação limpa sem senha
+Opção A: Deixar sem senha automaticamente
+Inicie o MySQL no XAMPP
+
+Não execute mysql_upgrade.exe ou mysql_install.exe
+
+O MySQL inicia com root sem senha
+
+Opção B: Remover a senha manualmente
+Após reinstalar, abra o Prompt de Comando e execute:
+
+cmd
+cd C:\xampp\mysql\bin
+mysql -u root
+Dentro do MySQL, execute:
+
+sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY '';
+FLUSH PRIVILEGES;
+EXIT;
+🛠️ SOLUÇÃO MAIS RÁPIDA (SEM REINSTALAR)
+Se você não quer desinstalar tudo, pode apenas resetar a senha do root:
+
+Para XAMPP:
+cmd
+cd C:\xampp\mysql\bin
+mysql -u root
+Se pedir senha, tente:
+
+cmd
+mysql -u root --skip-password
+Depois execute:
+
+sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY '';
+FLUSH PRIVILEGES;
+EXIT;
+Se não conseguir entrar:
+cmd
+cd C:\xampp\mysql\bin
+mysqld --skip-grant-tables
+Em outro prompt:
+
+cmd
+mysql -u root
+FLUSH PRIVILEGES;
+ALTER USER 'root'@'localhost' IDENTIFIED BY '';
+EXIT;
+✅ VERIFICAR SE FUNCIONOU
+Reinicie o MySQL
+
+Configure o phpMyAdmin (como falamos antes)
+
+Acesse http://localhost/phpmyadmin/
+
+⚠️ AVISO IMPORTANTE
+Isso remove TODOS os seus bancos de dados!
+
+Faça BACKUP do C:\xampp\mysql\data antes de deletar
+
+Em produção, NUNCA deixe sem senha!
+
+Qual método você quer usar? Posso te guiar passo a passo em tempo real! 🚀
+
+Se você não quer desinstalar tudo, pode apenas resetar a senha do root:
+
+Para XAMPP:
+cmd
+cd C:\xampp\mysql\bin
+mysql -u root
+Se pedir senha, tente:
+
+cmd
+mysql -u root --skip-password
+Depois execute:
+
+sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY '';
+FLUSH PRIVILEGES;
+EXIT;
+Se não conseguir entrar:
+cmd
+cd C:\xampp\mysql\bin
+mysqld --skip-grant-tables
+Em outro prompt:
+
+cmd
+mysql -u root
+FLUSH PRIVILEGES;
+ALTER USER 'root'@'localhost' IDENTIFIED BY '';
+EXIT;
+✅ VERIFICAR SE FUNCIONOU
+Reinicie o MySQL
+
+Configure o phpMyAdmin (como falamos antes)
+
+Acesse http://localhost/phpmyadmin/
+
+⚠️ AVISO IMPORTANTE
+Isso remove TODOS os seus bancos de dados!
+
+Faça BACKUP do C:\xampp\mysql\data antes de deletar
+
+Em produção, NUNCA deixe sem senha!
+
+Qual método você quer usar? Posso te guiar passo a passo em tempo real! 🚀
+
+ passo a passo
+Perfeito! Vou te guiar PASSO A PASSO em tempo real para resetar a senha do MySQL sem perder seus dados.
+
+📋 PASSO A PASSO COMPLETO
+🔹 PASSO 1: Abrir o XAMPP Control Panel
+Abra o XAMPP Control Panel
+
+Se o MySQL estiver rodando, clique em Stop
+
+Deixe o MySQL parado
+
+🔹 PASSO 2: Abrir o Prompt de Comando
+Pressione Windows + R
+
+Digite cmd
+
+Clique em OK
+
+🔹 PASSO 3: Ir até a pasta do MySQL
+No prompt, digite:
+
+cmd
+cd C:\xampp\mysql\bin
+Pressione Enter
+
+🔹 PASSO 4: Iniciar o MySQL sem verificar senha
+Digite:
+
+cmd
+mysqld --skip-grant-tables
+Pressione Enter
+
+⚠️ ATENÇÃO: O prompt vai ficar parado, sem mostrar nada. ISSO É NORMAL! Deixe ele aberto.
+
+🔹 PASSO 5: Abrir um NOVO Prompt de Comando
+Pressione Windows + R novamente
+
+Digite cmd
+
+Clique em OK
+
+🔹 PASSO 6: Ir para a pasta do MySQL no NOVO prompt
+Digite:
+
+cmd
+cd C:\xampp\mysql\bin
+Pressione Enter
+
+🔹 PASSO 7: Conectar ao MySQL sem senha
+Digite:
+
+cmd
+mysql -u root
+Pressione Enter
+
+Você deve ver algo como:
+
+text
+Welcome to the MariaDB monitor. Commands end with ; or \g.
+Your MariaDB connection id is 1
+Server version: 10.4.28-MariaDB mariadb.org binary distribution
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]>
+🔹 PASSO 8: Resetar a senha do root
+Agora você está dentro do MySQL. Digite ESTES COMANDOS UM POR UM:
+
+Comando 1:
+
+sql
+FLUSH PRIVILEGES;
+Pressione Enter
+
+Comando 2:
+
+sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY '';
+Pressione Enter
+
+Comando 3:
+
+sql
+EXIT;
+Pressione Enter
+
+🔹 PASSO 9: Fechar os prompts
+Volte no PRIMEIRO prompt (o que estava parado)
+
+Pressione Ctrl + C para parar o MySQL
+
+Feche os dois prompts
+
+🔹 PASSO 10: Reinciar o MySQL no XAMPP
+Volte ao XAMPP Control Panel
+
+Clique em Start no MySQL
+
+Espere o ícone ficar VERDE
+
+🔹 PASSO 11: Configurar o phpMyAdmin
+Abra o arquivo: C:\xampp\phpMyAdmin\config.inc.php
+
+Substitua TODO o conteúdo por:
+
+php
+<?php
+$i = 0;
+$i++;
+
+$cfg['Servers'][$i]['auth_type'] = 'config';
+$cfg['Servers'][$i]['user'] = 'root';
+$cfg['Servers'][$i]['password'] = '';
+$cfg['Servers'][$i]['AllowNoPassword'] = true;
+$cfg['Servers'][$i]['host'] = 'localhost';
+$cfg['Servers'][$i]['port'] = '3306';
+$cfg['Servers'][$i]['extension'] = 'mysqli';
+
+$cfg['blowfish_secret'] = 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6';
+$cfg['DefaultLang'] = 'pt_BR';
+?>
+Salve o arquivo (Ctrl + S)
+
+🔹 PASSO 12: Limpar cache do navegador
+No navegador, pressione Ctrl + Shift + Delete
+
+Marque Cookies e dados de site
+
+Clique em Limpar dados
+
+🔹 PASSO 13: Testar
+Abra o navegador
+
+Acesse: http://localhost/phpmyadmin/
+
+DEVE ENTRAR DIRETO, SEM PEDIR SENHA! 🎉
+
+🔍 Verificar se deu certo
+Você verá a tela principal do phpMyAdmin com seus bancos de dados listados.
+
+❌ Se der erro no PASSO 7 (mysql -u root)
+Se aparecer:
+
+text
+ERROR 2002 (HY000): Can't connect to local MySQL server
+Execute isso e depois tente novamente:
+
+No primeiro prompt (o do PASSO 4), feche com Ctrl + C e digite:
+
+cmd
+mysqld --skip-grant-tables --skip-networking
+✅ SEU MYSQL AGORA ESTÁ SEM SENHA!
+Agora você pode:
+
+Acessar o phpMyAdmin sem login
+
+Conectar seus projetos sem senha
+
+Trabalhar normalmente
+
+Funcionou? Me diga em qual passo você está e se apareceu alguma mensagem de erro! 🚀
+
+como colocar a senha de novo passo a passo
+Perfeito! Vou te guiar PASSO A PASSO para colocar uma senha NOVA no MySQL.
+
+🔐 PASSO A PASSO - COLOCAR SENHA NO MYSQL
+🔹 PASSO 1: Abrir o XAMPP Control Panel
+Abra o XAMPP Control Panel
+
+Certifique-se que o MySQL está rodando (ícone verde)
+
+Se não estiver, clique em Start
+
+🔹 PASSO 2: Abrir o Prompt de Comando
+Pressione Windows + R
+
+Digite cmd
+
+Clique em OK
+
+🔹 PASSO 3: Ir até a pasta do MySQL
+No prompt, digite:
+
+cmd
+cd C:\xampp\mysql\bin
+Pressione Enter
+
+🔹 PASSO 4: Conectar ao MySQL
+Digite:
+
+cmd
+mysql -u root
+Pressione Enter
+
+⚠️ Se pedir senha, digite a senha atual e pressione Enter.
+
+Se não souber a senha, use o método de reset que fizemos antes.
+
+🔹 PASSO 5: Definir uma NOVA senha
+Agora você está dentro do MySQL (MariaDB [(none)]>).
+
+Digite este comando (substitua NOVA_SENHA pela senha que você quer):
+
+sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'NOVA_SENHA';
+Exemplo com senha "123456":
+
+sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY '123456';
+Pressione Enter
+
+🔹 PASSO 6: Aplicar as alterações
+Digite:
+
+sql
+FLUSH PRIVILEGES;
+Pressione Enter
+
+🔹 PASSO 7: Sair do MySQL
+Digite:
+
+sql
+EXIT;
+Pressione Enter
+
+🔹 PASSO 8: Testar a nova senha
+Ainda no prompt, digite:
+
+cmd
+mysql -u root -p
+Pressione Enter
+
+Quando pedir a senha, digite a nova senha que você definiu.
+
+Se entrar, a senha foi definida com sucesso! ✅
+
+🔹 PASSO 9: Configurar o phpMyAdmin para usar a senha
+Abra o arquivo: C:\xampp\phpMyAdmin\config.inc.php
+
+Substitua TODO o conteúdo por:
+
+php
+<?php
+$i = 0;
+$i++;
+
+/* ========== AUTENTICAÇÃO COM SENHA ========== */
+$cfg['Servers'][$i]['auth_type'] = 'config';
+$cfg['Servers'][$i]['user'] = 'root';
+$cfg['Servers'][$i]['password'] = 'NOVA_SENHA'; // Coloque sua nova senha aqui!
+$cfg['Servers'][$i]['AllowNoPassword'] = false;
+
+/* ========== CONEXÃO ========== */
+$cfg['Servers'][$i]['host'] = 'localhost';
+$cfg['Servers'][$i]['port'] = '3306';
+$cfg['Servers'][$i]['extension'] = 'mysqli';
+
+/* ========== SEGURANÇA ========== */
+$cfg['blowfish_secret'] = 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6';
+$cfg['DefaultLang'] = 'pt_BR';
+?>
+IMPORTANTE: Troque NOVA_SENHA pela senha que você colocou!
+
+Exemplo (se a senha for 123456):
+
+php
+$cfg['Servers'][$i]['password'] = '123456';
+Salve o arquivo (Ctrl + S)
+
+🔹 PASSO 10: Reiniciar o MySQL
+No XAMPP Control Panel
+
+Clique em Stop no MySQL
+
+Aguarde parar completamente
+
+Clique em Start no MySQL
+
+🔹 PASSO 11: Testar o phpMyAdmin
+Abra o navegador
+
+Acesse: http://localhost/phpmyadmin/
+
+Deve entrar automaticamente (já que configuramos a senha no arquivo)
+
+🔒 MODO MAIS SEGURO (com tela de login)
+Se você quiser que o phpMyAdmin PEÇA A SENHA (mais seguro):
+
+Altere o config.inc.php para:
+php
+<?php
+$i = 0;
+$i++;
+
+/* ========== MODO LOGIN (PEDE SENHA) ========== */
+$cfg['Servers'][$i]['auth_type'] = 'cookie';
+$cfg['Servers'][$i]['AllowNoPassword'] = false;
+
+/* ========== CONEXÃO ========== */
+$cfg['Servers'][$i]['host'] = 'localhost';
+$cfg['Servers'][$i]['port'] = '3306';
+$cfg['Servers'][$i]['extension'] = 'mysqli';
+
+/* ========== SEGURANÇA ========== */
+$cfg['blowfish_secret'] = 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6';
+$cfg['DefaultLang'] = 'pt_BR';
+?>
+Assim ao acessar http://localhost/phpmyadmin/ você verá:
+
+text
+Usuário: root
+Senha: [digitar a senha]
+🔑 COMANDOS RÁPIDOS PARA REFERÊNCIA
+Mudar senha:
+sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'SUA_NOVA_SENHA';
+FLUSH PRIVILEGES;
+Remover senha (deixar vazia):
+sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY '';
+FLUSH PRIVILEGES;
+Verificar se senha foi alterada:
+cmd
+mysql -u root -p
+Digite a senha e veja se entra.
+
+✅ RESULTADO
+Agora seu MySQL tem uma senha!
+
+Para desenvolvimento local: Use o modo config com a senha no arquivo
+
+Para produção: Use o modo cookie e mantenha a senha forte
+
+Funcionou? Qual senha você colocou? Se tiver algum erro, me diga que te ajudo! 🚀
+
+❌ Erro na conexão com o banco de dados: SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: YES)
+Esse erro significa que seu aplicativo/PHP está tentando usar uma senha incorreta para conectar ao banco. A senha que você configurou no MySQL NÃO está igual à senha que está no seu código.
+
+🔍 Vamos resolver PASSO A PASSO
+🔹 PASSO 1: Descobrir qual é a senha atual do MySQL
+Abra o Prompt de Comando e teste:
+
+cmd
+cd C:\xampp\mysql\bin
+mysql -u root -p
+Teste as senhas:
+
+Se você colocou 123456, teste 123456
+
+Se não lembra, teste "" (sem senha, só apertar Enter)
+
+Teste também root ou admin
+
+Qual dessas funcionou? Anote!
+
+🔹 PASSO 2: Verificar como está o phpMyAdmin
+Abra o arquivo C:\xampp\phpMyAdmin\config.inc.php e veja a senha:
+
+php
+$cfg['Servers'][$i]['password'] = 'SUA_SENHA_AQUI';
+Anote qual senha está lá!
+
+🔹 PASSO 3: CORRIGIR - Sincronizar as senhas
+Agora você tem duas opções:
+
+Opção A: Ajustar o PHP (SEU PROJETO)
+Se você tem um arquivo de configuração no seu projeto softgest_db, localize onde está a senha:
+
+Se for WordPress:
+
+Arquivo: wp-config.php
+
+Procure: define('DB_PASSWORD', 'xxxxx');
+
+Se for Laravel:
+
+Arquivo: .env
+
+Procure: DB_PASSWORD=xxxxx
+
+Se for PHP puro:
+
+Arquivo: config.php, conexao.php ou db.php
+
+Procure: $senha = 'xxxxx';
+
+Troque a senha para a mesma que você configurou no MySQL.
+
+Opção B: Resetar a senha do MySQL para combinar com seu código
+Veja qual senha está no seu código (exemplo: 123456)
+
+Altere a senha do MySQL para essa senha:
+
+Abra o Prompt:
+
+cmd
+cd C:\xampp\mysql\bin
+mysql -u root -p
+Dentro do MySQL:
+
+sql
+-- Troque '123456' pela senha que está no seu código
+ALTER USER 'root'@'localhost' IDENTIFIED BY '123456';
+FLUSH PRIVILEGES;
+EXIT;
+Atualize o phpMyAdmin com a mesma senha:
+
+php
+$cfg['Servers'][$i]['password'] = '123456';
+Opção C: Remover a senha (mais fácil para desenvolvimento)
+No MySQL:
+
+cmd
+cd C:\xampp\mysql\bin
+mysql -u root -p
+Dentro do MySQL:
+
+sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY '';
+FLUSH PRIVILEGES;
+EXIT;
+No seu código PHP, deixe a senha vazia:
+
+php
+define('DB_PASSWORD', '');
+// ou
+$senha = '';
+No phpMyAdmin:
+
+php
+$cfg['Servers'][$i]['password'] = '';
+$cfg['Servers'][$i]['AllowNoPassword'] = true;
+🔹 PASSO 4: Verificar no seu projeto (softgest_db)
+Você mencionou o banco softgest_db. Verifique o arquivo de conexão do seu projeto:
+
+Procure arquivos como:
+
+config.php
+
+conexao.php
+
+database.php
+
+.env
+
+config/database.php
+
+Dentro deve ter algo como:
+
+php
+$host = 'localhost';
+$user = 'root';
+$password = 'SUA_SENHA';  // <--- ALTERE AQUI
+$database = 'softgest_db';
+Troque a senha para a correta e salve.
+
+🔹 PASSO 5: Reiniciar tudo
+XAMPP Control Panel
+
+Stop no Apache e MySQL
+
+Start no Apache e MySQL
+
+Limpe o cache do navegador
+
+🔹 PASSO 6: Testar
+Acesse http://localhost/phpmyadmin/ - deve abrir
+
+Acesse seu projeto http://localhost/softgest_db/ - deve funcionar
+
+📝 RESUMO RÁPIDO
+Local	Onde verificar	Como corrigir
+MySQL	Prompt: mysql -u root -p	ALTER USER 'root'@'localhost' IDENTIFIED BY 'NOVA_SENHA';
+phpMyAdmin	C:\xampp\phpMyAdmin\config.inc.php	$cfg['Servers'][$i]['password'] = 'NOVA_SENHA';
+Seu Projeto	config.php, .env, wp-config.php	define('DB_PASSWORD', 'NOVA_SENHA');
+⚠️ Regra de OURO
+AS TRÊS SENHAS DEVEM SER IGUAIS:
+
+Senha do MySQL (definida no banco)
+
+Senha no phpMyAdmin (config.inc.php)
+
+Senha no seu projeto (config.php, .env, etc.)
+
+Me diga:
+
+Qual senha está no seu projeto?
+
+Qual senha está no phpMyAdmin?
+
+Qual senha funciona no MySQL (teste mysql -u root -p)?
+
+Com essas informações, te ajudo a corrigir rapidamente! 🚀
+
+<?php
+$i = 0;
+$i++;
+
+$cfg['Servers'][$i]['auth_type'] = 'config';
+$cfg['Servers'][$i]['user'] = 'root';
+$cfg['Servers'][$i]['password'] = '';
+$cfg['Servers'][$i]['AllowNoPassword'] = true;
+$cfg['Servers'][$i]['host'] = 'localhost';
+$cfg['Servers'][$i]['port'] = '3306';
+$cfg['Servers'][$i]['extension'] = 'mysqli';
+
+$cfg['blowfish_secret'] = 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6';
+$cfg['DefaultLang'] = 'pt_BR';
+?>
+Perfeito! Seu phpMyAdmin está configurado SEM SENHA. Agora vamos ajustar seu projeto para também usar SEM SENHA.
+
+🔧 CORRIGIR O ERRO NO SEU PROJETO
+O erro Access denied for user 'root'@'localhost' (using password: YES) significa que seu projeto ESTÁ TENTANDO USAR UMA SENHA, mas o MySQL está sem senha.
+
+🔹 PASSO 1: Localizar o arquivo de configuração do seu projeto
+Seu projeto é softgest_db. Procure por estes arquivos:
+
+Arquivos comuns:
+
+config.php
+
+conexao.php
+
+database.php
+
+db.php
+
+.env
+
+config/database.php
+
+includes/config.php
+
+Onde procurar:
+
+C:\xampp\htdocs\softgest_db\
+
+C:\xampp\htdocs\ (pode estar em outra pasta)
+
+C:\laragon\www\softgest_db\
+
+🔹 PASSO 2: Alterar a senha para VAZIA
+Encontre a linha onde está a senha e deixe vazia:
+
+Se for um arquivo PHP:
+php
+// Antes - COM SENHA
+$senha = '123456';
+// ou
+define('DB_PASSWORD', '123456');
+// ou
+$db_password = '123456';
+
+// Depois - SEM SENHA
+$senha = '';
+// ou
+define('DB_PASSWORD', '');
+// ou
+$db_password = '';
+Se for arquivo .env (Laravel, etc.):
+text
+# Antes
+DB_PASSWORD=123456
+
+# Depois
+DB_PASSWORD=
+Se for WordPress (wp-config.php):
+php
+// Antes
+define('DB_PASSWORD', '123456');
+
+// Depois
+define('DB_PASSWORD', '');
+🔹 PASSO 3: Exemplo completo de arquivo de conexão
+Seu arquivo de conexão deve ficar assim:
+
+php
+<?php
+$host = 'localhost';
+$user = 'root';
+$password = '';  // <--- VAZIO (SEM SENHA)
+$database = 'softgest_db';
+
+$conn = mysqli_connect($host, $user, $password, $database);
+
+if (!$conn) {
+    die("Erro na conexão: " . mysqli_connect_error());
+}
+
+echo "Conectado com sucesso!";
+?>
+🔹 PASSO 4: Se não encontrar o arquivo
+Use o Windows Search para encontrar:
+
+Abra o Explorador de Arquivos
+
+Vá para C:\xampp\htdocs\
+
+Na barra de pesquisa, digite: config.php ou conexao.php
+
+Procure também por: DB_PASSWORD ou $password
+
+🔹 PASSO 5: Reiniciar o servidor
+XAMPP Control Panel
+
+Stop no Apache
+
+Start no Apache
+
+🔹 PASSO 6: Testar
+Acesse: http://localhost/phpmyadmin/ (deve entrar sem senha)
+
+Acesse seu projeto: http://localhost/softgest_db/
+
+🔍 Se ainda der erro
+Verifique se a senha está realmente vazia no MySQL:
+cmd
+cd C:\xampp\mysql\bin
+mysql -u root
+Se entrar sem senha, o MySQL está sem senha ✅
+
+Se pedir senha, você precisa remover a senha do MySQL:
+
+sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY '';
+FLUSH PRIVILEGES;
+EXIT;
+📝 RESPOSTA RÁPIDA
+O problema: Seu projeto está tentando usar uma senha, mas o MySQL está sem senha.
+
+Solução: No arquivo de configuração do seu projeto, troque a senha por vazio ('').
+
+Me mostre o arquivo de conexão do seu projeto (cole aqui) que eu te ajudo a corrigir! 🚀
+
+<?php
+// config/db_config.php
+// ============================================================
+// CONFIGURAÇÕES DO BANCO DE DADOS - VERSÃO MELHORADA
+// ============================================================
+
+// ===== CARREGAR VARIÁVEIS DE AMBIENTE =====
+if (file_exists(__DIR__ . '/../.env')) {
+    $envFile = file(__DIR__ . '/../.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($envFile as $line) {
+        if (strpos($line, '=') !== false && strpos($line, '#') !== 0) {
+            list($key, $value) = explode('=', $line, 2);
+            putenv(trim($key) . '=' . trim($value));
+        }
+    }
+}
+
+// ===== DEFINIR CONSTANTES =====
+if (!defined('DB_HOST')) {
+    define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+}
+if (!defined('DB_NAME')) {
+    define('DB_NAME', getenv('DB_NAME') ?: 'softgest_db');
+}
+if (!defined('DB_USER')) {
+    define('DB_USER', getenv('DB_USER') ?: 'root');
+}
+if (!defined('DB_PASS')) {
+    define('DB_PASS', getenv('DB_PASS') ?: 'Claudtec');
+}
+if (!defined('DB_PORT')) {
+    define('DB_PORT', getenv('DB_PORT') ?: '3306');
+}
+
+// ===== CONFIGURAÇÕES DO SISTEMA =====
+if (!defined('SITE_NAME')) define('SITE_NAME', 'SoftGest Web');
+if (!defined('SITE_URL')) define('SITE_URL', 'http://localhost/softgest_web/');
+if (!defined('TIMEZONE')) define('TIMEZONE', 'America/Sao_Paulo');
+
+// ===== DEFINIR TIMEZONE =====
+date_default_timezone_set(TIMEZONE);
+
+// ===== FUNÇÃO DE CONEXÃO MELHORADA =====
+function conectarBanco() {
+    $host = DB_HOST;
+    $dbname = DB_NAME;
+    $user = DB_USER;
+    $pass = DB_PASS;
+    $port = DB_PORT;
+    
+    try {
+        // Testa diferentes combinações
+        $pdo = new PDO(
+            "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4",
+            $user,
+            $pass,
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false,
+                PDO::ATTR_TIMEOUT => 10,
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
+            ]
+        );
+        
+        return $pdo;
+        
+    } catch (PDOException $e) {
+        // Log detalhado
+        error_log("Erro de conexão: " . $e->getMessage());
+        error_log("Host: $host, DB: $dbname, User: $user, Port: $port");
+        
+        // Tenta conectar sem banco específico para criar
+        try {
+            $pdo = new PDO("mysql:host=$host;port=$port;charset=utf8mb4", $user, $pass);
+            // Cria o banco se não existir
+            $pdo->exec("CREATE DATABASE IF NOT EXISTS `$dbname` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+            $pdo->exec("USE `$dbname`");
+            return $pdo;
+        } catch (PDOException $e2) {
+            throw new Exception("Erro na conexão com o banco de dados: " . $e2->getMessage());
+        }
+    }
+}
+
+// ===== FUNÇÃO DE DIAGNÓSTICO =====
+function diagnosticarConexao() {
+    $resultado = [
+        'status' => 'error',
+        'mensagem' => '',
+        'detalhes' => []
+    ];
+    
+    // Verificar extensão PDO
+    if (!extension_loaded('pdo_mysql')) {
+        $resultado['detalhes'][] = 'Extensão PDO MySQL não está carregada';
+        return $resultado;
+    }
+    
+    try {
+        $pdo = conectarBanco();
+        $resultado['status'] = 'success';
+        $resultado['mensagem'] = 'Conectado com sucesso!';
+        $resultado['detalhes'][] = 'Banco: ' . DB_NAME;
+        $resultado['detalhes'][] = 'Versão MySQL: ' . $pdo->getAttribute(PDO::ATTR_SERVER_VERSION);
+        return $resultado;
+    } catch (Exception $e) {
+        $resultado['mensagem'] = $e->getMessage();
+        return $resultado;
+    }
+}
+
+// ===== REALIZAR CONEXÃO =====
+try {
+    $pdo = conectarBanco();
+} catch (Exception $e) {
+    // Se for erro 1045 (acesso negado), tenta sem senha
+    if (strpos($e->getMessage(), '1045') !== false) {
+        try {
+            $pdo = new PDO(
+                "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
+                DB_USER,
+                '',  // Tenta sem senha
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+                ]
+            );
+        } catch (PDOException $e2) {
+            die("❌ Erro: " . $e2->getMessage());
+        }
+    } else {
+        die("❌ Erro: " . $e->getMessage());
+    }
+}
+Perfeito! Encontrei o problema! Seu arquivo db_config.php está tentando usar a senha Claudtec que está definida no arquivo .env.
+
+🔧 SOLUÇÃO: 3 OPÇÕES
+✅ OPÇÃO 1: Mudar apenas no arquivo .env (RECOMENDADO)
+Localize o arquivo .env na pasta do seu projeto:
+
+C:\xampp\htdocs\softgest_web\.env (ou onde estiver seu projeto)
+
+Abra o arquivo .env com o Bloco de Notas
+
+Altere a linha da senha para vazia:
+
+env
+# Antes
+DB_PASS=Claudtec
+
+# Depois (SEM SENHA)
+DB_PASS=
+Salve o arquivo (Ctrl + S)
+
+Reinicie o Apache no XAMPP
+
+✅ OPÇÃO 2: Mudar diretamente no db_config.php
+No arquivo db_config.php, altere a linha:
+
+php
+// Antes (linha ~20)
+if (!defined('DB_PASS')) {
+    define('DB_PASS', getenv('DB_PASS') ?: 'Claudtec');
+}
+
+// Depois (SEM SENHA)
+if (!defined('DB_PASS')) {
+    define('DB_PASS', getenv('DB_PASS') ?: '');
+}
+✅ OPÇÃO 3: Criar um novo arquivo .env (se não existir)
+Se não existir o arquivo .env, crie um na pasta do projeto:
+
+Arquivo: .env (na pasta C:\xampp\htdocs\softgest_web\)
+
+Conteúdo:
+
+env
+DB_HOST=localhost
+DB_NAME=softgest_db
+DB_USER=root
+DB_PASS=
+DB_PORT=3306
+🔹 OPÇÃO EXTRA: Colocar senha no MySQL (se quiser manter a senha)
+Se você QUISER manter a senha Claudtec, faça:
+
+Definir a senha no MySQL:
+
+cmd
+cd C:\xampp\mysql\bin
+mysql -u root
+Dentro do MySQL:
+
+sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'Claudtec';
+FLUSH PRIVILEGES;
+EXIT;
+Atualizar o phpMyAdmin (config.inc.php):
+
+php
+$cfg['Servers'][$i]['password'] = 'Claudtec';
+$cfg['Servers'][$i]['AllowNoPassword'] = false;
+Manter o .env com DB_PASS=Claudtec
+
+📝 RESUMO DA SOLUÇÃO
+Arquivo	O que mudar
+.env	DB_PASS= (vazio)
+OU	DB_PASS=Claudtec (se colocar senha no MySQL)
+🔍 Verificar se funcionou
+Acesse o phpMyAdmin: http://localhost/phpmyadmin/
+
+Acesse seu projeto: http://localhost/softgest_web/
+
+Veja se aparece: "Conectado com sucesso!"
+
+⚠️ Importante
+O código que você me mostrou já tem uma tentativa automática de conectar sem senha se der erro 1045 (linhas 87-97). Então, se você apenas deixar o .env com senha vazia ou remover a senha do MySQL, o sistema vai funcionar automaticamente!
+
+Qual opção você prefere?
+
+Sem senha (desenvolvimento) - mais fácil
+
+Com senha Claudtec - mais seguro
+
+Me diga qual você quer que eu te ajudo a configurar! 🚀
+
+db_config completo sem a senha
+Aqui está seu arquivo db_config.php completo SEM SENHA:
+
+php
+<?php
+// config/db_config.php
+// ============================================================
+// CONFIGURAÇÕES DO BANCO DE DADOS - SEM SENHA
+// ============================================================
+
+// ===== CARREGAR VARIÁVEIS DE AMBIENTE =====
+if (file_exists(__DIR__ . '/../.env')) {
+    $envFile = file(__DIR__ . '/../.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($envFile as $line) {
+        if (strpos($line, '=') !== false && strpos($line, '#') !== 0) {
+            list($key, $value) = explode('=', $line, 2);
+            putenv(trim($key) . '=' . trim($value));
+        }
+    }
+}
+
+// ===== DEFINIR CONSTANTES =====
+if (!defined('DB_HOST')) {
+    define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+}
+if (!defined('DB_NAME')) {
+    define('DB_NAME', getenv('DB_NAME') ?: 'softgest_db');
+}
+if (!defined('DB_USER')) {
+    define('DB_USER', getenv('DB_USER') ?: 'root');
+}
+if (!defined('DB_PASS')) {
+    define('DB_PASS', getenv('DB_PASS') ?: '');  // <- SENHA VAZIA
+}
+if (!defined('DB_PORT')) {
+    define('DB_PORT', getenv('DB_PORT') ?: '3306');
+}
+
+// ===== CONFIGURAÇÕES DO SISTEMA =====
+if (!defined('SITE_NAME')) define('SITE_NAME', 'SoftGest Web');
+if (!defined('SITE_URL')) define('SITE_URL', 'http://localhost/softgest_web/');
+if (!defined('TIMEZONE')) define('TIMEZONE', 'America/Sao_Paulo');
+
+// ===== DEFINIR TIMEZONE =====
+date_default_timezone_set(TIMEZONE);
+
+// ===== FUNÇÃO DE CONEXÃO MELHORADA =====
+function conectarBanco() {
+    $host = DB_HOST;
+    $dbname = DB_NAME;
+    $user = DB_USER;
+    $pass = DB_PASS;
+    $port = DB_PORT;
+    
+    try {
+        // Testa diferentes combinações
+        $pdo = new PDO(
+            "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4",
+            $user,
+            $pass,
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false,
+                PDO::ATTR_TIMEOUT => 10,
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
+            ]
+        );
+        
+        return $pdo;
+        
+    } catch (PDOException $e) {
+        // Log detalhado
+        error_log("Erro de conexão: " . $e->getMessage());
+        error_log("Host: $host, DB: $dbname, User: $user, Port: $port");
+        
+        // Tenta conectar sem banco específico para criar
+        try {
+            $pdo = new PDO("mysql:host=$host;port=$port;charset=utf8mb4", $user, $pass);
+            // Cria o banco se não existir
+            $pdo->exec("CREATE DATABASE IF NOT EXISTS `$dbname` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+            $pdo->exec("USE `$dbname`");
+            return $pdo;
+        } catch (PDOException $e2) {
+            throw new Exception("Erro na conexão com o banco de dados: " . $e2->getMessage());
+        }
+    }
+}
+
+// ===== FUNÇÃO DE DIAGNÓSTICO =====
+function diagnosticarConexao() {
+    $resultado = [
+        'status' => 'error',
+        'mensagem' => '',
+        'detalhes' => []
+    ];
+    
+    // Verificar extensão PDO
+    if (!extension_loaded('pdo_mysql')) {
+        $resultado['detalhes'][] = 'Extensão PDO MySQL não está carregada';
+        return $resultado;
+    }
+    
+    try {
+        $pdo = conectarBanco();
+        $resultado['status'] = 'success';
+        $resultado['mensagem'] = 'Conectado com sucesso!';
+        $resultado['detalhes'][] = 'Banco: ' . DB_NAME;
+        $resultado['detalhes'][] = 'Versão MySQL: ' . $pdo->getAttribute(PDO::ATTR_SERVER_VERSION);
+        return $resultado;
+    } catch (Exception $e) {
+        $resultado['mensagem'] = $e->getMessage();
+        return $resultado;
+    }
+}
+
+// ===== REALIZAR CONEXÃO =====
+try {
+    $pdo = conectarBanco();
+} catch (Exception $e) {
+    // Se for erro 1045 (acesso negado), tenta sem senha
+    if (strpos($e->getMessage(), '1045') !== false) {
+        try {
+            $pdo = new PDO(
+                "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
+                DB_USER,
+                '',  // Tenta sem senha
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+                ]
+            );
+        } catch (PDOException $e2) {
+            die("❌ Erro: " . $e2->getMessage());
+        }
+    } else {
+        die("❌ Erro: " . $e->getMessage());
+    }
+}
+?>
+📝 O QUE FOI ALTERADO
+Apenas UMA linha foi modificada:
+
+php
+// Antes (linha 20)
+define('DB_PASS', getenv('DB_PASS') ?: 'Claudtec');
+
+// Depois (SEM SENHA)
+define('DB_PASS', getenv('DB_PASS') ?: '');  // <- SENHA VAZIA
+🔧 TAMBÉM ALTERE O ARQUIVO .env (se existir)
+Localize o arquivo .env na pasta do seu projeto e altere:
+
+env
+# Antes
+DB_PASS=Claudtec
+
+# Depois (SEM SENHA)
+DB_PASS=
+✅ VERIFICAR SE FUNCIONOU
+Salve o arquivo db_config.php
+
+Reinicie o Apache no XAMPP
+
+Acesse http://localhost/softgest_web/
+
+Deverá funcionar sem erro de conexão! 🎉
+
+🔒 Se quiser VOLTAR a usar senha no futuro
+Basta alterar a linha para:
+
+php
+define('DB_PASS', getenv('DB_PASS') ?: 'SUA_SENHA_AQUI');
+E no .env:
+
+env
+DB_PASS=SUA_SENHA_AQUI
+Pronto! Agora seu projeto está configurado para conectar sem senha! 🚀
+
+<?php
+// ============================================================
+// config.php - Arquivo de configuração do SoftGest
+// ============================================================
+
+// ------------------------------------------------
+// 1. CONFIGURAÇÕES DO BANCO DE DADOS
+// ------------------------------------------------
+
+// Servidor do banco de dados
+define('DB_HOST', 'localhost');
+
+// Usuário do banco de dados
+define('DB_USER', 'root');
+
+// Senha do banco de dados
+define('DB_PASS', 'Claudtec');  // SENHA CORRIGIDA!
+
+// Nome do banco de dados - ALTERE PARA O NOME REAL DO SEU BANCO!
+define('DB_NAME', 'softgest_db');
+
+// Porta do MySQL
+define('DB_PORT', '3306');
+
+// ------------------------------------------------
+// 2. CONFIGURAÇÕES GERAIS DO SISTEMA
+// ------------------------------------------------
+
+// Nome do sistema
+define('SISTEMA_NOME', 'SoftGest');
+
+// URL base do sistema
+define('URL_BASE', 'http://10.158.77.20/softgest_web');
+
+// Caminho físico do sistema
+define('DIR_BASE', 'C:/xampp/htdocs/softgest_web');
+
+// Timezone
+date_default_timezone_set('America/Sao_Paulo');
+
+// ------------------------------------------------
+// 3. CONFIGURAÇÕES DE SESSÃO
+// ------------------------------------------------
+
+define('SESSION_NAME', 'softgest_session');
+define('SESSION_TIMEOUT', 28800);
+
+// ------------------------------------------------
+// 4. CONFIGURAÇÕES DE SEGURANÇA
+// ------------------------------------------------
+
+define('ENCRYPT_KEY', 'SoftGest@2026#SecureKey');
+
+// ------------------------------------------------
+// 5. CONFIGURAÇÕES DE UPLOAD
+// ------------------------------------------------
+
+define('MAX_UPLOAD_SIZE', 10485760);
+define('UPLOAD_DIR', DIR_BASE . '/uploads/');
+
+// ------------------------------------------------
+// 6. INICIALIZAÇÃO DA SESSÃO
+// ------------------------------------------------
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_name(SESSION_NAME);
+    session_start();
+}
+
+// ------------------------------------------------
+// 7. CONFIGURAÇÕES DE DEBUG
+// ------------------------------------------------
+
+ini_set('display_errors', true);
+error_reporting(E_ALL);
+
+// ------------------------------------------------
+// 8. FUNÇÃO AUXILIAR PARA CONEXÃO
+// ------------------------------------------------
+
+function getDBConnection() {
+    $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+    
+    if ($conn->connect_error) {
+        die('Erro de conexão com o banco de dados: ' . $conn->connect_error);
+    }
+    
+    $conn->set_charset("utf8");
+    return $conn;
+}
+
+// ------------------------------------------------
+// 9. VERIFICAÇÃO RÁPIDA
+// ------------------------------------------------
+
+if (basename($_SERVER['PHP_SELF']) == 'config.php' && isset($_GET['debug'])) {
+    echo '<pre>';
+    echo 'CONFIGURAÇÕES DO SISTEMA:' . PHP_EOL;
+    echo '=========================' . PHP_EOL;
+    echo 'DB_HOST: ' . DB_HOST . PHP_EOL;
+    echo 'DB_USER: ' . DB_USER . PHP_EOL;
+    echo 'DB_PASS: ' . str_repeat('*', strlen(DB_PASS)) . PHP_EOL;
+    echo 'DB_NAME: ' . DB_NAME . PHP_EOL;
+    echo 'URL_BASE: ' . URL_BASE . PHP_EOL;
+    echo 'DIR_BASE: ' . DIR_BASE . PHP_EOL;
+    echo '=========================' . PHP_EOL;
+    
+    $test_conn = @new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+    if ($test_conn->connect_error) {
+        echo '❌ ERRO NA CONEXÃO: ' . $test_conn->connect_error . PHP_EOL;
+    } else {
+        echo '✅ Conexão com o banco OK!' . PHP_EOL;
+        $test_conn->close();
+    }
+    echo '</pre>';
+    exit;
+}
+
+?>
+Perfeito! Aqui está seu arquivo config.php completo SEM SENHA:
+
+php
+<?php
+// ============================================================
+// config.php - Arquivo de configuração do SoftGest
+// ============================================================
+
+// ------------------------------------------------
+// 1. CONFIGURAÇÕES DO BANCO DE DADOS
+// ------------------------------------------------
+
+// Servidor do banco de dados
+define('DB_HOST', 'localhost');
+
+// Usuário do banco de dados
+define('DB_USER', 'root');
+
+// Senha do banco de dados - SEM SENHA
+define('DB_PASS', '');  // SENHA REMOVIDA!
+
+// Nome do banco de dados - ALTERE PARA O NOME REAL DO SEU BANCO!
+define('DB_NAME', 'softgest_db');
+
+// Porta do MySQL
+define('DB_PORT', '3306');
+
+// ------------------------------------------------
+// 2. CONFIGURAÇÕES GERAIS DO SISTEMA
+// ------------------------------------------------
+
+// Nome do sistema
+define('SISTEMA_NOME', 'SoftGest');
+
+// URL base do sistema
+define('URL_BASE', 'http://10.158.77.20/softgest_web');
+
+// Caminho físico do sistema
+define('DIR_BASE', 'C:/xampp/htdocs/softgest_web');
+
+// Timezone
+date_default_timezone_set('America/Sao_Paulo');
+
+// ------------------------------------------------
+// 3. CONFIGURAÇÕES DE SESSÃO
+// ------------------------------------------------
+
+define('SESSION_NAME', 'softgest_session');
+define('SESSION_TIMEOUT', 28800);
+
+// ------------------------------------------------
+// 4. CONFIGURAÇÕES DE SEGURANÇA
+// ------------------------------------------------
+
+define('ENCRYPT_KEY', 'SoftGest@2026#SecureKey');
+
+// ------------------------------------------------
+// 5. CONFIGURAÇÕES DE UPLOAD
+// ------------------------------------------------
+
+define('MAX_UPLOAD_SIZE', 10485760);
+define('UPLOAD_DIR', DIR_BASE . '/uploads/');
+
+// ------------------------------------------------
+// 6. INICIALIZAÇÃO DA SESSÃO
+// ------------------------------------------------
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_name(SESSION_NAME);
+    session_start();
+}
+
+// ------------------------------------------------
+// 7. CONFIGURAÇÕES DE DEBUG
+// ------------------------------------------------
+
+ini_set('display_errors', true);
+error_reporting(E_ALL);
+
+// ------------------------------------------------
+// 8. FUNÇÃO AUXILIAR PARA CONEXÃO
+// ------------------------------------------------
+
+function getDBConnection() {
+    $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+    
+    if ($conn->connect_error) {
+        die('Erro de conexão com o banco de dados: ' . $conn->connect_error);
+    }
+    
+    $conn->set_charset("utf8");
+    return $conn;
+}
+
+// ------------------------------------------------
+// 9. VERIFICAÇÃO RÁPIDA
+// ------------------------------------------------
+
+if (basename($_SERVER['PHP_SELF']) == 'config.php' && isset($_GET['debug'])) {
+    echo '<pre>';
+    echo 'CONFIGURAÇÕES DO SISTEMA:' . PHP_EOL;
+    echo '=========================' . PHP_EOL;
+    echo 'DB_HOST: ' . DB_HOST . PHP_EOL;
+    echo 'DB_USER: ' . DB_USER . PHP_EOL;
+    echo 'DB_PASS: ' . (DB_PASS === '' ? '(vazia)' : str_repeat('*', strlen(DB_PASS))) . PHP_EOL;
+    echo 'DB_NAME: ' . DB_NAME . PHP_EOL;
+    echo 'URL_BASE: ' . URL_BASE . PHP_EOL;
+    echo 'DIR_BASE: ' . DIR_BASE . PHP_EOL;
+    echo '=========================' . PHP_EOL;
+    
+    $test_conn = @new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+    if ($test_conn->connect_error) {
+        echo '❌ ERRO NA CONEXÃO: ' . $test_conn->connect_error . PHP_EOL;
+    } else {
+        echo '✅ Conexão com o banco OK!' . PHP_EOL;
+        $test_conn->close();
+    }
+    echo '</pre>';
+    exit;
+}
+
+?>
+📝 O QUE FOI ALTERADO
+Apenas UMA linha foi modificada:
+
+php
+// Antes (linha 15)
+define('DB_PASS', 'Claudtec');  // SENHA CORRIGIDA!
+
+// Depois (SEM SENHA)
+define('DB_PASS', '');  // SENHA REMOVIDA!
+🧪 TESTAR SE FUNCIONOU
+Acesse no navegador:
+
+text
+http://10.158.77.20/softgest_web/config.php?debug
+Resultado esperado:
+
+text
+CONFIGURAÇÕES DO SISTEMA:
+=========================
+DB_HOST: localhost
+DB_USER: root
+DB_PASS: (vazia)
+DB_NAME: softgest_db
+URL_BASE: http://10.158.77.20/softgest_web
+DIR_BASE: C:/xampp/htdocs/softgest_web
+=========================
+✅ Conexão com o banco OK!
+✅ CONFIRMAR QUE O MYSQL ESTÁ SEM SENHA
+Teste no Prompt de Comando:
+
+cmd
+cd C:\xampp\mysql\bin
+mysql -u root
+Se entrar sem pedir senha, está tudo certo!
+
+Se pedir senha, execute:
+
+sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY '';
+FLUSH PRIVILEGES;
+EXIT;
+🎯 RESULTADO FINAL
+Agora todas as configurações estão alinhadas:
+
+Local	Senha
+MySQL	'' (vazia)
+phpMyAdmin	'' (vazia)
+config.php	'' (vazia)
+db_config.php	'' (vazia)
+Tudo pronto! Seu sistema deve conectar ao banco sem problemas! 🚀
+
+<?php
+// ============================================================
+// CONFIGURAÇÕES DO BANCO DE DADOS
+// ============================================================
+
+// Definir constantes APENAS se não existirem
+if (!defined('DB_HOST')) define('DB_HOST', 'localhost');
+if (!defined('DB_NAME')) define('DB_NAME', 'softgest_db');
+if (!defined('DB_USER')) define('DB_USER', 'root');
+if (!defined('DB_PASS')) define('DB_PASS', 'Claudtec');
+
+// ============================================================
+// CONFIGURAÇÕES DE URL DINÂMICA
+// ============================================================
+
+/**
+ * Função para obter o IP local do servidor
+ */
+function getLocalIP() {
+    if (PHP_OS_FAMILY === 'Windows') {
+        $ip = shell_exec('ipconfig | findstr "IPv4"');
+        if (preg_match('/IPv4.*?(\d+\.\d+\.\d+\.\d+)/', $ip, $matches)) {
+            return $matches[1];
+        }
+    } else {
+        $ip = shell_exec('hostname -I 2>/dev/null');
+        if ($ip) {
+            $ips = explode(' ', trim($ip));
+            return $ips[0] ?? 'localhost';
+        }
+    }
+    
+    $ip = gethostbyname(gethostname());
+    if ($ip && $ip !== '127.0.0.1' && $ip !== '::1') {
+        return $ip;
+    }
+    
+    return 'localhost';
+}
+
+/**
+ * Função para obter a URL base do sistema
+ */
+function getBaseURL() {
+    $host = $_SERVER['HTTP_HOST'] ?? '';
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
+    $port = $_SERVER['SERVER_PORT'];
+    
+    if (preg_match('/^\d+\.\d+\.\d+\.\d+$/', $host)) {
+        $base = $host;
+    } else {
+        $base = getLocalIP();
+    }
+    
+    if ($port != 80 && $port != 443) {
+        return $protocol . '://' . $base . ':' . $port;
+    }
+    
+    return $protocol . '://' . $base;
+}
+
+// ============================================================
+// CONFIGURAÇÕES DO SISTEMA (COM URL DINÂMICA)
+// ============================================================
+if (!defined('SITE_NAME')) define('SITE_NAME', 'SoftGest Web');
+
+// URL base dinâmica - detecta IP ou localhost
+$base_url = getBaseURL();
+if (!defined('SITE_URL')) define('SITE_URL', $base_url . '/softgest_web/');
+
+if (!defined('TIMEZONE')) define('TIMEZONE', 'America/Sao_Paulo');
+
+// ============================================================
+// DEFINIR TIMEZONE
+// ============================================================
+date_default_timezone_set(TIMEZONE);
+
+// ============================================================
+// CONEXÃO COM O BANCO DE DADOS
+// ============================================================
+try {
+    // Verificar se estamos no modo público (PostgreSQL)
+    $is_public = defined('APP_MODE') && APP_MODE === 'public';
+    
+    if ($is_public) {
+        // Usar configurações do modo público (PostgreSQL)
+        $host = defined('DB_HOST') ? DB_HOST : 'ep-holy-resonance-atm1ick2-pooler.c-9.us-east-1.aws.neon.tech';
+        $port = defined('DB_PORT') ? DB_PORT : '5432';
+        $dbname = defined('DB_NAME') ? DB_NAME : 'neondb';
+        $user = defined('DB_USER') ? DB_USER : 'neondb_owner';
+        $pass = defined('DB_PASS') ? DB_PASS : 'npg_gRkKHXNJAI40';
+        $endpoint = defined('DB_ENDPOINT') ? DB_ENDPOINT : 'ep-holy-resonance-atm1ick2-pooler';
+        
+        $options = 'endpoint=' . $endpoint;
+        $dsn = sprintf(
+            "pgsql:host=%s;port=%s;dbname=%s;sslmode=require;options='%s'",
+            $host,
+            $port,
+            $dbname,
+            $options
+        );
+        
+        $pdo = new PDO($dsn, $user, $pass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_TIMEOUT => 30
+        ]);
+    } else {
+        // Modo Local (MySQL)
+        $pdo = new PDO(
+            "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
+            DB_USER,
+            DB_PASS,
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false
+            ]
+        );
+        
+        $pdo->exec("SET time_zone = '+00:00'");
+    }
+    
+} catch (PDOException $e) {
+    die("❌ Erro na conexão com o banco de dados: " . $e->getMessage());
+}
+
+// ============================================================
+// INICIAR SESSÃO
+// ============================================================
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// ============================================================
+// FUNÇÃO: VERIFICAR PERMISSÃO (COM VERIFICAÇÃO)
+// ============================================================
+
+// Só declara a função se ela não existir
+if (!function_exists('temPermissao')) {
+    function temPermissao($modulo, $acao = 'visualizar') {
+        global $pdo;
+        
+        // Se não está logado, nega acesso
+        if (!isset($_SESSION['usuario_id'])) {
+            return false;
+        }
+        
+        // Se for admin, tem todas as permissões
+        if (isset($_SESSION['perfil']) && $_SESSION['perfil'] == 'admin') {
+            return true;
+        }
+        
+        try {
+            // Primeiro, tenta buscar permissão específica
+            $stmt = $pdo->prepare("SELECT $acao FROM permissoes WHERE usuario_id = ? AND modulo = ?");
+            $stmt->execute([$_SESSION['usuario_id'], $modulo]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Se encontrou e o valor é 1, tem permissão
+            if ($result && isset($result[$acao])) {
+                return (int)$result[$acao] === 1;
+            }
+            
+            // Se não encontrou permissão específica, verifica permissão geral do módulo 'Escola'
+            $stmt = $pdo->prepare("SELECT $acao FROM permissoes WHERE usuario_id = ? AND modulo = 'Escola'");
+            $stmt->execute([$_SESSION['usuario_id']]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($result && isset($result[$acao])) {
+                return (int)$result[$acao] === 1;
+            }
+            
+            return false;
+        } catch(PDOException $e) {
+            error_log("Erro em temPermissao: " . $e->getMessage());
+            return false;
+        }
+    }
+}
+
+// ============================================================
+// FUNÇÃO: VERIFICAR LOGIN
+// ============================================================
+function isLoggedIn() {
+    return isset($_SESSION['usuario_id']) && !empty($_SESSION['usuario_id']);
+}
+
+// ============================================================
+// FUNÇÃO: REDIRECIONAR
+// ============================================================
+function redirect($url) {
+    header("Location: " . SITE_URL . $url);
+    exit;
+}
+
+// ============================================================
+// FUNÇÃO: EXIBIR MENSAGENS
+// ============================================================
+function showMessage($type, $message) {
+    $types = [
+        'success' => '✅',
+        'error' => '❌',
+        'warning' => '⚠️',
+        'info' => 'ℹ️'
+    ];
+    $icon = isset($types[$type]) ? $types[$type] : 'ℹ️';
+    return "<div class='alert alert-{$type}'>{$icon} {$message}</div>";
+}
+
+// ============================================================
+// FUNÇÃO: BUSCAR EMPRESA
+// ============================================================
+function getEmpresa() {
+    global $pdo;
+    try {
+        $stmt = $pdo->query("SELECT * FROM empresa LIMIT 1");
+        $empresa = $stmt->fetch();
+        if (!$empresa) {
+            $stmt = $pdo->prepare("INSERT INTO empresa (razao_social, nome_fantasia, cnpj) VALUES (?, ?, ?)");
+            $stmt->execute(['SoftGest Sistemas Ltda', 'SoftGest Web', '00.000.000/0001-00']);
+            $stmt = $pdo->query("SELECT * FROM empresa LIMIT 1");
+            $empresa = $stmt->fetch();
+        }
+        return $empresa;
+    } catch(PDOException $e) {
+        return null;
+    }
+}
+
+// ============================================================
+// FUNÇÃO: ATUALIZAR EMPRESA
+// ============================================================
+function updateEmpresa($dados) {
+    global $pdo;
+    try {
+        $sql = "UPDATE empresa SET 
+            razao_social = ?, 
+            nome_fantasia = ?, 
+            cnpj = ?, 
+            inscricao_estadual = ?, 
+            inscricao_municipal = ?, 
+            endereco = ?, 
+            numero = ?, 
+            complemento = ?, 
+            bairro = ?, 
+            cidade = ?, 
+            estado = ?, 
+            cep = ?, 
+            telefone = ?, 
+            celular = ?, 
+            email = ?, 
+            site = ? 
+            WHERE id = 1";
+        $stmt = $pdo->prepare($sql);
+        return $stmt->execute([
+            $dados['razao_social'],
+            $dados['nome_fantasia'],
+            $dados['cnpj'],
+            $dados['inscricao_estadual'],
+            $dados['inscricao_municipal'],
+            $dados['endereco'],
+            $dados['numero'],
+            $dados['complemento'],
+            $dados['bairro'],
+            $dados['cidade'],
+            $dados['estado'],
+            $dados['cep'],
+            $dados['telefone'],
+            $dados['celular'],
+            $dados['email'],
+            $dados['site']
+        ]);
+    } catch(PDOException $e) {
+        return false;
+    }
+}
+
+// ============================================================
+// FUNÇÃO: GERAR NÚMERO DE COMPROVANTE
+// ============================================================
+function gerarNumeroComprovante() {
+    return 'AGT-' . date('Y') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+}
+
+// ============================================================
+// FUNÇÃO: CALCULAR IVA
+// ============================================================
+function calcularIVA($valor, $taxa = 14) {
+    return ($taxa / 100) * $valor;
+}
+
+// ============================================================
+// FUNÇÃO: CALCULAR TOTAL COM IVA
+// ============================================================
+function calcularTotalComIVA($valor, $taxa = 14) {
+    return $valor + calcularIVA($valor, $taxa);
+}
+
+// ============================================================
+// FUNÇÃO: OBTER URL ATUAL
+// ============================================================
+function getCurrentURL() {
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'];
+    $uri = $_SERVER['REQUEST_URI'];
+    return $protocol . '://' . $host . $uri;
+}
+
+// ============================================================
+// FUNÇÃO: VERIFICAR SE É ACESSO POR IP
+// ============================================================
+function isAccessByIP() {
+    $host = $_SERVER['HTTP_HOST'];
+    return preg_match('/^\d+\.\d+\.\d+\.\d+$/', $host);
+}
+
+// ============================================================
+// FUNÇÃO: OBTER IP DO VISITANTE
+// ============================================================
+function getVisitorIP() {
+    $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+    
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    
+    return $ip;
+}
+
+// ============================================================
+// FUNÇÃO: LOG DE ACESSO
+// ============================================================
+function logAccess($page = '') {
+    $ip = getVisitorIP();
+    $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    $page = $page ?: $_SERVER['REQUEST_URI'] ?? '';
+    $time = date('Y-m-d H:i:s');
+    
+    $log_data = [
+        'ip' => $ip,
+        'user_agent' => $user_agent,
+        'page' => $page,
+        'time' => $time,
+        'host' => $_SERVER['HTTP_HOST'] ?? ''
+    ];
+    
+    @file_put_contents(__DIR__ . '/../access_log.txt', json_encode($log_data) . "\n", FILE_APPEND);
+}
+Check network and retry.
+<?php
+// ============================================================
+// CONFIGURAÇÕES DO BANCO DE DADOS
+// ============================================================
+
+// Definir constantes APENAS se não existirem
+if (!defined('DB_HOST')) define('DB_HOST', 'localhost');
+if (!defined('DB_NAME')) define('DB_NAME', 'softgest_db');
+if (!defined('DB_USER')) define('DB_USER', 'root');
+if (!defined('DB_PASS')) define('DB_PASS', 'Claudtec');
+
+// ============================================================
+// CONFIGURAÇÕES DE URL DINÂMICA
+// ============================================================
+
+/**
+ * Função para obter o IP local do servidor
+ */
+function getLocalIP() {
+    if (PHP_OS_FAMILY === 'Windows') {
+        $ip = shell_exec('ipconfig | findstr "IPv4"');
+        if (preg_match('/IPv4.*?(\d+\.\d+\.\d+\.\d+)/', $ip, $matches)) {
+            return $matches[1];
+        }
+    } else {
+        $ip = shell_exec('hostname -I 2>/dev/null');
+        if ($ip) {
+            $ips = explode(' ', trim($ip));
+            return $ips[0] ?? 'localhost';
+        }
+    }
+    
+    $ip = gethostbyname(gethostname());
+    if ($ip && $ip !== '127.0.0.1' && $ip !== '::1') {
+        return $ip;
+    }
+    
+    return 'localhost';
+}
+
+/**
+ * Função para obter a URL base do sistema
+ */
+function getBaseURL() {
+    $host = $_SERVER['HTTP_HOST'] ?? '';
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
+    $port = $_SERVER['SERVER_PORT'];
+    
+    if (preg_match('/^\d+\.\d+\.\d+\.\d+$/', $host)) {
+        $base = $host;
+    } else {
+        $base = getLocalIP();
+    }
+    
+    if ($port != 80 && $port != 443) {
+        return $protocol . '://' . $base . ':' . $port;
+    }
+    
+    return $protocol . '://' . $base;
+}
+
+// ============================================================
+// CONFIGURAÇÕES DO SISTEMA (COM URL DINÂMICA)
+// ============================================================
+if (!defined('SITE_NAME')) define('SITE_NAME', 'SoftGest Web');
+
+// URL base dinâmica - detecta IP ou localhost
+$base_url = getBaseURL();
+if (!defined('SITE_URL')) define('SITE_URL', $base_url . '/softgest_web/');
+
+if (!defined('TIMEZONE')) define('TIMEZONE', 'America/Sao_Paulo');
+
+// ============================================================
+// DEFINIR TIMEZONE
+// ============================================================
+date_default_timezone_set(TIMEZONE);
+
+// ============================================================
+// CONEXÃO COM O BANCO DE DADOS
+// ============================================================
+try {
+    // Verificar se estamos no modo público (PostgreSQL)
+    $is_public = defined('APP_MODE') && APP_MODE === 'public';
+    
+    if ($is_public) {
+        // Usar configurações do modo público (PostgreSQL)
+        $host = defined('DB_HOST') ? DB_HOST : 'ep-holy-resonance-atm1ick2-pooler.c-9.us-east-1.aws.neon.tech';
+        $port = defined('DB_PORT') ? DB_PORT : '5432';
+        $dbname = defined('DB_NAME') ? DB_NAME : 'neondb';
+        $user = defined('DB_USER') ? DB_USER : 'neondb_owner';
+        $pass = defined('DB_PASS') ? DB_PASS : 'npg_gRkKHXNJAI40';
+        $endpoint = defined('DB_ENDPOINT') ? DB_ENDPOINT : 'ep-holy-resonance-atm1ick2-pooler';
+        
+        $options = 'endpoint=' . $endpoint;
+        $dsn = sprintf(
+            "pgsql:host=%s;port=%s;dbname=%s;sslmode=require;options='%s'",
+            $host,
+            $port,
+            $dbname,
+            $options
+        );
+        
+        $pdo = new PDO($dsn, $user, $pass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_TIMEOUT => 30
+        ]);
+    } else {
+        // Modo Local (MySQL)
+        $pdo = new PDO(
+            "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
+            DB_USER,
+            DB_PASS,
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false
+            ]
+        );
+        
+        $pdo->exec("SET time_zone = '+00:00'");
+    }
+    
+} catch (PDOException $e) {
+    die("❌ Erro na conexão com o banco de dados: " . $e->getMessage());
+}
+
+// ============================================================
+// INICIAR SESSÃO
+// ============================================================
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// ============================================================
+// FUNÇÃO: VERIFICAR PERMISSÃO (COM VERIFICAÇÃO)
+// ============================================================
+
+// Só declara a função se ela não existir
+if (!function_exists('temPermissao')) {
+    function temPermissao($modulo, $acao = 'visualizar') {
+        global $pdo;
+        
+        // Se não está logado, nega acesso
+        if (!isset($_SESSION['usuario_id'])) {
+            return false;
+        }
+        
+        // Se for admin, tem todas as permissões
+        if (isset($_SESSION['perfil']) && $_SESSION['perfil'] == 'admin') {
+            return true;
+        }
+        
+        try {
+            // Primeiro, tenta buscar permissão específica
+            $stmt = $pdo->prepare("SELECT $acao FROM permissoes WHERE usuario_id = ? AND modulo = ?");
+            $stmt->execute([$_SESSION['usuario_id'], $modulo]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Se encontrou e o valor é 1, tem permissão
+            if ($result && isset($result[$acao])) {
+                return (int)$result[$acao] === 1;
+            }
+            
+            // Se não encontrou permissão específica, verifica permissão geral do módulo 'Escola'
+            $stmt = $pdo->prepare("SELECT $acao FROM permissoes WHERE usuario_id = ? AND modulo = 'Escola'");
+            $stmt->execute([$_SESSION['usuario_id']]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($result && isset($result[$acao])) {
+                return (int)$result[$acao] === 1;
+            }
+            
+            return false;
+        } catch(PDOException $e) {
+            error_log("Erro em temPermissao: " . $e->getMessage());
+            return false;
+        }
+    }
+}
+
+// ============================================================
+// FUNÇÃO: VERIFICAR LOGIN
+// ============================================================
+function isLoggedIn() {
+    return isset($_SESSION['usuario_id']) && !empty($_SESSION['usuario_id']);
+}
+
+// ============================================================
+// FUNÇÃO: REDIRECIONAR
+// ============================================================
+function redirect($url) {
+    header("Location: " . SITE_URL . $url);
+    exit;
+}
+
+// ============================================================
+// FUNÇÃO: EXIBIR MENSAGENS
+// ============================================================
+function showMessage($type, $message) {
+    $types = [
+        'success' => '✅',
+        'error' => '❌',
+        'warning' => '⚠️',
+        'info' => 'ℹ️'
+    ];
+    $icon = isset($types[$type]) ? $types[$type] : 'ℹ️';
+    return "<div class='alert alert-{$type}'>{$icon} {$message}</div>";
+}
+
+// ============================================================
+// FUNÇÃO: BUSCAR EMPRESA
+// ============================================================
+function getEmpresa() {
+    global $pdo;
+    try {
+        $stmt = $pdo->query("SELECT * FROM empresa LIMIT 1");
+        $empresa = $stmt->fetch();
+        if (!$empresa) {
+            $stmt = $pdo->prepare("INSERT INTO empresa (razao_social, nome_fantasia, cnpj) VALUES (?, ?, ?)");
+            $stmt->execute(['SoftGest Sistemas Ltda', 'SoftGest Web', '00.000.000/0001-00']);
+            $stmt = $pdo->query("SELECT * FROM empresa LIMIT 1");
+            $empresa = $stmt->fetch();
+        }
+        return $empresa;
+    } catch(PDOException $e) {
+        return null;
+    }
+}
+
+// ============================================================
+// FUNÇÃO: ATUALIZAR EMPRESA
+// ============================================================
+function updateEmpresa($dados) {
+    global $pdo;
+    try {
+        $sql = "UPDATE empresa SET 
+            razao_social = ?, 
+            nome_fantasia = ?, 
+            cnpj = ?, 
+            inscricao_estadual = ?, 
+            inscricao_municipal = ?, 
+            endereco = ?, 
+            numero = ?, 
+            complemento = ?, 
+            bairro = ?, 
+            cidade = ?, 
+            estado = ?, 
+            cep = ?, 
+            telefone = ?, 
+            celular = ?, 
+            email = ?, 
+            site = ? 
+            WHERE id = 1";
+        $stmt = $pdo->prepare($sql);
+        return $stmt->execute([
+            $dados['razao_social'],
+            $dados['nome_fantasia'],
+            $dados['cnpj'],
+            $dados['inscricao_estadual'],
+            $dados['inscricao_municipal'],
+            $dados['endereco'],
+            $dados['numero'],
+            $dados['complemento'],
+            $dados['bairro'],
+            $dados['cidade'],
+            $dados['estado'],
+            $dados['cep'],
+            $dados['telefone'],
+            $dados['celular'],
+            $dados['email'],
+            $dados['site']
+        ]);
+    } catch(PDOException $e) {
+        return false;
+    }
+}
+
+// ============================================================
+// FUNÇÃO: GERAR NÚMERO DE COMPROVANTE
+// ============================================================
+function gerarNumeroComprovante() {
+    return 'AGT-' . date('Y') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+}
+
+// ============================================================
+// FUNÇÃO: CALCULAR IVA
+// ============================================================
+function calcularIVA($valor, $taxa = 14) {
+    return ($taxa / 100) * $valor;
+}
+
+// ============================================================
+// FUNÇÃO: CALCULAR TOTAL COM IVA
+// ============================================================
+function calcularTotalComIVA($valor, $taxa = 14) {
+    return $valor + calcularIVA($valor, $taxa);
+}
+
+// ============================================================
+// FUNÇÃO: OBTER URL ATUAL
+// ============================================================
+function getCurrentURL() {
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'];
+    $uri = $_SERVER['REQUEST_URI'];
+    return $protocol . '://' . $host . $uri;
+}
+
+// ============================================================
+// FUNÇÃO: VERIFICAR SE É ACESSO POR IP
+// ============================================================
+function isAccessByIP() {
+    $host = $_SERVER['HTTP_HOST'];
+    return preg_match('/^\d+\.\d+\.\d+\.\d+$/', $host);
+}
+
+// ============================================================
+// FUNÇÃO: OBTER IP DO VISITANTE
+// ============================================================
+function getVisitorIP() {
+    $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+    
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    
+    return $ip;
+}
+
+// ============================================================
+// FUNÇÃO: LOG DE ACESSO
+// ============================================================
+function logAccess($page = '') {
+    $ip = getVisitorIP();
+    $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    $page = $page ?: $_SERVER['REQUEST_URI'] ?? '';
+    $time = date('Y-m-d H:i:s');
+    
+    $log_data = [
+        'ip' => $ip,
+        'user_agent' => $user_agent,
+        'page' => $page,
+        'time' => $time,
+        'host' => $_SERVER['HTTP_HOST'] ?? ''
+    ];
+    
+    @file_put_contents(__DIR__ . '/../access_log.txt', json_encode($log_data) . "\n", FILE_APPEND);
+}
+Aqui está seu arquivo de configuração completo SEM SENHA:
+
+php
+<?php
+// ============================================================
+// CONFIGURAÇÕES DO BANCO DE DADOS
+// ============================================================
+
+// Definir constantes APENAS se não existirem
+if (!defined('DB_HOST')) define('DB_HOST', 'localhost');
+if (!defined('DB_NAME')) define('DB_NAME', 'softgest_db');
+if (!defined('DB_USER')) define('DB_USER', 'root');
+if (!defined('DB_PASS')) define('DB_PASS', '');  // SENHA REMOVIDA!
+
+// ============================================================
+// CONFIGURAÇÕES DE URL DINÂMICA
+// ============================================================
+
+/**
+ * Função para obter o IP local do servidor
+ */
+function getLocalIP() {
+    if (PHP_OS_FAMILY === 'Windows') {
+        $ip = shell_exec('ipconfig | findstr "IPv4"');
+        if (preg_match('/IPv4.*?(\d+\.\d+\.\d+\.\d+)/', $ip, $matches)) {
+            return $matches[1];
+        }
+    } else {
+        $ip = shell_exec('hostname -I 2>/dev/null');
+        if ($ip) {
+            $ips = explode(' ', trim($ip));
+            return $ips[0] ?? 'localhost';
+        }
+    }
+    
+    $ip = gethostbyname(gethostname());
+    if ($ip && $ip !== '127.0.0.1' && $ip !== '::1') {
+        return $ip;
+    }
+    
+    return 'localhost';
+}
+
+/**
+ * Função para obter a URL base do sistema
+ */
+function getBaseURL() {
+    $host = $_SERVER['HTTP_HOST'] ?? '';
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
+    $port = $_SERVER['SERVER_PORT'];
+    
+    if (preg_match('/^\d+\.\d+\.\d+\.\d+$/', $host)) {
+        $base = $host;
+    } else {
+        $base = getLocalIP();
+    }
+    
+    if ($port != 80 && $port != 443) {
+        return $protocol . '://' . $base . ':' . $port;
+    }
+    
+    return $protocol . '://' . $base;
+}
+
+// ============================================================
+// CONFIGURAÇÕES DO SISTEMA (COM URL DINÂMICA)
+// ============================================================
+if (!defined('SITE_NAME')) define('SITE_NAME', 'SoftGest Web');
+
+// URL base dinâmica - detecta IP ou localhost
+$base_url = getBaseURL();
+if (!defined('SITE_URL')) define('SITE_URL', $base_url . '/softgest_web/');
+
+if (!defined('TIMEZONE')) define('TIMEZONE', 'America/Sao_Paulo');
+
+// ============================================================
+// DEFINIR TIMEZONE
+// ============================================================
+date_default_timezone_set(TIMEZONE);
+
+// ============================================================
+// CONEXÃO COM O BANCO DE DADOS
+// ============================================================
+try {
+    // Verificar se estamos no modo público (PostgreSQL)
+    $is_public = defined('APP_MODE') && APP_MODE === 'public';
+    
+    if ($is_public) {
+        // Usar configurações do modo público (PostgreSQL)
+        $host = defined('DB_HOST') ? DB_HOST : 'ep-holy-resonance-atm1ick2-pooler.c-9.us-east-1.aws.neon.tech';
+        $port = defined('DB_PORT') ? DB_PORT : '5432';
+        $dbname = defined('DB_NAME') ? DB_NAME : 'neondb';
+        $user = defined('DB_USER') ? DB_USER : 'neondb_owner';
+        $pass = defined('DB_PASS') ? DB_PASS : 'npg_gRkKHXNJAI40';
+        $endpoint = defined('DB_ENDPOINT') ? DB_ENDPOINT : 'ep-holy-resonance-atm1ick2-pooler';
+        
+        $options = 'endpoint=' . $endpoint;
+        $dsn = sprintf(
+            "pgsql:host=%s;port=%s;dbname=%s;sslmode=require;options='%s'",
+            $host,
+            $port,
+            $dbname,
+            $options
+        );
+        
+        $pdo = new PDO($dsn, $user, $pass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_TIMEOUT => 30
+        ]);
+    } else {
+        // Modo Local (MySQL) - SEM SENHA
+        $pdo = new PDO(
+            "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
+            DB_USER,
+            DB_PASS,  // Agora está vazio ''
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false
+            ]
+        );
+        
+        $pdo->exec("SET time_zone = '+00:00'");
+    }
+    
+} catch (PDOException $e) {
+    die("❌ Erro na conexão com o banco de dados: " . $e->getMessage());
+}
+
+// ============================================================
+// INICIAR SESSÃO
+// ============================================================
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// ============================================================
+// FUNÇÃO: VERIFICAR PERMISSÃO (COM VERIFICAÇÃO)
+// ============================================================
+
+// Só declara a função se ela não existir
+if (!function_exists('temPermissao')) {
+    function temPermissao($modulo, $acao = 'visualizar') {
+        global $pdo;
+        
+        // Se não está logado, nega acesso
+        if (!isset($_SESSION['usuario_id'])) {
+            return false;
+        }
+        
+        // Se for admin, tem todas as permissões
+        if (isset($_SESSION['perfil']) && $_SESSION['perfil'] == 'admin') {
+            return true;
+        }
+        
+        try {
+            // Primeiro, tenta buscar permissão específica
+            $stmt = $pdo->prepare("SELECT $acao FROM permissoes WHERE usuario_id = ? AND modulo = ?");
+            $stmt->execute([$_SESSION['usuario_id'], $modulo]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Se encontrou e o valor é 1, tem permissão
+            if ($result && isset($result[$acao])) {
+                return (int)$result[$acao] === 1;
+            }
+            
+            // Se não encontrou permissão específica, verifica permissão geral do módulo 'Escola'
+            $stmt = $pdo->prepare("SELECT $acao FROM permissoes WHERE usuario_id = ? AND modulo = 'Escola'");
+            $stmt->execute([$_SESSION['usuario_id']]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($result && isset($result[$acao])) {
+                return (int)$result[$acao] === 1;
+            }
+            
+            return false;
+        } catch(PDOException $e) {
+            error_log("Erro em temPermissao: " . $e->getMessage());
+            return false;
+        }
+    }
+}
+
+// ============================================================
+// FUNÇÃO: VERIFICAR LOGIN
+// ============================================================
+function isLoggedIn() {
+    return isset($_SESSION['usuario_id']) && !empty($_SESSION['usuario_id']);
+}
+
+// ============================================================
+// FUNÇÃO: REDIRECIONAR
+// ============================================================
+function redirect($url) {
+    header("Location: " . SITE_URL . $url);
+    exit;
+}
+
+// ============================================================
+// FUNÇÃO: EXIBIR MENSAGENS
+// ============================================================
+function showMessage($type, $message) {
+    $types = [
+        'success' => '✅',
+        'error' => '❌',
+        'warning' => '⚠️',
+        'info' => 'ℹ️'
+    ];
+    $icon = isset($types[$type]) ? $types[$type] : 'ℹ️';
+    return "<div class='alert alert-{$type}'>{$icon} {$message}</div>";
+}
+
+// ============================================================
+// FUNÇÃO: BUSCAR EMPRESA
+// ============================================================
+function getEmpresa() {
+    global $pdo;
+    try {
+        $stmt = $pdo->query("SELECT * FROM empresa LIMIT 1");
+        $empresa = $stmt->fetch();
+        if (!$empresa) {
+            $stmt = $pdo->prepare("INSERT INTO empresa (razao_social, nome_fantasia, cnpj) VALUES (?, ?, ?)");
+            $stmt->execute(['SoftGest Sistemas Ltda', 'SoftGest Web', '00.000.000/0001-00']);
+            $stmt = $pdo->query("SELECT * FROM empresa LIMIT 1");
+            $empresa = $stmt->fetch();
+        }
+        return $empresa;
+    } catch(PDOException $e) {
+        return null;
+    }
+}
+
+// ============================================================
+// FUNÇÃO: ATUALIZAR EMPRESA
+// ============================================================
+function updateEmpresa($dados) {
+    global $pdo;
+    try {
+        $sql = "UPDATE empresa SET 
+            razao_social = ?, 
+            nome_fantasia = ?, 
+            cnpj = ?, 
+            inscricao_estadual = ?, 
+            inscricao_municipal = ?, 
+            endereco = ?, 
+            numero = ?, 
+            complemento = ?, 
+            bairro = ?, 
+            cidade = ?, 
+            estado = ?, 
+            cep = ?, 
+            telefone = ?, 
+            celular = ?, 
+            email = ?, 
+            site = ? 
+            WHERE id = 1";
+        $stmt = $pdo->prepare($sql);
+        return $stmt->execute([
+            $dados['razao_social'],
+            $dados['nome_fantasia'],
+            $dados['cnpj'],
+            $dados['inscricao_estadual'],
+            $dados['inscricao_municipal'],
+            $dados['endereco'],
+            $dados['numero'],
+            $dados['complemento'],
+            $dados['bairro'],
+            $dados['cidade'],
+            $dados['estado'],
+            $dados['cep'],
+            $dados['telefone'],
+            $dados['celular'],
+            $dados['email'],
+            $dados['site']
+        ]);
+    } catch(PDOException $e) {
+        return false;
+    }
+}
+
+// ============================================================
+// FUNÇÃO: GERAR NÚMERO DE COMPROVANTE
+// ============================================================
+function gerarNumeroComprovante() {
+    return 'AGT-' . date('Y') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+}
+
+// ============================================================
+// FUNÇÃO: CALCULAR IVA
+// ============================================================
+function calcularIVA($valor, $taxa = 14) {
+    return ($taxa / 100) * $valor;
+}
+
+// ============================================================
+// FUNÇÃO: CALCULAR TOTAL COM IVA
+// ============================================================
+function calcularTotalComIVA($valor, $taxa = 14) {
+    return $valor + calcularIVA($valor, $taxa);
+}
+
+// ============================================================
+// FUNÇÃO: OBTER URL ATUAL
+// ============================================================
+function getCurrentURL() {
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'];
+    $uri = $_SERVER['REQUEST_URI'];
+    return $protocol . '://' . $host . $uri;
+}
+
+// ============================================================
+// FUNÇÃO: VERIFICAR SE É ACESSO POR IP
+// ============================================================
+function isAccessByIP() {
+    $host = $_SERVER['HTTP_HOST'];
+    return preg_match('/^\d+\.\d+\.\d+\.\d+$/', $host);
+}
+
+// ============================================================
+// FUNÇÃO: OBTER IP DO VISITANTE
+// ============================================================
+function getVisitorIP() {
+    $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+    
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    
+    return $ip;
+}
+
+// ============================================================
+// FUNÇÃO: LOG DE ACESSO
+// ============================================================
+function logAccess($page = '') {
+    $ip = getVisitorIP();
+    $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    $page = $page ?: $_SERVER['REQUEST_URI'] ?? '';
+    $time = date('Y-m-d H:i:s');
+    
+    $log_data = [
+        'ip' => $ip,
+        'user_agent' => $user_agent,
+        'page' => $page,
+        'time' => $time,
+        'host' => $_SERVER['HTTP_HOST'] ?? ''
+    ];
+    
+    @file_put_contents(__DIR__ . '/../access_log.txt', json_encode($log_data) . "\n", FILE_APPEND);
+}
+?>
+📝 O QUE FOI ALTERADO
+Apenas UMA linha foi modificada:
+
+php
+// Antes (linha 10)
+if (!defined('DB_PASS')) define('DB_PASS', 'Claudtec');
+
+// Depois (SEM SENHA)
+if (!defined('DB_PASS')) define('DB_PASS', '');  // SENHA REMOVIDA!
+📋 RESUMO DE TODOS OS ARQUIVOS ALTERADOS
+Arquivo	Localização	Senha
+config.php	C:/xampp/htdocs/softgest_web/config/config.php	'' (vazia)
+db_config.php	C:/xampp/htdocs/softgest_web/config/db_config.php	'' (vazia)
+config.inc.php	C:/xampp/phpMyAdmin/config.inc.php	'' (vazia)
+MySQL	Banco de dados	'' (vazia)
+🎯 PRONTO!
+Agora todos os seus arquivos estão configurados SEM SENHA. Seu sistema deve conectar ao banco de dados perfeitamente! 🚀
+
+<?php
+// ============================================
+// config/app_modes.php - Configurações de Modos
+// ============================================
+
+// ============================================
+// DETECTAR AMBIENTE
+// ============================================
+
+$env = getenv('APP_ENV') ?: 'local';
+
+// ============================================
+// CONFIGURAÇÕES DOS MODOS
+// ============================================
+
+$modes = [
+    'local' => [
+        'name' => 'Modo Local',
+        'icon' => '💻',
+        'color' => '#3498db',
+        'badge' => 'Local',
+        'database' => [
+            'type' => 'mysql',
+            'host' => 'localhost',
+            'port' => '3306',
+            'name' => 'softgest_db',
+            'user' => 'root',
+            'pass' => 'Claudtec',
+            'ssl' => false
+        ],
+        'features' => [
+            'debug' => true,
+            'cache' => false,
+            'logs' => true,
+            'maintenance' => false
+        ],
+        'url' => 'http://localhost/softgest_web'
+    ],
+    'public' => [
+        'name' => 'Modo Público',
+        'icon' => '☁️',
+        'color' => '#2ecc71',
+        'badge' => 'Público',
+        'database' => [
+            'type' => 'pgsql',
+            'host' => 'ep-holy-resonance-atm1ick2-pooler.c-9.us-east-1.aws.neon.tech',
+            'port' => '5432',
+            'name' => 'neondb',
+            'user' => 'neondb_owner',
+            'pass' => 'npg_gRkKHXNJAI40',
+            'ssl' => true,
+            'endpoint' => 'ep-holy-resonance-atm1ick2-pooler'
+        ],
+        'features' => [
+            'debug' => false,
+            'cache' => true,
+            'logs' => true,
+            'maintenance' => false
+        ],
+        'url' => 'https://seu-site-publico.com'
+    ]
+];
+
+// ============================================
+// DEFINIR MODO ATUAL
+// ============================================
+
+if (isset($_GET['modo']) && isset($modes[$_GET['modo']])) {
+    $_SESSION['app_mode'] = $_GET['modo'];
+    header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?'));
+    exit;
+}
+
+$modo_atual = $_SESSION['app_mode'] ?? $env;
+
+if (!isset($modes[$modo_atual])) {
+    $modo_atual = 'local';
+}
+
+$modo_config = $modes[$modo_atual];
+$db_config = $modo_config['database'];
+
+// ============================================
+// DEFINIR CONSTANTES
+// ============================================
+
+if (!defined('APP_MODE')) define('APP_MODE', $modo_atual);
+if (!defined('APP_MODE_NAME')) define('APP_MODE_NAME', $modo_config['name']);
+if (!defined('APP_MODE_ICON')) define('APP_MODE_ICON', $modo_config['icon']);
+if (!defined('APP_MODE_COLOR')) define('APP_MODE_COLOR', $modo_config['color']);
+if (!defined('APP_MODE_BADGE')) define('APP_MODE_BADGE', $modo_config['badge']);
+if (!defined('APP_URL')) define('APP_URL', $modo_config['url']);
+if (!defined('DEBUG_MODE')) define('DEBUG_MODE', $modo_config['features']['debug'] ?? false);
+if (!defined('CACHE_ENABLED')) define('CACHE_ENABLED', $modo_config['features']['cache'] ?? false);
+
+// ============================================
+// CONSTANTES DE BANCO DE DADOS
+// ============================================
+
+if (!defined('DB_TYPE')) define('DB_TYPE', $db_config['type']);
+if (!defined('DB_HOST')) define('DB_HOST', $db_config['host']);
+if (!defined('DB_PORT')) define('DB_PORT', $db_config['port']);
+if (!defined('DB_NAME')) define('DB_NAME', $db_config['name']);
+if (!defined('DB_USER')) define('DB_USER', $db_config['user']);
+if (!defined('DB_PASS')) define('DB_PASS', $db_config['pass']);
+if (!defined('DB_SSL')) define('DB_SSL', $db_config['ssl'] ?? false);
+if (!defined('DB_ENDPOINT')) define('DB_ENDPOINT', $db_config['endpoint'] ?? null);
+
+// ============================================
+// FUNÇÕES DE CONEXÃO
+// ============================================
+
+function conectarBanco() {
+    if (APP_MODE === 'local') {
+        return conectarLocal();
+    } else {
+        return conectarPublico();
+    }
+}
+
+function conectarLocal() {
+    try {
+        if (!extension_loaded('pdo_mysql')) {
+            throw new Exception("Extensão PDO_MYSQL não está instalada/habilitada no PHP");
+        }
+        
+        $pdo = new PDO(
+            "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4",
+            DB_USER,
+            DB_PASS,
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false,
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
+            ]
+        );
+        return $pdo;
+    } catch (PDOException $e) {
+        throw new Exception("Erro Local (MySQL): " . $e->getMessage());
+    }
+}
+
+function conectarPublico() {
+    try {
+        if (!extension_loaded('pdo_pgsql')) {
+            throw new Exception("Extensão PDO_PGSQL não está instalada/habilitada no PHP");
+        }
+        
+        $options = 'endpoint=' . DB_ENDPOINT;
+        $dsn = sprintf(
+            "pgsql:host=%s;port=%s;dbname=%s;sslmode=require;options='%s'",
+            DB_HOST,
+            DB_PORT,
+            DB_NAME,
+            $options
+        );
+        
+        $pdo = new PDO($dsn, DB_USER, DB_PASS, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_TIMEOUT => 30
+        ]);
+        
+        return $pdo;
+    } catch (PDOException $e) {
+        throw new Exception("Erro Público (PostgreSQL): " . $e->getMessage());
+    }
+}
+
+function isModoLocal() {
+    return APP_MODE === 'local';
+}
+
+function isModoPublico() {
+    return APP_MODE === 'public';
+}
+
+function getModoAtual() {
+    return [
+        'modo' => APP_MODE,
+        'nome' => APP_MODE_NAME,
+        'icone' => APP_MODE_ICON,
+        'cor' => APP_MODE_COLOR,
+        'badge' => APP_MODE_BADGE
+    ];
+}
+
+function getModosDisponiveis() {
+    global $modes;
+    $list = [];
+    foreach ($modes as $key => $mode) {
+        $list[$key] = [
+            'key' => $key,
+            'name' => $mode['name'],
+            'icon' => $mode['icon'],
+            'color' => $mode['color'],
+            'badge' => $mode['badge'],
+            'url' => $mode['url']
+        ];
+    }
+    return $list;
+}
+
+// ============================================================
+// NOTA: As funções de permissão estão no arquivo funcoes.php
+// ============================================================
+// temPermissao(), carregarPermissoesUsuario(), isAdmin(), etc.
+// estão definidas em config/funcoes.php
+// ============================================================
+Aqui está seu arquivo app_modes.php completo SEM SENHA no modo Local:
+
+php
+<?php
+// ============================================
+// config/app_modes.php - Configurações de Modos
+// ============================================
+
+// ============================================
+// DETECTAR AMBIENTE
+// ============================================
+
+$env = getenv('APP_ENV') ?: 'local';
+
+// ============================================
+// CONFIGURAÇÕES DOS MODOS
+// ============================================
+
+$modes = [
+    'local' => [
+        'name' => 'Modo Local',
+        'icon' => '💻',
+        'color' => '#3498db',
+        'badge' => 'Local',
+        'database' => [
+            'type' => 'mysql',
+            'host' => 'localhost',
+            'port' => '3306',
+            'name' => 'softgest_db',
+            'user' => 'root',
+            'pass' => '',  // SENHA REMOVIDA!
+            'ssl' => false
+        ],
+        'features' => [
+            'debug' => true,
+            'cache' => false,
+            'logs' => true,
+            'maintenance' => false
+        ],
+        'url' => 'http://localhost/softgest_web'
+    ],
+    'public' => [
+        'name' => 'Modo Público',
+        'icon' => '☁️',
+        'color' => '#2ecc71',
+        'badge' => 'Público',
+        'database' => [
+            'type' => 'pgsql',
+            'host' => 'ep-holy-resonance-atm1ick2-pooler.c-9.us-east-1.aws.neon.tech',
+            'port' => '5432',
+            'name' => 'neondb',
+            'user' => 'neondb_owner',
+            'pass' => 'npg_gRkKHXNJAI40',  // Mantém a senha do PostgreSQL
+            'ssl' => true,
+            'endpoint' => 'ep-holy-resonance-atm1ick2-pooler'
+        ],
+        'features' => [
+            'debug' => false,
+            'cache' => true,
+            'logs' => true,
+            'maintenance' => false
+        ],
+        'url' => 'https://seu-site-publico.com'
+    ]
+];
+
+// ============================================
+// DEFINIR MODO ATUAL
+// ============================================
+
+if (isset($_GET['modo']) && isset($modes[$_GET['modo']])) {
+    $_SESSION['app_mode'] = $_GET['modo'];
+    header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?'));
+    exit;
+}
+
+$modo_atual = $_SESSION['app_mode'] ?? $env;
+
+if (!isset($modes[$modo_atual])) {
+    $modo_atual = 'local';
+}
+
+$modo_config = $modes[$modo_atual];
+$db_config = $modo_config['database'];
+
+// ============================================
+// DEFINIR CONSTANTES
+// ============================================
+
+if (!defined('APP_MODE')) define('APP_MODE', $modo_atual);
+if (!defined('APP_MODE_NAME')) define('APP_MODE_NAME', $modo_config['name']);
+if (!defined('APP_MODE_ICON')) define('APP_MODE_ICON', $modo_config['icon']);
+if (!defined('APP_MODE_COLOR')) define('APP_MODE_COLOR', $modo_config['color']);
+if (!defined('APP_MODE_BADGE')) define('APP_MODE_BADGE', $modo_config['badge']);
+if (!defined('APP_URL')) define('APP_URL', $modo_config['url']);
+if (!defined('DEBUG_MODE')) define('DEBUG_MODE', $modo_config['features']['debug'] ?? false);
+if (!defined('CACHE_ENABLED')) define('CACHE_ENABLED', $modo_config['features']['cache'] ?? false);
+
+// ============================================
+// CONSTANTES DE BANCO DE DADOS
+// ============================================
+
+if (!defined('DB_TYPE')) define('DB_TYPE', $db_config['type']);
+if (!defined('DB_HOST')) define('DB_HOST', $db_config['host']);
+if (!defined('DB_PORT')) define('DB_PORT', $db_config['port']);
+if (!defined('DB_NAME')) define('DB_NAME', $db_config['name']);
+if (!defined('DB_USER')) define('DB_USER', $db_config['user']);
+if (!defined('DB_PASS')) define('DB_PASS', $db_config['pass']);
+if (!defined('DB_SSL')) define('DB_SSL', $db_config['ssl'] ?? false);
+if (!defined('DB_ENDPOINT')) define('DB_ENDPOINT', $db_config['endpoint'] ?? null);
+
+// ============================================
+// FUNÇÕES DE CONEXÃO
+// ============================================
+
+function conectarBanco() {
+    if (APP_MODE === 'local') {
+        return conectarLocal();
+    } else {
+        return conectarPublico();
+    }
+}
+
+function conectarLocal() {
+    try {
+        if (!extension_loaded('pdo_mysql')) {
+            throw new Exception("Extensão PDO_MYSQL não está instalada/habilitada no PHP");
+        }
+        
+        $pdo = new PDO(
+            "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4",
+            DB_USER,
+            DB_PASS,  // Agora está vazio ''
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false,
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
+            ]
+        );
+        return $pdo;
+    } catch (PDOException $e) {
+        throw new Exception("Erro Local (MySQL): " . $e->getMessage());
+    }
+}
+
+function conectarPublico() {
+    try {
+        if (!extension_loaded('pdo_pgsql')) {
+            throw new Exception("Extensão PDO_PGSQL não está instalada/habilitada no PHP");
+        }
+        
+        $options = 'endpoint=' . DB_ENDPOINT;
+        $dsn = sprintf(
+            "pgsql:host=%s;port=%s;dbname=%s;sslmode=require;options='%s'",
+            DB_HOST,
+            DB_PORT,
+            DB_NAME,
+            $options
+        );
+        
+        $pdo = new PDO($dsn, DB_USER, DB_PASS, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_TIMEOUT => 30
+        ]);
+        
+        return $pdo;
+    } catch (PDOException $e) {
+        throw new Exception("Erro Público (PostgreSQL): " . $e->getMessage());
+    }
+}
+
+function isModoLocal() {
+    return APP_MODE === 'local';
+}
+
+function isModoPublico() {
+    return APP_MODE === 'public';
+}
+
+function getModoAtual() {
+    return [
+        'modo' => APP_MODE,
+        'nome' => APP_MODE_NAME,
+        'icone' => APP_MODE_ICON,
+        'cor' => APP_MODE_COLOR,
+        'badge' => APP_MODE_BADGE
+    ];
+}
+
+function getModosDisponiveis() {
+    global $modes;
+    $list = [];
+    foreach ($modes as $key => $mode) {
+        $list[$key] = [
+            'key' => $key,
+            'name' => $mode['name'],
+            'icon' => $mode['icon'],
+            'color' => $mode['color'],
+            'badge' => $mode['badge'],
+            'url' => $mode['url']
+        ];
+    }
+    return $list;
+}
+
+// ============================================================
+// NOTA: As funções de permissão estão no arquivo funcoes.php
+// ============================================================
+// temPermissao(), carregarPermissoesUsuario(), isAdmin(), etc.
+// estão definidas em config/funcoes.php
+// ============================================================
+?>
+📝 O QUE FOI ALTERADO
+Apenas UMA linha foi modificada:
+
+php
+// Antes (linha ~22)
+'pass' => 'Claudtec',
+
+// Depois (SEM SENHA)
+'pass' => '',  // SENHA REMOVIDA!
+📋 RESUMO DE TODOS OS ARQUIVOS ALTERADOS
+Arquivo	Localização	Senha
+config.php	C:/xampp/htdocs/softgest_web/config/config.php	'' (vazia)
+db_config.php	C:/xampp/htdocs/softgest_web/config/db_config.php	'' (vazia)
+app_modes.php	C:/xampp/htdocs/softgest_web/config/app_modes.php	'' (vazia)
+config.inc.php	C:/xampp/phpMyAdmin/config.inc.php	'' (vazia)
+MySQL	Banco de dados	'' (vazia)
+🎯 VERIFICAÇÃO FINAL
+Acesse para testar:
+
+text
+http://localhost/softgest_web/config/app_modes.php?modo=local
+OU use o debug:
+
+text
+http://10.158.77.20/softgest_web/config.php?debug
+🔒 MODO PÚBLICO (PostgreSQL)
+O modo público mantém a senha do PostgreSQL (npg_gRkKHXNJAI40) porque é um banco remoto que requer senha. Isso não afeta seu desenvolvimento local.
+
+✅ PRONTO!
+Agora TODOS os seus arquivos estão configurados SEM SENHA no modo local. Seu sistema deve conectar ao banco de dados perfeitamente! 🚀
+

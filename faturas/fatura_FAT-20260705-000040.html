@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+    <html><head><meta charset="UTF-8"><title>Fatura</title>
+    <style>
+        body{font-family:"Times New Roman",serif;background:#f0f0f0;padding:20px}
+        .fatura-container{max-width:210mm;margin:auto;background:#fff;padding:20px;border:1px solid #ccc}
+        .header{border-bottom:3px double #1a2332;padding-bottom:10px;margin-bottom:15px}
+        .header-top{display:flex;justify-content:space-between;align-items:center}
+        .logo-icon{width:50px;height:50px;background:#1a2332;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#c9a84c;font-size:24px;font-weight:bold;border:2px solid #c9a84c}
+        .titulo-documento{font-size:22px;font-weight:bold;color:#1a2332}
+        .numero-fatura{text-align:right;font-size:13px;color:#555;padding:5px 15px;border:1px solid #ccc;border-radius:4px;background:#f9f9f9}
+        .info-escola{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #ddd;margin-bottom:12px}
+        .info-escola .escola h2{font-size:16px;color:#1a2332}
+        .info-escola .escola p{font-size:12px;color:#555;margin:2px 0}
+        .nif-box{border:1px solid #1a2332;padding:4px 12px;font-size:13px;font-weight:bold;background:#f8fafc}
+        .dados-aluno{border:1px solid #1a2332;padding:10px 12px;margin-bottom:12px;background:#fafafa}
+        .dados-aluno .titulo-secao{font-weight:bold;font-size:14px;text-align:center;border-bottom:1px solid #1a2332;padding-bottom:4px;margin-bottom:6px}
+        .dados-aluno .linha{display:flex;justify-content:space-between;flex-wrap:wrap;font-size:13px;padding:2px 0}
+        .dados-aluno .label{font-weight:600}
+        .tabela-itens{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:13px}
+        .tabela-itens th{background:#1a2332;color:#fff;padding:6px 8px;text-align:center;border:1px solid #1a2332}
+        .tabela-itens td{padding:6px 8px;border:1px solid #ccc;text-align:center}
+        .tabela-itens .text-right{text-align:right;padding-right:12px}
+        .tabela-itens .text-left{text-align:left;padding-left:12px}
+        .tabela-itens .total-row{background:#f8fafc;font-weight:bold}
+        .tabela-itens .total-row td{border-top:2px solid #1a2332}
+        .tabela-itens .valor-total{color:#c0392b;font-size:16px}
+        .tabela-itens .multa-row td{color:#e67e22}
+        .resumo{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:10px;background:#f8fafc;border:1px solid #ddd;margin-bottom:12px}
+        .resumo .coluna{flex:1;min-width:150px}
+        .resumo .coluna p{font-size:12px;margin:2px 0;color:#555}
+        .footer{border-top:3px double #1a2332;padding-top:10px;margin-top:10px;display:flex;justify-content:space-between;font-size:11px;color:#666}
+        .footer .assinatura{text-align:center;flex:1}
+        .footer .assinatura .linha{width:200px;border-top:1px solid #1a2332;margin:8px auto 4px}
+        .no-print{text-align:center;margin-top:15px}
+        .no-print button{padding:10px 30px;border:none;border-radius:6px;font-size:15px;font-weight:600;cursor:pointer}
+        .btn-print{background:#1a2332;color:#fff}
+        .btn-close{background:#e74c3c;color:#fff;margin-left:10px}
+        @media print{.no-print{display:none}}
+        @media(max-width:600px){.header-top{flex-direction:column;text-align:center}.numero-fatura{text-align:center}.info-escola{flex-direction:column;text-align:center}.dados-aluno .linha{flex-direction:column;text-align:center}.resumo{flex-direction:column;text-align:center}.footer{flex-direction:column;text-align:center}}
+    </style>
+    </head><body>
+    <div class="fatura-container">
+        <div class="header">
+            <div class="header-top">
+                <div><span class="logo-icon">🎓</span> <span class="titulo-documento">FATURA</span></div>
+                <div class="numero-fatura"><strong>Nº:</strong> FAT-20260705-000040<br><span style="font-size:11px;">Emissão: 05/07/2026 07:56:05</span></div>
+            </div>
+        </div>
+        <div class="info-escola">
+            <div class="escola">
+                <h2>Sistema Escolar</h2>
+                <p>📍 </p>
+                <p>📞  | ✉ </p>
+            </div>
+            <div class="nif-box">NIF: </div>
+        </div>
+        <div class="dados-aluno">
+            <div class="titulo-secao">DADOS DO ALUNO</div>
+            <div class="linha">
+                <span><span class="label">Nome:</span> Xavier Afonso</span>
+                <span><span class="label">ID:</span> #4345</span>
+                <span><span class="label">Classe:</span> 4ª</span>
+            </div>
+            <div class="linha">
+                <span><span class="label">Turma:</span> </span>
+                <span><span class="label">Gênero:</span> Masculino</span>
+                <span><span class="label">Data Pagamento:</span> 05/07/2026</span>
+            </div>
+        </div>
+        <table class="tabela-itens">
+            <thead>
+                <tr>
+                    <th style="width:40px;">#</th>
+                    <th style="width:25%;">Descrição</th>
+                    <th style="width:12%;">Mês</th>
+                    <th style="width:13%;">Valor Base</th>
+                    <th style="width:10%;">Multa</th>
+                    <th style="width:10%;">Desconto</th>
+                    <th style="width:13%;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td class="text-left">Matrícula 4ª Classe</td>
+                    <td>-</td>
+                    <td class="text-right">8.000,00 Kz</td>
+                    <td class="text-right">0,00 Kz</td>
+                    <td class="text-right">0,00 Kz</td>
+                    <td class="text-right"><strong>8.000,00 Kz</strong></td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="3" class="text-right" style="font-size:14px;">TOTAIS</td>
+                    <td class="text-right">8.000,00 Kz</td>
+                    <td class="text-right">0,00 Kz</td>
+                    <td class="text-right">0,00 Kz</td>
+                    <td class="text-right valor-total">8.000,00 Kz</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="resumo">
+            <div class="coluna">
+                <p><strong>📅 Data Pagamento:</strong> 05/07/2026</p>
+                <p><strong>💳 Forma:</strong> dinheiro</p>
+                
+            </div>
+            <div class="coluna">
+                <p><strong>✅ Status:</strong> <span style="color:#27ae60;font-weight:bold;">PAGO</span></p>
+                <p><strong>📋 Nº Fatura:</strong> FAT-20260705-000040</p>
+                <p><strong>📦 Itens:</strong> 1</p>
+                
+            </div>
+            <div class="coluna">
+                <p><strong>💰 Total Itens:</strong> 1</p>
+                <p><strong>💵 Valor Total:</strong> <span style="color:#c0392b;font-weight:bold;font-size:16px;">8.000,00 Kz</span></p>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="assinatura">
+                <p style="font-size:12px;font-weight:bold;">Assinatura do Responsável</p>
+                <div class="linha"></div>
+                <p style="font-size:10px;color:#999;">_________________________________</p>
+            </div>
+            <div class="info-rodape">
+                <p>Documento emitido eletronicamente</p>
+                <p>Sistema Escolar © 2026</p>
+            </div>
+        </div>
+    </div>
+    <div class="no-print">
+        <button class="btn-print" onclick="window.print()">🖨️ IMPRIMIR</button>
+        <button class="btn-close" onclick="window.close()">✕ FECHAR</button>
+    </div>
+    </body></html>

@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: meu-sistema-php
+    runtime: docker
+    repo: https://github.com/seu-usuario/seu-repositorio
+    plan: free
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        value: https://meu-sistema-php.onrender.com

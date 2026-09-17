@@ -1,0 +1,17 @@
+COMANDOS CORRETOS PARA GERAR LICENÇA
+1. Gerar licença básica (1 ano)
+cmd
+cd C:\xampp\htdocs\softgest_web\python
+python gerar_licenca.py -c "Minha Empresa"
+2. Gerar licença com 2 anos
+cmd
+python gerar_licenca.py -c "Minha Empresa" -a 2
+3. Gerar licença com domínios personalizados
+cmd
+python gerar_licenca.py -c "Minha Empresa" -a 1 -d localhost 127.0.0.1 meusite.com
+4. Gerar licença com nome de arquivo personalizado
+cmd
+python gerar_licenca.py -c "Minha Empresa" -a 2 -f licenca_empresa.dat
+5. Gerar licença com detalhes (verbose)
+cmd
+python gerar_licenca.py -c "Minha Empresa" -a 3 -v

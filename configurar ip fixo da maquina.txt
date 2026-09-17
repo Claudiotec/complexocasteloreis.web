@@ -1,0 +1,401 @@
+Vou mostrar EXATAMENTE onde colocar o IP fixo em cada arquivo, com exemplos práticos.
+
+📍 ARQUIVO PRINCIPAL: config/network_config.php
+Caminho completo: C:\xampp\htdocs\softgest_web\config\network_config.php
+
+php
+<?php
+// ============================================
+// config/network_config.php - Configuração de Rede
+// ============================================
+
+// ⭐⭐⭐⭐⭐ MUDE AQUI O IP DO SEU COMPUTADOR ⭐⭐⭐⭐⭐
+// Substitua '192.168.1.100' pelo IP do seu computador
+define('FIXED_IP', '192.168.1.100');  // <-- ALTERE ESTE VALOR
+
+// Porta do servidor (padrão: 80)
+define('SERVER_PORT', '80');
+
+// Protocolo (http ou https)
+define('SERVER_PROTOCOL', 'http');
+
+// ============================================
+// RESTO DO CÓDIGO PERMANECE IGUAL...
+// ============================================
+📍 ARQUIVO DE CONFIGURAÇÃO DO BANCO: config/database.php
+Caminho completo: C:\xampp\htdocs\softgest_web\config\database.php
+
+php
+<?php
+// ============================================
+// config/database.php - Configuração do Banco
+// ============================================
+
+// Se o banco estiver no mesmo computador, deixe 'localhost'
+// Se o banco estiver em outro computador, coloque o IP dele
+define('DB_HOST', 'localhost');  // <-- ALTERE AQUI SE O BANCO FOR EM OUTRO PC
+
+define('DB_NAME', 'softgest_db');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('DB_PORT', '3306');
+📍 ARQUIVO DE CONEXÕES: config/database_connections.php
+Caminho completo: C:\xampp\htdocs\softgest_web\config\database_connections.php
+
+php
+<?php
+// ============================================
+// config/database_connections.php
+// ============================================
+
+// ⭐ CONEXÃO LOCAL - ALTERE O IP SE O BANCO FOR EM OUTRO PC
+define('DB_LOCAL_HOST', 'localhost');  // <-- OU '192.168.1.100'
+define('DB_LOCAL_PORT', '3306');
+define('DB_LOCAL_NAME', 'softgest_db');
+define('DB_LOCAL_USER', 'root');
+define('DB_LOCAL_PASS', '');
+
+// CONEXÃO PÚBLICA (NÃO ALTERE)
+define('DB_PUBLIC_URL', 'postgresql://neondb_owner:npg_gRkKHXNJAI40@ep-holy-resonance-atm1ick2-pooler.c-9.us-east-1.aws.neon.tech/neondb?sslmode=require');
+📍 ARQUIVO DE ACESSO À REDE: network_access.php
+Caminho completo: C:\xampp\htdocs\softgest_web\network_access.php
+
+php
+<?php
+// ============================================
+// network_access.php - Acesso à Rede Local
+// ============================================
+
+// CARREGAR CONFIGURAÇÃO DE IP FIXO
+require_once 'config/network_config.php';
+
+// A PARTIR DAQUI, O IP FIXO JÁ ESTÁ CONFIGURADO
+// O sistema usará automaticamente o IP definido em network_config.php
+📍 ARQUIVO DE CONFIGURAÇÃO DE MODO: config/app_modes.php
+Caminho completo: C:\xampp\htdocs\softgest_web\config\app_modes.php
+
+php
+<?php
+// ============================================
+// config/app_modes.php - Configuração de Modos
+// ============================================
+
+// ===== CONFIGURAÇÃO DE REDE =====
+require_once __DIR__ . '/network_config.php';
+
+// URL do sistema (usa o IP configurado em network_config.php)
+define('SITE_URL', getBaseURL() . '/softgest_web/');
+
+// IP do servidor (usa o IP configurado em network_config.php)
+define('SERVER_IP', getServerIP());
+📍 ARQUIVO DE CONFIGURAÇÃO DO XAMPP (Apache)
+Caminho: C:\xampp\apache\conf\extra\httpd-vhosts.conf
+
+apache
+# ============================================
+# Configuração de Virtual Host
+# ============================================
+
+<VirtualHost *:80>
+    DocumentRoot "C:/xampp/htdocs/softgest_web"
+    ServerName localhost
+    ServerAlias 192.168.1.100  # <-- COLOQUE SEU IP AQUI
+</VirtualHost>
+📍 ARQUIVO DE HOSTS DO WINDOWS
+Caminho: C:\Windows\System32\drivers\etc\hosts
+
+text
+# ============================================
+# Arquivo hosts - Mapeamento de IP para nomes
+# ============================================
+
+127.0.0.1       localhost
+192.168.1.100   softgest.local  # <-- ADICIONE ESTA LINHA COM SEU IP
+📋 RESUMO: ONDE ALTERAR O IP
+#	Arquivo	Linha/Configuração	O que alterar
+1	config/network_config.php	define('FIXED_IP', '192.168.1.100');	IP DO COMPUTADOR
+2	config/database.php	define('DB_HOST', 'localhost');	IP do banco de dados
+3	config/database_connections.php	define('DB_LOCAL_HOST', 'localhost');	IP do banco local
+4	httpd-vhosts.conf	ServerAlias 192.168.1.100	IP para o Apache
+5	hosts	192.168.1.100 softgest.local	Mapeamento de IP
+🚀 COMO DESCOBRIR SEU IP
+Windows:
+cmd
+ipconfig
+Procure por IPv4 na sua conexão ativa (Wi-Fi ou Ethernet)
+
+Linux/Mac:
+bash
+ifconfig
+# ou
+ip addr show
+Resultado exemplo:
+text
+Adaptador Wi-Fi:
+   IPv4: 192.168.1.150  ← ESTE É SEU IP
+   Máscara: 255.255.255.0
+   Gateway: 192.168.1.1
+✅ EXEMPLO PRÁTICO
+Seu IP é: 192.168.1.150
+
+1. Altere no config/network_config.php:
+php
+define('FIXED_IP', '192.168.1.150');  // <-- COLOQUE SEU IP AQUI
+2. Altere no httpd-vhosts.conf:
+apache
+ServerAlias 192.168.1.150  # <-- COLOQUE SEU IP AQUI
+3. Altere no hosts:
+text
+192.168.1.150   softgest.local  # <-- COLOQUE SEU IP AQUI
+4. Acesse o sistema:
+text
+http://192.168.1.150/softgest_web/
+⚠️ IMPORTANTE
+O IP deve ser FIXO no Windows - Configure nas propriedades de rede
+
+Reinicie o Apache após alterar o httpd-vhosts.conf
+
+Limpe o cache do navegador se não funcionar
+
+Use o mesmo IP em todos os arquivos
+
+📸 TELA DE CONFIGURAÇÃO DO IP NO WINDOWS
+Onde configurar IP fixo no Windows:
+
+Painel de Controle → Central de Rede e Compartilhamento
+
+Alterar configurações do adaptador
+
+Clique com botão direito na sua conexão → Propriedades
+
+Protocolo TCP/IPv4 → Propriedades
+
+Selecione "Usar o seguinte endereço IP"
+
+Preencha:
+
+text
+Endereço IP: 192.168.1.150  (SEU IP)
+Máscara:     255.255.255.0
+Gateway:     192.168.1.1    (IP DO ROTEADOR)
+DNS:         8.8.8.8
+DNS Alt:     8.8.4.4
+ver o ip do computador
+Vou mostrar várias formas de ver o IP do seu computador, desde as mais simples até as mais avançadas.
+
+🖥️ MÉTODOS PARA VER O IP DO COMPUTADOR
+1. 📌 MÉTODO MAIS RÁPIDO - Prompt de Comando (Windows)
+Passo a passo:
+Pressione Windows + R
+
+Digite cmd e pressione Enter
+
+Digite o comando:
+
+cmd
+ipconfig
+Procure por IPv4 na sua conexão ativa
+
+Exemplo de saída:
+text
+Adaptador Wi-Fi:
+
+   Endereço IPv4 . . . . . . . . . . . : 192.168.1.150  ← SEU IP
+   Máscara de Sub-rede . . . . . . . . : 255.255.255.0
+   Gateway Padrão . . . . . . . . . . . : 192.168.1.1
+2. 📌 COMANDO ESPECÍFICO PARA IP
+cmd
+# Ver apenas o IPv4
+ipconfig | findstr IPv4
+
+# Ver apenas o IP da conexão ativa
+ipconfig | findstr /i "endereço IPv4"
+3. 📌 MÉTODO MAIS COMPLETO - Todas as informações
+cmd
+# Ver todas as interfaces de rede
+ipconfig /all
+
+# Ver apenas informações resumidas
+ipconfig | findstr /i "adaptador ipv4"
+4. 📌 MÉTODO GRÁFICO (Windows)
+Passo a passo:
+Clique com botão direito no ícone de rede (canto inferior direito)
+
+Selecione "Abrir Central de Rede e Compartilhamento"
+
+Clique na sua conexão (Wi-Fi ou Ethernet)
+
+Clique em "Detalhes"
+
+Procure por "Endereço IPv4"
+
+5. 📌 MÉTODO LINUX/MAC
+Linux:
+bash
+# Ver todos os IPs
+ifconfig
+
+# Ver apenas o IP da interface principal
+ip addr show
+
+# Ver apenas o IP (mais limpo)
+hostname -I
+Mac:
+bash
+# Ver todos os IPs
+ifconfig
+
+# Ver apenas o IP da Wi-Fi
+ipconfig getifaddr en0
+6. 📌 MÉTODO PHP - Criar um arquivo para ver o IP
+Crie um arquivo chamado ver_ip.php na pasta softgest_web:
+
+php
+<?php
+// ============================================
+// ver_ip.php - Ver IP do Servidor
+// ============================================
+
+echo "<h1>🔍 Informações de IP</h1>";
+
+// IP do servidor
+echo "<h3>🖥️ IP do Servidor:</h3>";
+echo "<pre>";
+echo "SERVER_ADDR: " . ($_SERVER['SERVER_ADDR'] ?? 'Não disponível') . "\n";
+echo "HTTP_HOST: " . ($_SERVER['HTTP_HOST'] ?? 'Não disponível') . "\n";
+echo "REMOTE_ADDR: " . ($_SERVER['REMOTE_ADDR'] ?? 'Não disponível') . "\n";
+echo "</pre>";
+
+// IP via PHP
+echo "<h3>📡 IP via PHP:</h3>";
+echo "<pre>";
+echo "gethostname(): " . gethostname() . "\n";
+echo "gethostbyname(): " . gethostbyname(gethostname()) . "\n";
+echo "</pre>";
+
+// IP via comandos do sistema
+echo "<h3>💻 IP via Comandos do Sistema:</h3>";
+echo "<pre>";
+
+if (PHP_OS_FAMILY === 'Windows') {
+    $ip = shell_exec('ipconfig | findstr "IPv4"');
+    echo $ip;
+} else {
+    $ip = shell_exec('hostname -I 2>/dev/null');
+    echo $ip;
+}
+
+echo "</pre>";
+
+// Função para detectar IP
+function getLocalIP() {
+    if (PHP_OS_FAMILY === 'Windows') {
+        $ip = shell_exec('ipconfig | findstr "IPv4"');
+        if (preg_match('/IPv4.*?(\d+\.\d+\.\d+\.\d+)/', $ip, $matches)) {
+            return $matches[1];
+        }
+    } else {
+        $ip = shell_exec('hostname -I 2>/dev/null');
+        if ($ip) {
+            $ips = explode(' ', trim($ip));
+            return $ips[0] ?? null;
+        }
+    }
+    return 'Não foi possível detectar';
+}
+
+echo "<h3>✅ IP Detectado:</h3>";
+echo "<pre style='font-size:24px;color:#2ecc71;'>";
+echo "IP: " . getLocalIP();
+echo "</pre>";
+?>
+Acesse: http://localhost/softgest_web/ver_ip.php
+
+7. 📌 MÉTODO NO NAVEGADOR - JavaScript
+Crie um arquivo ip_browser.html:
+
+html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ver IP no Navegador</title>
+</head>
+<body>
+    <h1>🌐 Seu IP</h1>
+    <div id="ip" style="font-size:24px;color:blue;">Carregando...</div>
+    
+    <script>
+        // Usando API pública
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ip').innerHTML = 'IP Público: ' + data.ip;
+            })
+            .catch(() => {
+                document.getElementById('ip').innerHTML = 'Não foi possível obter IP público';
+            });
+    </script>
+</body>
+</html>
+8. 📌 COMANDOS RÁPIDOS (Copiar e Colar)
+Windows:
+cmd
+# Comando mais simples
+ipconfig | findstr IPv4
+
+# Comando formatado
+for /f "tokens=2 delims=:" %a in ('ipconfig ^| findstr "IPv4"') do @echo IP: %a
+
+# Mostrar apenas o IP (sem texto extra)
+for /f "tokens=2 delims=:" %a in ('ipconfig ^| findstr "IPv4"') do @echo %a
+Linux/Mac:
+bash
+# IP da interface principal
+hostname -I | awk '{print $1}'
+
+# IP da Wi-Fi
+ip addr show wlan0 | grep inet | awk '{print $2}' | cut -d/ -f1
+
+# IP da Ethernet
+ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1
+9. 📌 VER IP EM REDES DIFERENTES
+Ver IP da rede Wi-Fi:
+cmd
+ipconfig | findstr /i "wi-fi" -A 5
+Ver IP da rede Ethernet (cabo):
+cmd
+ipconfig | findstr /i "ethernet" -A 5
+Ver todas as interfaces:
+cmd
+ipconfig /all | findstr /i "ipv4"
+10. 📌 VER IP PELO PAINEL DE CONTROLE
+Windows + R → digite ncpa.cpl → Enter
+
+Clique com botão direito na sua conexão
+
+Selecione "Status"
+
+Clique em "Detalhes"
+
+Endereço IPv4 é seu IP
+
+🎯 RESUMO DOS COMANDOS
+Sistema	Comando	O que faz
+Windows	ipconfig	Mostra todas as informações de rede
+Windows	ipconfig | findstr IPv4	Mostra apenas o IP
+Windows	ipconfig /all	Mostra informações completas
+Linux	ifconfig	Mostra todas as interfaces
+Linux	ip addr show	Mostra IPs de todas as interfaces
+Linux	hostname -I	Mostra apenas os IPs
+Mac	ifconfig	Mostra todas as interfaces
+Mac	ipconfig getifaddr en0	IP da Wi-Fi
+✅ SEU IP É:
+Se você está no Windows, execute:
+
+cmd
+ipconfig | findstr IPv4
+O resultado será algo como:
+
+text
+   Endereço IPv4 . . . . . . . . . . . : 192.168.1.150
+Esse número (192.168.1.150) é o IP do seu computador! Use ele para configurar o sistema

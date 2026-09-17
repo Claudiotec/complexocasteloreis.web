@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Fatura - FAT-MANUAL-20260713-000058</title>
+        <style>
+            @page {
+                size: A4;
+                margin: 5mm;
+            }
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                background: #f0f0f0;
+                padding: 0;
+                margin: 0;
+            }
+            .fatura-page {
+                max-width: 200mm;
+                width: 100%;
+                margin: 0 auto;
+                background: #ffffff;
+                padding: 5mm;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+            .fatura-container {
+                background: #ffffff;
+                padding: 4px 6px;
+                border-radius: 3px;
+                margin-bottom: 6px;
+                page-break-inside: avoid;
+            }
+            .via-header {
+                margin-bottom: 3px;
+            }
+            .via-divider {
+                text-align: center;
+                font-size: 11px;
+                font-weight: bold;
+                color: #1a2332;
+                padding: 6px 0;
+                border-top: 2px dashed #ccc;
+                border-bottom: 2px dashed #ccc;
+                margin: 8px 0;
+                page-break-after: avoid;
+            }
+            .via-divider span {
+                background: #fff;
+                padding: 0 15px;
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
+            
+            @media print {
+                html, body {
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    background: #fff !important;
+                }
+                .fatura-page {
+                    box-shadow: none !important;
+                    padding: 3mm !important;
+                    max-width: 100% !important;
+                    background: #fff !important;
+                    margin: 0 !important;
+                }
+                .fatura-container {
+                    page-break-inside: avoid !important;
+                    border: 1px solid #ddd !important;
+                    padding: 3px 4px !important;
+                }
+                .via-divider {
+                    page-break-after: avoid !important;
+                    margin: 4px 0 !important;
+                    padding: 4px 0 !important;
+                }
+                .no-print {
+                    display: none !important;
+                }
+                .fatura-container * {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                    color-adjust: exact !important;
+                }
+                table {
+                    page-break-inside: avoid !important;
+                }
+                tr {
+                    page-break-inside: avoid !important;
+                }
+            }
+            
+            @media screen and (max-width: 768px) {
+                .fatura-page {
+                    padding: 3mm;
+                }
+                .fatura-container {
+                    padding: 3px;
+                }
+                .fatura-container [style*="grid-template-columns"] {
+                    grid-template-columns: 1fr !important;
+                }
+            }
+        </style>
+        <script>
+            function imprimirFatura() {
+                setTimeout(function() {
+                    window.print();
+                }, 800);
+            }
+            
+            window.onload = function() {
+                if (window.location.search.indexOf("print=1") > -1) {
+                    imprimirFatura();
+                }
+            };
+        </script>
+    </head>
+    <body>
+    <div class="fatura-page"><div style="margin-bottom:5px;"><div class="via-header" style="background:#1a2332;color:#fff;padding:4px 0;text-align:center;font-size:10px;font-weight:bold;letter-spacing:2px;">VIA DO CLIENTE</div>
+        <div class="fatura-container" style="border:1px solid #ddd;padding:6px 8px;">
+            <!-- CABEÇALHO -->
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:2px double #1a2332;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <div style="width:36px;height:36px;background:#1a2332;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:16px;font-weight:bold;border:2px solid #c9a84c;">🎓</div>
+                    <div>
+                        <div style="font-size:14px;font-weight:800;color:#1a2332;">Sistema Escolar</div>
+                        <div style="font-size:8px;color:#666;">📍 </div>
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:14px;font-weight:800;color:#c9a84c;letter-spacing:1px;">FATURA</div>
+                    <div style="font-size:9px;color:#555;background:#f8fafc;padding:2px 8px;border-radius:3px;border:1px solid #ddd;margin-top:2px;">
+                        <strong>Nº:</strong> FAT-MANUAL-20260713-000058<br>
+                        <span style="font-size:8px;">Emissão: 13/07/2026 10:05:13</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- INFORMAÇÕES DA EMPRESA -->
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;padding:3px 0;border-bottom:1px solid #ddd;margin-bottom:5px;font-size:9px;">
+                <div><strong>📞</strong> </div>
+                <div><strong>✉</strong> </div>
+                <div style="background:#1a2332;color:#fff;padding:1px 10px;border-radius:3px;font-weight:bold;font-size:9px;">NIF: </div>
+            </div>
+            
+            <!-- DADOS DO ALUNO -->
+            <div style="border:1px solid #1a2332;padding:4px 8px;margin-bottom:5px;background:#fafafa;border-radius:3px;">
+                <div style="font-weight:bold;font-size:10px;text-align:center;border-bottom:1px solid #1a2332;padding-bottom:2px;margin-bottom:4px;color:#1a2332;">📋 DADOS DO ALUNO</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;font-size:9px;">
+                    <div><strong>Nome:</strong> carlos bandeira</div>
+                    <div><strong>ID:</strong> #4363</div>
+                    <div><strong>Classe:</strong> 6ª</div>
+                    <div><strong>Turma:</strong> 6M</div>
+                    <div><strong>Gênero:</strong> Masculino</div>
+                    <div><strong>Data Pagamento:</strong> 13/07/2026</div>
+                </div>
+            </div>
+            
+            <!-- TABELA DE ITENS -->
+            <table style="width:100%;border-collapse:collapse;margin-bottom:5px;font-size:8px;">
+                <thead>
+                    <tr style="background:#1a2332;color:#fff;">
+                        <th style="padding:3px 4px;text-align:center;border:1px solid #1a2332;width:25px;">#</th>
+                        <th style="padding:3px 4px;text-align:left;border:1px solid #1a2332;width:25%;">Descrição</th>
+                        <th style="padding:3px 4px;text-align:center;border:1px solid #1a2332;width:12%;">Mês</th>
+                        <th style="padding:3px 4px;text-align:right;border:1px solid #1a2332;width:13%;">Valor Base</th>
+                        <th style="padding:3px 4px;text-align:right;border:1px solid #1a2332;width:10%;">Multa</th>
+                        <th style="padding:3px 4px;text-align:right;border:1px solid #1a2332;width:10%;">Desconto</th>
+                        <th style="padding:3px 4px;text-align:right;border:1px solid #1a2332;width:13%;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td style="padding:3px 4px;text-align:center;border:1px solid #ddd;">1</td>
+                    <td style="padding:3px 4px;text-align:left;border:1px solid #ddd;font-size:8px;">Boletim de Notas 4ª Tarde</td>
+                    <td style="padding:3px 4px;text-align:center;border:1px solid #ddd;font-size:8px;">-</td>
+                    <td style="padding:3px 4px;text-align:right;border:1px solid #ddd;font-size:8px;">423,00 Kz</td>
+                    <td style="padding:3px 4px;text-align:right;border:1px solid #ddd;font-size:8px;">0,00 Kz</td>
+                    <td style="padding:3px 4px;text-align:right;border:1px solid #ddd;font-size:8px;">0,00 Kz</td>
+                    <td style="padding:3px 4px;text-align:right;border:1px solid #ddd;font-size:8px;font-weight:bold;">423,00 Kz</td>
+                </tr>
+                <tr style="background:#f8fafc;font-weight:bold;">
+                    <td colspan="3" style="padding:3px 4px;text-align:right;border:1px solid #ddd;font-size:10px;">TOTAIS</td>
+                    <td style="padding:3px 4px;text-align:right;border:1px solid #ddd;font-size:9px;">423,00 Kz</td>
+                    <td style="padding:3px 4px;text-align:right;border:1px solid #ddd;font-size:9px;">0,00 Kz</td>
+                    <td style="padding:3px 4px;text-align:right;border:1px solid #ddd;font-size:9px;">0,00 Kz</td>
+                    <td style="padding:3px 4px;text-align:right;border:1px solid #ddd;font-size:12px;color:#c0392b;">423,00 Kz</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <!-- RESULTADO -->
+        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;padding:4px 8px;background:#f8fafc;border:1px solid #ddd;border-radius:3px;margin-bottom:5px;">
+            <div style="font-size:8px;">
+                <div><strong>📅 Data:</strong> 13/07/2026</div>
+                <div><strong>💳 Forma:</strong> dinheiro</div>
+                
+            </div>
+            <div style="font-size:8px;">
+                <div><strong>✅ Status:</strong> <span style="color:#27ae60;font-weight:bold;">PAGO</span></div>
+                <div><strong>📦 Itens:</strong> 1</div>
+                
+            </div>
+            <div style="text-align:right;border-left:2px solid #c9a84c;padding-left:10px;">
+                <div style="font-size:8px;color:#666;">VALOR TOTAL</div>
+                <div style="font-size:16px;font-weight:800;color:#c0392b;">423,00 Kz</div>
+            </div>
+        </div>
+        
+        <!-- RODAPÉ -->
+        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;padding-top:4px;border-top:1px solid #1a2332;font-size:7px;color:#666;">
+            <div>
+                <p style="margin:1px 0;">Documento emitido eletronicamente</p>
+                <p style="margin:1px 0;">Sistema Escolar © 2026</p>
+            </div>
+            <div style="text-align:center;">
+                <p style="font-size:8px;font-weight:bold;margin:1px 0;">Assinatura do Responsável</p>
+                <div style="width:120px;border-top:1px solid #333;margin:2px auto;"></div>
+                <p style="font-size:7px;color:#999;margin:1px 0;">_________________________________</p>
+            </div>
+            <div style="text-align:right;font-size:7px;color:#999;">
+                <p style="margin:1px 0;">Impresso em: 13/07/2026 10:05:13</p>
+            </div>
+        </div>
+        </div></div><div class="via-divider"><span>✂️ CORTE AQUI ✂️</span></div><div style="margin-top:5px;"><div class="via-header" style="background:#c9a84c;color:#1a2332;padding:4px 0;text-align:center;font-size:10px;font-weight:bold;letter-spacing:2px;">VIA DA ESCOLA</div>
+        <div class="fatura-container" style="border:2px dashed #c9a84c;padding:6px 8px;">
+            <!-- CABEÇALHO -->
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:2px double #1a2332;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <div style="width:36px;height:36px;background:#1a2332;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:16px;font-weight:bold;border:2px solid #c9a84c;">🎓</div>
+                    <div>
+                        <div style="font-size:14px;font-weight:800;color:#1a2332;">Sistema Escolar</div>
+                        <div style="font-size:8px;color:#666;">📍 </div>
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:14px;font-weight:800;color:#c9a84c;letter-spacing:1px;">FATURA</div>
+                    <div style="font-size:9px;color:#555;background:#f8fafc;padding:2px 8px;border-radius:3px;border:1px solid #ddd;margin-top:2px;">
+                        <strong>Nº:</strong> FAT-MANUAL-20260713-000058<br>
+                        <span style="font-size:8px;">Emissão: 13/07/2026 10:05:13</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- INFORMAÇÕES DA EMPRESA -->
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;padding:3px 0;border-bottom:1px solid #ddd;margin-bottom:5px;font-size:9px;">
+                <div><strong>📞</strong> </div>
+                <div><strong>✉</strong> </div>
+                <div style="background:#1a2332;color:#fff;padding:1px 10px;border-radius:3px;font-weight:bold;font-size:9px;">NIF: </div>
+            </div>
+            
+            <!-- DADOS DO ALUNO -->
+            <div style="border:1px solid #1a2332;padding:4px 8px;margin-bottom:5px;background:#fafafa;border-radius:3px;">
+                <div style="font-weight:bold;font-size:10px;text-align:center;border-bottom:1px solid #1a2332;padding-bottom:2px;margin-bottom:4px;color:#1a2332;">📋 DADOS DO ALUNO</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;font-size:9px;">
+                    <div><strong>Nome:</strong> carlos bandeira</div>
+                    <div><strong>ID:</strong> #4363</div>
+                    <div><strong>Classe:</strong> 6ª</div>
+                    <div><strong>Turma:</strong> 6M</div>
+                    <div><strong>Gênero:</strong> Masculino</div>
+                    <div><strong>Data Pagamento:</strong> 13/07/2026</div>
+                </div>
+            </div>
+            
+            <!-- TABELA DE ITENS -->
+            <table style="width:100%;border-collapse:collapse;margin-bottom:5px;font-size:8px;">
+                <thead>
+                    <tr style="background:#1a2332;color:#fff;">
+                        <th style="padding:3px 4px;text-align:center;border:1px solid #1a2332;width:25px;">#</th>
+                        <th style="padding:3px 4px;text-align:left;border:1px solid #1a2332;width:25%;">Descrição</th>
+                        <th style="padding:3px 4px;text-align:center;border:1px solid #1a2332;width:12%;">Mês</th>
+                        <th style="padding:3px 4px;text-align:right;border:1px solid #1a2332;width:13%;">Valor Base</th>
+                        <th style="padding:3px 4px;text-align:right;border:1px solid #1a2332;width:10%;">Multa</th>
+                        <th style="padding:3px 4px;text-align:right;border:1px solid #1a2332;width:10%;">Desconto</th>
+                        <th style="padding:3px 4px;text-align:right;border:1px solid #1a2332;width:13%;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td style="padding:3px 4px;text-align:center;border:1px solid #ddd;">1</td>
+                    <td style="padding:3px 4px;text-align:left;border:1px solid #ddd;font-size:8px;">Boletim de Notas 4ª Tarde</td>
+                    <td style="padding:3px 4px;text-align:center;border:1px solid #ddd;font-size:8px;">-</td>
+                    <td style="padding:3px 4px;text-align:right;border:1px solid #ddd;font-size:8px;">423,00 Kz</td>
+                    <td style="padding:3px 4px;text-align:right;border:1px solid #ddd;font-size:8px;">0,00 Kz</td>
+                    <td style="padding:3px 4px;text-align:right;border:1px solid #ddd;font-size:8px;">0,00 Kz</td>
+                    <td style="padding:3px 4px;text-align:right;border:1px solid #ddd;font-size:8px;font-weight:bold;">423,00 Kz</td>
+                </tr>
+                <tr style="background:#f8fafc;font-weight:bold;">
+                    <td colspan="3" style="padding:3px 4px;text-align:right;border:1px solid #ddd;font-size:10px;">TOTAIS</td>
+                    <td style="padding:3px 4px;text-align:right;border:1px solid #ddd;font-size:9px;">423,00 Kz</td>
+                    <td style="padding:3px 4px;text-align:right;border:1px solid #ddd;font-size:9px;">0,00 Kz</td>
+                    <td style="padding:3px 4px;text-align:right;border:1px solid #ddd;font-size:9px;">0,00 Kz</td>
+                    <td style="padding:3px 4px;text-align:right;border:1px solid #ddd;font-size:12px;color:#c0392b;">423,00 Kz</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <!-- RESULTADO -->
+        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;padding:4px 8px;background:#f8fafc;border:1px solid #ddd;border-radius:3px;margin-bottom:5px;">
+            <div style="font-size:8px;">
+                <div><strong>📅 Data:</strong> 13/07/2026</div>
+                <div><strong>💳 Forma:</strong> dinheiro</div>
+                
+            </div>
+            <div style="font-size:8px;">
+                <div><strong>✅ Status:</strong> <span style="color:#27ae60;font-weight:bold;">PAGO</span></div>
+                <div><strong>📦 Itens:</strong> 1</div>
+                
+            </div>
+            <div style="text-align:right;border-left:2px solid #c9a84c;padding-left:10px;">
+                <div style="font-size:8px;color:#666;">VALOR TOTAL</div>
+                <div style="font-size:16px;font-weight:800;color:#c0392b;">423,00 Kz</div>
+            </div>
+        </div>
+        
+        <!-- RODAPÉ -->
+        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;padding-top:4px;border-top:1px solid #1a2332;font-size:7px;color:#666;">
+            <div>
+                <p style="margin:1px 0;">Documento emitido eletronicamente</p>
+                <p style="margin:1px 0;">Sistema Escolar © 2026</p>
+            </div>
+            <div style="text-align:center;">
+                <p style="font-size:8px;font-weight:bold;margin:1px 0;">Assinatura do Responsável</p>
+                <div style="width:120px;border-top:1px solid #333;margin:2px auto;"></div>
+                <p style="font-size:7px;color:#999;margin:1px 0;">_________________________________</p>
+            </div>
+            <div style="text-align:right;font-size:7px;color:#999;">
+                <p style="margin:1px 0;">Impresso em: 13/07/2026 10:05:13</p>
+            </div>
+        </div>
+        </div></div>
+    </div>
+    <div class="no-print" style="text-align:center;padding:15px;max-width:200mm;margin:0 auto;">
+        <button onclick="window.print()" style="padding:12px 35px;background:#1a2332;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;margin-right:10px;">
+            🖨️ IMPRIMIR
+        </button>
+        <button onclick="window.close()" style="padding:12px 35px;background:#e74c3c;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;">
+            ✕ FECHAR
+        </button>
+        <p style="margin-top:10px;font-size:11px;color:#666;">
+            <strong>💡 Dica:</strong> Use <strong>Ctrl+P</strong> para imprimir em A4.
+        </p>
+    </div>
+    </body>
+    </html>

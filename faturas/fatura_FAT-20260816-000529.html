@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+    <html lang="pt">
+    <head>
+        <meta charset="UTF-8">
+        <title>Fatura Nº FAT-20260816-000529</title>
+        <style>
+            @page { size: A4; margin: 8mm; }
+            * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+            body { background: #fff; padding: 5mm; font-size: 12px; }
+            .fatura-container { max-width: 200mm; margin: 0 auto; background: #fff; }
+            .header-fatura {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                padding: 8px 0 12px 0;
+                border-bottom: 3px double #1a2332;
+                margin-bottom: 12px;
+            }
+            .header-fatura .empresa-info { flex: 1; }
+            .header-fatura .empresa-info .nome {
+                font-size: 20px;
+                font-weight: 800;
+                color: #1a2332;
+                text-transform: uppercase;
+            }
+            .header-fatura .empresa-info .dados { font-size: 10px; color: #555; margin: 2px 0; }
+            .header-fatura .empresa-info .nif-box {
+                display: inline-block;
+                background: #1a2332;
+                color: #fff;
+                padding: 2px 15px;
+                border-radius: 4px;
+                font-size: 10px;
+                font-weight: 700;
+                margin-top: 4px;
+            }
+            .header-fatura .fatura-titulo {
+                text-align: right;
+                min-width: 180px;
+            }
+            .header-fatura .fatura-titulo .tipo {
+                font-size: 22px;
+                font-weight: 800;
+                color: #c9a84c;
+                letter-spacing: 3px;
+            }
+            .header-fatura .fatura-titulo .numero {
+                font-size: 14px;
+                font-weight: 700;
+                color: #1a2332;
+                margin: 3px 0;
+            }
+            .header-fatura .fatura-titulo .data { font-size: 10px; color: #555; }
+            .header-fatura .fatura-titulo .status-badge {
+                display: inline-block;
+                padding: 2px 15px;
+                border-radius: 12px;
+                font-size: 10px;
+                font-weight: 700;
+                color: #fff;
+                background: #2ecc71;
+                margin-top: 4px;
+            }
+            .aluno-area {
+                padding: 10px 14px;
+                background: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 6px;
+                margin-bottom: 12px;
+            }
+            .aluno-area .label {
+                font-size: 8px;
+                color: #94a3b8;
+                text-transform: uppercase;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+            }
+            .aluno-area .nome { font-size: 16px; font-weight: 700; color: #1a2332; }
+            .aluno-area .info {
+                font-size: 11px;
+                color: #555;
+                margin: 3px 0;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .aluno-area .info .tag {
+                background: #eef2f7;
+                padding: 1px 10px;
+                border-radius: 12px;
+                font-size: 10px;
+            }
+            .tabela-itens {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 12px;
+                font-size: 11px;
+            }
+            .tabela-itens th {
+                background: #1a2332;
+                color: #fff;
+                padding: 6px 8px;
+                text-align: left;
+                border: 1px solid #1a2332;
+                font-size: 9px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            .tabela-itens td {
+                padding: 5px 8px;
+                border: 1px solid #e2e8f0;
+                vertical-align: middle;
+            }
+            .tabela-itens .text-right { text-align: right; }
+            .tabela-itens .text-center { text-align: center; }
+            .tabela-itens .total-row { background: #f8fafc; font-weight: 700; }
+            .tabela-itens .total-row td { border-top: 2px solid #1a2332; }
+            .tabela-itens .valor-total { color: #c0392b; font-size: 14px; }
+            .resumo-fatura {
+                display: flex;
+                justify-content: flex-end;
+                padding: 12px 16px;
+                background: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 6px;
+                margin-bottom: 12px;
+            }
+            .resumo-fatura .grid {
+                display: grid;
+                grid-template-columns: auto auto;
+                gap: 3px 25px;
+                font-size: 12px;
+            }
+            .resumo-fatura .grid .label { color: #555; }
+            .resumo-fatura .grid .value { text-align: right; font-weight: 600; }
+            .resumo-fatura .grid .total {
+                font-size: 18px;
+                color: #c0392b;
+                font-weight: 800;
+                border-top: 2px solid #1a2332;
+                padding-top: 6px;
+                margin-top: 4px;
+            }
+            .rodape-fatura {
+                padding: 12px 0;
+                border-top: 2px solid #1a2332;
+                margin-top: 8px;
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .rodape-fatura .assinatura {
+                text-align: center;
+                min-width: 140px;
+            }
+            .rodape-fatura .assinatura .linha {
+                width: 130px;
+                border-top: 1px solid #333;
+                margin: 4px auto;
+            }
+            .rodape-fatura .assinatura .cargo { font-size: 9px; color: #555; }
+            .rodape-fatura .info-extra { font-size: 8px; color: #999; text-align: right; }
+            .rodape-fatura .info-extra .hash {
+                font-size: 7px;
+                word-break: break-all;
+                max-width: 200px;
+            }
+            .via-divider {
+                text-align: center;
+                font-size: 13px;
+                font-weight: 700;
+                color: #1a2332;
+                padding: 12px 0;
+                margin: 15px 0;
+                border-top: 2px dashed #ccc;
+                border-bottom: 2px dashed #ccc;
+            }
+            .via-divider span { background: #fff; padding: 0 18px; }
+            .selo-validacao {
+                display: inline-block;
+                padding: 3px 12px;
+                border: 2px solid #c9a84c;
+                border-radius: 4px;
+                font-size: 8px;
+                color: #1a2332;
+                font-weight: 600;
+                margin-top: 5px;
+            }
+            @media print {
+                body { background: #fff !important; padding: 0 !important; }
+                .fatura-container { box-shadow: none !important; }
+                .no-print { display: none !important; }
+                * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            }
+            @media screen and (max-width: 768px) {
+                .header-fatura { flex-direction: column; gap: 8px; }
+                .header-fatura .fatura-titulo { text-align: left; }
+                .resumo-fatura { justify-content: flex-start; }
+                .resumo-fatura .grid { grid-template-columns: 1fr; }
+                .tabela-itens { font-size: 9px; }
+                .tabela-itens th, .tabela-itens td { padding: 3px 5px; }
+                .rodape-fatura { flex-direction: column; text-align: center; }
+            }
+        </style>
+    </head>
+    <body>
+    <div class="fatura-container"><div style="border: 1px solid #ddd; border-radius: 6px; padding: 12px; margin-bottom: 8px;"><div style="text-align: center; font-size: 9px; font-weight: 700; color: #fff; background: #1a2332; padding: 3px 0; border-radius: 4px 4px 0 0; margin: -12px -12px 12px -12px; letter-spacing: 3px;">VIA DO CLIENTE</div>
+    <div class="header-fatura">
+        <div class="empresa-info">
+            <div class="nome">Sistema Escolar</div>
+            <div class="dados">📍 </div>
+            <div class="dados">📞  | ✉ </div>
+            <div class="nif-box">NIF: </div>
+        </div>
+        <div class="fatura-titulo">
+            <div class="tipo">FATURA</div>
+            <div class="numero">Nº FAT-20260816-000529</div>
+            <div class="data">16/08/2026 13:05</div>
+            <div class="status-badge">✅ PAGO</div>
+            <div class="selo-validacao">🔒 FATURA VÁLIDA</div>
+        </div>
+    </div>
+    
+    <div class="aluno-area">
+        <div class="label">📋 DADOS DO ALUNO</div>
+        <div class="nome">Alexandre Adriano Quilola</div>
+        <div class="info">
+            <span class="tag">NIF: 0247166951LA053</span>
+            <span class="tag">Classe: 9ª</span>
+            <span class="tag">Turma: 9AM</span>
+            <span class="tag">Período: tarde</span>
+        </div>
+    </div>
+    
+    <table class="tabela-itens">
+        <thead>
+            <tr>
+                <th style="width:30px;">#</th>
+                <th style="text-align:left;">Descrição</th>
+                <th style="width:80px;">Mês</th>
+                <th style="width:90px;text-align:right;">Valor Base</th>
+                <th style="width:60px;text-align:right;">IVA %</th>
+                <th style="width:80px;text-align:right;">Valor IVA</th>
+                <th style="width:100px;text-align:right;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center">1</td>
+                <td>Boletim de Notas Pré</td>
+                <td class="text-center">-</td>
+                <td class="text-right">700,00 Kz</td>
+                <td class="text-right">0,00%</td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right"><strong>700,00 Kz</strong></td>
+            </tr>
+            <tr class="total-row">
+                <td colspan="3" style="text-align:right;font-size:10px;">TOTAIS</td>
+                <td class="text-right">700,00 Kz</td>
+                <td class="text-right"></td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right valor-total">700,00 Kz</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="resumo-fatura">
+        <div class="grid">
+            <div class="label">Subtotal</div>
+            <div class="value">700,00 Kz</div>
+            <div class="label">IVA (0,00%)</div>
+            <div class="value">0,00 Kz</div>
+            <div class="label" style="border-top:1px solid #ddd;padding-top:4px;"><strong>TOTAL</strong></div>
+            <div class="value total">700,00 Kz</div>
+        </div>
+    </div>
+    
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;font-size:9px;color:#555;padding:5px 0;border-bottom:1px solid #eee;margin-bottom:8px;">
+        <div><strong>💳 Forma:</strong> dinheiro</div>
+        <div><strong>📅 Data Pagamento:</strong> 16/08/2026</div>
+        <div><strong>📄 Fatura:</strong> FAT-20260816-000529</div>
+    </div>
+    
+    <div class="rodape-fatura">
+        <div>
+            <p style="margin:1px 0;font-size:8px;">Documento emitido eletronicamente</p>
+            <p style="margin:1px 0;font-size:8px;">Sistema Escolar © 2026</p>
+        </div>
+        <div class="assinatura">
+            <p style="font-size:8px;font-weight:bold;margin:1px 0;">Assinatura do Responsável</p>
+            <div class="linha"></div>
+            <p style="font-size:7px;color:#999;margin:1px 0;">_________________________________</p>
+        </div>
+        <div class="info-extra">
+            <p style="margin:1px 0;">Impresso em: 16/08/2026 13:05:49</p>
+            <p class="hash">Hash: ...</p>
+        </div>
+    </div></div><div class="via-divider"><span>✂️ CORTE AQUI ✂️</span></div><div style="border: 2px dashed #c9a84c; border-radius: 6px; padding: 12px;"><div style="text-align: center; font-size: 9px; font-weight: 700; color: #1a2332; background: #c9a84c; padding: 3px 0; border-radius: 4px 4px 0 0; margin: -12px -12px 12px -12px; letter-spacing: 3px;">VIA DA ESCOLA</div>
+    <div class="header-fatura">
+        <div class="empresa-info">
+            <div class="nome">Sistema Escolar</div>
+            <div class="dados">📍 </div>
+            <div class="dados">📞  | ✉ </div>
+            <div class="nif-box">NIF: </div>
+        </div>
+        <div class="fatura-titulo">
+            <div class="tipo">FATURA</div>
+            <div class="numero">Nº FAT-20260816-000529</div>
+            <div class="data">16/08/2026 13:05</div>
+            <div class="status-badge">✅ PAGO</div>
+            <div class="selo-validacao">🔒 FATURA VÁLIDA</div>
+        </div>
+    </div>
+    
+    <div class="aluno-area">
+        <div class="label">📋 DADOS DO ALUNO</div>
+        <div class="nome">Alexandre Adriano Quilola</div>
+        <div class="info">
+            <span class="tag">NIF: 0247166951LA053</span>
+            <span class="tag">Classe: 9ª</span>
+            <span class="tag">Turma: 9AM</span>
+            <span class="tag">Período: tarde</span>
+        </div>
+    </div>
+    
+    <table class="tabela-itens">
+        <thead>
+            <tr>
+                <th style="width:30px;">#</th>
+                <th style="text-align:left;">Descrição</th>
+                <th style="width:80px;">Mês</th>
+                <th style="width:90px;text-align:right;">Valor Base</th>
+                <th style="width:60px;text-align:right;">IVA %</th>
+                <th style="width:80px;text-align:right;">Valor IVA</th>
+                <th style="width:100px;text-align:right;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center">1</td>
+                <td>Boletim de Notas Pré</td>
+                <td class="text-center">-</td>
+                <td class="text-right">700,00 Kz</td>
+                <td class="text-right">0,00%</td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right"><strong>700,00 Kz</strong></td>
+            </tr>
+            <tr class="total-row">
+                <td colspan="3" style="text-align:right;font-size:10px;">TOTAIS</td>
+                <td class="text-right">700,00 Kz</td>
+                <td class="text-right"></td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right valor-total">700,00 Kz</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="resumo-fatura">
+        <div class="grid">
+            <div class="label">Subtotal</div>
+            <div class="value">700,00 Kz</div>
+            <div class="label">IVA (0,00%)</div>
+            <div class="value">0,00 Kz</div>
+            <div class="label" style="border-top:1px solid #ddd;padding-top:4px;"><strong>TOTAL</strong></div>
+            <div class="value total">700,00 Kz</div>
+        </div>
+    </div>
+    
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;font-size:9px;color:#555;padding:5px 0;border-bottom:1px solid #eee;margin-bottom:8px;">
+        <div><strong>💳 Forma:</strong> dinheiro</div>
+        <div><strong>📅 Data Pagamento:</strong> 16/08/2026</div>
+        <div><strong>📄 Fatura:</strong> FAT-20260816-000529</div>
+    </div>
+    
+    <div class="rodape-fatura">
+        <div>
+            <p style="margin:1px 0;font-size:8px;">Documento emitido eletronicamente</p>
+            <p style="margin:1px 0;font-size:8px;">Sistema Escolar © 2026</p>
+        </div>
+        <div class="assinatura">
+            <p style="font-size:8px;font-weight:bold;margin:1px 0;">Assinatura do Responsável</p>
+            <div class="linha"></div>
+            <p style="font-size:7px;color:#999;margin:1px 0;">_________________________________</p>
+        </div>
+        <div class="info-extra">
+            <p style="margin:1px 0;">Impresso em: 16/08/2026 13:05:49</p>
+            <p class="hash">Hash: ...</p>
+        </div>
+    </div></div>
+    <div class="no-print" style="text-align:center;padding:15px 0;">
+        <button onclick="window.print()" style="padding:10px 30px;background:#1a2332;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;">🖨️ IMPRIMIR</button>
+        <button onclick="window.close()" style="padding:10px 30px;background:#e74c3c;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;margin-left:10px;">✕ FECHAR</button>
+    </div>
+    </body></html>

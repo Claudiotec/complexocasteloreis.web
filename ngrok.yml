@@ -1,0 +1,11 @@
+version: 2
+
+tunnels:
+  softgest:
+    proto: http
+    addr: 80
+    inspect: true
+    bind_tls: true
+    request_header:
+      remove: ["X-Forwarded-For"]
+    host_header: rewrite

@@ -1,0 +1,16 @@
+node_modules/
+vendor/
+.env
+.env.local
+.env.production
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+dist/
+build/
+.cache/
+.vscode/
+.idea/
+__pycache__/
+*.pyc

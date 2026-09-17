@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+    <html><head><meta charset="UTF-8"><title>Fatura</title>
+    <style>
+        body{font-family:"Times New Roman",serif;background:#f0f0f0;padding:20px;margin:0}
+        .fatura-page{max-width:210mm;margin:auto;background:#fff;padding:20px;border:1px solid #ccc}
+        .fatura-container{max-width:100%;margin:auto;background:#fff;padding:15px;border:1px solid #ddd;border-radius:4px;margin-bottom:10px}
+        .header{border-bottom:3px double #1a2332;padding-bottom:8px;margin-bottom:10px}
+        .header-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap}
+        .logo-icon{width:40px;height:40px;background:#1a2332;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#c9a84c;font-size:20px;font-weight:bold;border:2px solid #c9a84c}
+        .titulo-documento{font-size:18px;font-weight:bold;color:#1a2332;margin-left:8px}
+        .numero-fatura{text-align:right;font-size:11px;color:#555;padding:3px 12px;border:1px solid #ccc;border-radius:4px;background:#f9f9f9}
+        .info-escola{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #ddd;margin-bottom:8px;flex-wrap:wrap}
+        .info-escola .escola h2{font-size:14px;color:#1a2332;margin:0}
+        .info-escola .escola p{font-size:11px;color:#555;margin:1px 0}
+        .nif-box{border:1px solid #1a2332;padding:2px 10px;font-size:12px;font-weight:bold;background:#f8fafc;align-self:center}
+        .dados-aluno{border:1px solid #1a2332;padding:8px 10px;margin-bottom:8px;background:#fafafa}
+        .dados-aluno .titulo-secao{font-weight:bold;font-size:12px;text-align:center;border-bottom:1px solid #1a2332;padding-bottom:3px;margin-bottom:4px}
+        .dados-aluno .linha{display:flex;justify-content:space-between;flex-wrap:wrap;font-size:11px;padding:1px 0}
+        .dados-aluno .label{font-weight:600}
+        .tabela-itens{width:100%;border-collapse:collapse;margin-bottom:8px;font-size:11px}
+        .tabela-itens th{background:#1a2332;color:#fff;padding:4px 6px;text-align:center;border:1px solid #1a2332;font-size:10px}
+        .tabela-itens td{padding:4px 6px;border:1px solid #ccc;text-align:center;font-size:10px}
+        .tabela-itens .text-right{text-align:right;padding-right:8px}
+        .tabela-itens .text-left{text-align:left;padding-left:8px}
+        .tabela-itens .total-row{background:#f8fafc;font-weight:bold}
+        .tabela-itens .total-row td{border-top:2px solid #1a2332}
+        .tabela-itens .valor-total{color:#c0392b;font-size:14px}
+        .resumo{display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px;padding:6px 10px;background:#f8fafc;border:1px solid #ddd;margin-bottom:8px;font-size:10px}
+        .resumo .coluna{flex:1;min-width:120px}
+        .resumo .coluna p{font-size:10px;margin:1px 0;color:#555}
+        .footer{border-top:3px double #1a2332;padding-top:8px;margin-top:8px;display:flex;justify-content:space-between;font-size:10px;color:#666;flex-wrap:wrap}
+        .footer .assinatura{text-align:center;flex:1}
+        .footer .assinatura .linha{width:150px;border-top:1px solid #1a2332;margin:5px auto 2px}
+        .no-print{text-align:center;margin-top:15px}
+        .no-print button{padding:10px 30px;border:none;border-radius:6px;font-size:15px;font-weight:600;cursor:pointer}
+        .btn-print{background:#1a2332;color:#fff}
+        .btn-close{background:#e74c3c;color:#fff;margin-left:10px}
+        .via-divider{text-align:center;font-size:14px;font-weight:bold;color:#1a2332;padding:8px 0;border-top:2px dashed #ccc;border-bottom:2px dashed #ccc;margin:10px 0}
+        .via-divider span{background:#fff;padding:0 20px}
+        @media print{.no-print{display:none}.fatura-page{background:#fff;padding:15px;border:none;box-shadow:none}.fatura-container{page-break-inside:avoid;border:1px solid #ddd}.via-divider{page-break-after:avoid}}
+        @media(max-width:600px){.header-top{flex-direction:column;text-align:center}.numero-fatura{text-align:center}.info-escola{flex-direction:column;text-align:center}.dados-aluno .linha{flex-direction:column;text-align:center}.resumo{flex-direction:column;text-align:center}.footer{flex-direction:column;text-align:center}}
+        .via-cliente{background:#f8fafc}
+        .via-escola{background:#fffef8}
+    </style>
+    </head><body>
+    <div class="fatura-page"><div class="via-cliente"><div style="text-align:center;background:#1a2332;color:#fff;padding:4px 0;font-size:12px;font-weight:bold;letter-spacing:2px;margin-bottom:8px;">VIA DO CLIENTE</div>
+        <div class="fatura-container" style="">
+            <div class="header">
+                <div class="header-top">
+                    <div><span class="logo-icon">🎓</span> <span class="titulo-documento">FATURA</span></div>
+                    <div class="numero-fatura"><strong>Nº:</strong> FAT-20260709-000042<br><span style="font-size:10px;">Emissão: 09/07/2026 01:01:07</span></div>
+                </div>
+            </div>
+            <div class="info-escola">
+                <div class="escola">
+                    <h2>Sistema Escolar</h2>
+                    <p>📍 </p>
+                    <p>📞  | ✉ </p>
+                </div>
+                <div class="nif-box">NIF: </div>
+            </div>
+            <div class="dados-aluno">
+                <div class="titulo-secao">DADOS DO ALUNO</div>
+                <div class="linha">
+                    <span><span class="label">Nome:</span> ?gata Gerdina Ngonga Paulo</span>
+                    <span><span class="label">ID:</span> #4348</span>
+                    <span><span class="label">Classe:</span> 2ª</span>
+                </div>
+                <div class="linha">
+                    <span><span class="label">Turma:</span> A</span>
+                    <span><span class="label">Gênero:</span> Masculino</span>
+                    <span><span class="label">Data Pagamento:</span> 09/07/2026</span>
+                </div>
+            </div>
+            <table class="tabela-itens">
+                <thead>
+                    <tr>
+                        <th style="width:40px;">#</th>
+                        <th style="width:25%;">Descrição</th>
+                        <th style="width:12%;">Mês</th>
+                        <th style="width:13%;">Valor Base</th>
+                        <th style="width:10%;">Multa</th>
+                        <th style="width:10%;">Desconto</th>
+                        <th style="width:13%;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td class="text-left">Matrícula 4ª Classe</td>
+                        <td>-</td>
+                        <td class="text-right">8.000,00 Kz</td>
+                        <td class="text-right">0,00 Kz</td>
+                        <td class="text-right">0,00 Kz</td>
+                        <td class="text-right"><strong>8.000,00 Kz</strong></td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="3" class="text-right" style="font-size:14px;">TOTAIS</td>
+                        <td class="text-right">8.000,00 Kz</td>
+                        <td class="text-right">0,00 Kz</td>
+                        <td class="text-right">0,00 Kz</td>
+                        <td class="text-right valor-total">8.000,00 Kz</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="resumo">
+                <div class="coluna">
+                    <p><strong>📅 Data Pagamento:</strong> 09/07/2026</p>
+                    <p><strong>💳 Forma:</strong> dinheiro</p>
+                    
+                </div>
+                <div class="coluna">
+                    <p><strong>✅ Status:</strong> <span style="color:#27ae60;font-weight:bold;">PAGO</span></p>
+                    <p><strong>📋 Nº Fatura:</strong> FAT-20260709-000042</p>
+                    <p><strong>📦 Itens:</strong> 1</p>
+                    
+                </div>
+                <div class="coluna">
+                    <p><strong>💰 Total Itens:</strong> 1</p>
+                    <p><strong>💵 Valor Total:</strong> <span style="color:#c0392b;font-weight:bold;font-size:16px;">8.000,00 Kz</span></p>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="assinatura">
+                    <p style="font-size:12px;font-weight:bold;">Assinatura do Responsável</p>
+                    <div class="linha"></div>
+                    <p style="font-size:10px;color:#999;">_________________________________</p>
+                </div>
+                <div class="info-rodape">
+                    <p>Documento emitido eletronicamente</p>
+                    <p>Sistema Escolar © 2026</p>
+                </div>
+            </div>
+        </div></div><div class="via-divider"><span>✂️ CORTE AQUI ✂️</span></div><div class="via-escola"><div style="text-align:center;background:#c9a84c;color:#1a2332;padding:4px 0;font-size:12px;font-weight:bold;letter-spacing:2px;margin-bottom:8px;">VIA DA ESCOLA</div>
+        <div class="fatura-container" style="border:2px dashed #c9a84c;">
+            <div class="header">
+                <div class="header-top">
+                    <div><span class="logo-icon">🎓</span> <span class="titulo-documento">FATURA</span></div>
+                    <div class="numero-fatura"><strong>Nº:</strong> FAT-20260709-000042<br><span style="font-size:10px;">Emissão: 09/07/2026 01:01:07</span></div>
+                </div>
+            </div>
+            <div class="info-escola">
+                <div class="escola">
+                    <h2>Sistema Escolar</h2>
+                    <p>📍 </p>
+                    <p>📞  | ✉ </p>
+                </div>
+                <div class="nif-box">NIF: </div>
+            </div>
+            <div class="dados-aluno">
+                <div class="titulo-secao">DADOS DO ALUNO</div>
+                <div class="linha">
+                    <span><span class="label">Nome:</span> ?gata Gerdina Ngonga Paulo</span>
+                    <span><span class="label">ID:</span> #4348</span>
+                    <span><span class="label">Classe:</span> 2ª</span>
+                </div>
+                <div class="linha">
+                    <span><span class="label">Turma:</span> A</span>
+                    <span><span class="label">Gênero:</span> Masculino</span>
+                    <span><span class="label">Data Pagamento:</span> 09/07/2026</span>
+                </div>
+            </div>
+            <table class="tabela-itens">
+                <thead>
+                    <tr>
+                        <th style="width:40px;">#</th>
+                        <th style="width:25%;">Descrição</th>
+                        <th style="width:12%;">Mês</th>
+                        <th style="width:13%;">Valor Base</th>
+                        <th style="width:10%;">Multa</th>
+                        <th style="width:10%;">Desconto</th>
+                        <th style="width:13%;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td class="text-left">Matrícula 4ª Classe</td>
+                        <td>-</td>
+                        <td class="text-right">8.000,00 Kz</td>
+                        <td class="text-right">0,00 Kz</td>
+                        <td class="text-right">0,00 Kz</td>
+                        <td class="text-right"><strong>8.000,00 Kz</strong></td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="3" class="text-right" style="font-size:14px;">TOTAIS</td>
+                        <td class="text-right">8.000,00 Kz</td>
+                        <td class="text-right">0,00 Kz</td>
+                        <td class="text-right">0,00 Kz</td>
+                        <td class="text-right valor-total">8.000,00 Kz</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="resumo">
+                <div class="coluna">
+                    <p><strong>📅 Data Pagamento:</strong> 09/07/2026</p>
+                    <p><strong>💳 Forma:</strong> dinheiro</p>
+                    
+                </div>
+                <div class="coluna">
+                    <p><strong>✅ Status:</strong> <span style="color:#27ae60;font-weight:bold;">PAGO</span></p>
+                    <p><strong>📋 Nº Fatura:</strong> FAT-20260709-000042</p>
+                    <p><strong>📦 Itens:</strong> 1</p>
+                    
+                </div>
+                <div class="coluna">
+                    <p><strong>💰 Total Itens:</strong> 1</p>
+                    <p><strong>💵 Valor Total:</strong> <span style="color:#c0392b;font-weight:bold;font-size:16px;">8.000,00 Kz</span></p>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="assinatura">
+                    <p style="font-size:12px;font-weight:bold;">Assinatura do Responsável</p>
+                    <div class="linha"></div>
+                    <p style="font-size:10px;color:#999;">_________________________________</p>
+                </div>
+                <div class="info-rodape">
+                    <p>Documento emitido eletronicamente</p>
+                    <p>Sistema Escolar © 2026</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+    <div class="no-print">
+        <button class="btn-print" onclick="window.print()">🖨️ IMPRIMIR</button>
+        <button class="btn-close" onclick="window.close()">✕ FECHAR</button>
+    </div>
+    </body></html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+        <html lang="pt">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Registo Descritivo de Pagamentos - Complexo Escolar Castelo</title>
+            <style>
+                * { margin:0; padding:0; box-sizing:border-box; }
+                body { font-family: Arial, "Segoe UI", sans-serif; background:#f5f7fa; padding:15px; color:#1a2332; }
+                .container { max-width:1200px; margin:0 auto; background:#fff; padding:35px 40px; border:1px solid #d1d5db; border-radius:4px; }
+                
+                .header { border-bottom:3px solid #c9a84c; padding-bottom:20px; margin-bottom:25px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px; }
+                .header .pais { font-size:11px; font-weight:600; color:#1a237e; text-transform:uppercase; letter-spacing:1px; }
+                .header .orgao { font-size:18px; font-weight:800; color:#0d1445; }
+                .header .orgao span { color:#c9a84c; }
+                .header .doc-info { text-align:right; line-height:1.4; }
+                .header .doc-info .titulo { font-size:20px; font-weight:800; color:#0d1445; text-transform:uppercase; letter-spacing:1px; }
+                .header .doc-info .num { font-size:12px; color:#4a5568; font-weight:500; }
+                .header .doc-info .data { font-size:13px; color:#4a5568; }
+                
+                .info-escola { background:#f8fafc; padding:12px 20px; border-radius:8px; margin-bottom:25px; border-left:4px solid #c9a84c; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+                .info-escola .nome { font-weight:700; font-size:15px; }
+                .info-escola .detalhes { font-size:13px; color:#4a5568; }
+                
+                .resumo { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:10px; margin-bottom:25px; }
+                .resumo-item { background:#f8fafc; padding:10px 12px; border-radius:8px; text-align:center; border:1px solid #e2e8f0; }
+                .resumo-item .label { font-size:9px; text-transform:uppercase; color:#94a3b8; font-weight:600; letter-spacing:0.5px; }
+                .resumo-item .value { font-size:16px; font-weight:800; margin-top:2px; }
+                .resumo-item .value.positivo { color:#2ecc71; }
+                .resumo-item .value.negativo { color:#e74c3c; }
+                .resumo-item .value.destaque { color:#c9a84c; }
+                
+                .secao { margin-bottom:25px; }
+                .secao-titulo { font-size:15px; font-weight:700; padding-bottom:8px; border-bottom:2px solid #e2e8f0; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:5px; }
+                .secao-titulo .contador { font-size:12px; color:#94a3b8; font-weight:400; }
+                .secao-descricao { font-size:13px; color:#64748b; margin-bottom:10px; padding:10px 15px; background:#f8fafc; border-radius:6px; border-left:3px solid #c9a84c; }
+                
+                .table-wrapper { overflow-x:auto; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:10px; }
+                table { width:100%; border-collapse:collapse; font-size:12px; }
+                thead th { background:#f1f5f9; padding:6px 10px; text-align:left; font-weight:600; border-bottom:2px solid #c9a84c; font-size:10px; text-transform:uppercase; letter-spacing:0.5px; position:sticky; top:0; }
+                tbody td { padding:6px 10px; border-bottom:1px solid #e2e8f0; }
+                tbody tr:hover { background:#f8fafc; }
+                tbody tr:nth-child(even) { background:#fafbfc; }
+                .text-right { text-align:right; }
+                .text-center { text-align:center; }
+                .text-nowrap { white-space:nowrap; }
+                
+                .status { display:inline-block; padding:2px 10px; border-radius:12px; font-size:10px; font-weight:600; }
+                .status.confirmado, .status.pago { background:#d1fae5; color:#065f46; }
+                .status.pendente { background:#fef3c7; color:#92400e; }
+                .status.atrasado { background:#fee2e2; color:#991b1b; }
+                .status.cancelado { background:#f1f5f9; color:#64748b; }
+                
+                .table-total { background:#f8fafc; font-weight:700; border-top:2px solid #1a2332; }
+                .table-total td { padding:8px 10px !important; }
+                
+                .aluno-cabecalho { background:#eef2f7; font-weight:700; }
+                .aluno-cabecalho td { padding:8px 10px !important; border-bottom:2px solid #c9a84c; }
+                
+                .categoria-propina { color:#2ecc71; }
+                .categoria-matricula { color:#3498db; }
+                .categoria-inscricao { color:#9b59b6; }
+                .categoria-exame { color:#e67e22; }
+                .categoria-certificado { color:#1abc9c; }
+                .categoria-transporte { color:#f39c12; }
+                .categoria-outros { color:#95a5a6; }
+                
+                .badge-tipo { display:inline-block; padding:2px 8px; border-radius:4px; font-size:9px; font-weight:600; }
+                .badge-cartao { background:#dbeafe; color:#1e40af; }
+                .badge-dinheiro { background:#d1fae5; color:#065f46; }
+                .badge-transferencia { background:#fef3c7; color:#92400e; }
+                
+                .footer { margin-top:30px; padding-top:20px; border-top:2px solid #e2e8f0; display:flex; justify-content:space-between; flex-wrap:wrap; gap:15px; font-size:12px; color:#94a3b8; }
+                .selo { display:inline-block; padding:4px 12px; border:2px solid #c9a84c; border-radius:4px; font-size:10px; font-weight:700; color:#c9a84c; text-transform:uppercase; letter-spacing:1px; background:rgba(201,168,76,0.05); }
+                .assinatura { text-align:center; padding-top:15px; flex:1; }
+                .assinatura .linha { width:180px; border-top:1px solid #1a2332; margin:0 auto 5px; }
+                .assinatura .nome { font-weight:600; color:#1a2332; }
+                .assinatura .cargo { font-size:11px; color:#4a5568; font-weight:500; }
+                .sem-dados { text-align:center; padding:40px 20px; color:#94a3b8; }
+                .sem-dados .icon { font-size:48px; display:block; margin-bottom:10px; }
+                .info-extra { font-size:11px; color:#94a3b8; text-align:center; padding:10px; border-top:1px solid #e2e8f0; margin-top:20px; }
+                
+                .filtros-container { background:#f8fafc; padding:20px; border-radius:8px; margin-bottom:25px; border:1px solid #e2e8f0; }
+                .filtros-container select, .filtros-container input { background:#fff; }
+                
+                @media print { 
+                    body { background:#fff; padding:10px; } 
+                    .container { border:none; box-shadow:none; padding:20px; } 
+                    .filtros-container { display:none !important; }
+                }
+                @media (max-width:768px) { 
+                    .container { padding:15px; } 
+                    .header { flex-direction:column; text-align:center; } 
+                    .header .doc-info { text-align:center; } 
+                    .resumo { grid-template-columns:1fr 1fr; } 
+                    .info-escola { flex-direction:column; text-align:center; } 
+                    table { font-size:10px; }
+                    .filtros-container form { grid-template-columns:1fr 1fr; }
+                }
+                @media (max-width:480px) {
+                    .filtros-container form { grid-template-columns:1fr; }
+                }
+            </style>
+        </head>
+        <body>
+        <div class="container">
+            <!-- HEADER -->
+            <div class="header">
+                <div>
+                    <div class="pais">República de Angola</div>
+                    <div class="orgao"><span>AGT</span> · Administração Geral Tributária</div>
+                </div>
+                <div class="doc-info">
+                    <div class="titulo">Registo Descritivo de Pagamentos</div>
+                    <div class="num">DOC-AGT/2026/9868</div>
+                    <div class="data">17/09/2026 14:33:25</div>
+                </div>
+            </div>
+            
+            <!-- INFO ESCOLA -->
+            <div class="info-escola">
+                <div>
+                    <div class="nome">Complexo Escolar Castelo</div>
+                    <div class="detalhes">📍 Luanda, Angola | 📞 (+244) 900 000 000</div>
+                </div>
+                <div class="detalhes">🔑 NIF: 5001234567</div>
+            </div>
+            
+            <!-- FILTROS -->
+            <div class="filtros-container" style="background:#f8fafc;padding:20px;border-radius:8px;margin-bottom:25px;border:1px solid #e2e8f0;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:15px;">
+                <h4 style="color:#1a2332;margin:0;font-size:16px;">🔍 Filtros Dinâmicos</h4>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <a href="?limpar_filtros=1" style="padding:6px 15px;background:#e2e8f0;color:#4a5568;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600;" onclick="return confirm('Tem certeza que deseja limpar todos os filtros?')">🗑️ Limpar Filtros</a>
+                    <button type="submit" form="form-filtros" style="padding:6px 20px;background:#c9a84c;color:#1a2332;border:none;border-radius:6px;font-weight:700;cursor:pointer;">🔍 Aplicar Filtros</button>
+                </div>
+            </div>
+            
+            <form id="form-filtros" method="GET" action="" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">
+                <input type="hidden" name="aplicar_filtros" value="1">
+                
+                <!-- Categoria -->
+                <div>
+                    <label style="font-size:12px;font-weight:600;color:#4a5568;display:block;margin-bottom:3px;">Categoria</label>
+                    <select name="categoria" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;background:#fff;">
+                        <option value="">Todas</option><option value="Propina / Mensalidade" >Propina / Mensalidade</option><option value="Matrícula" >Matrícula</option><option value="Inscrição" >Inscrição</option><option value="Exame" >Exame</option><option value="Certificado" >Certificado</option><option value="Atestado" >Atestado</option><option value="Declaração" >Declaração</option><option value="Transferência" >Transferência</option><option value="Multa" >Multa</option><option value="Transporte" >Transporte</option><option value="Material Escolar" >Material Escolar</option><option value="Uniforme" >Uniforme</option><option value="Outros" >Outros</option></select>
+                </div>
+                
+                <!-- Classe/Turma -->
+                <div>
+                    <label style="font-size:12px;font-weight:600;color:#4a5568;display:block;margin-bottom:3px;">Classe/Turma</label>
+                    <select name="classe" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;background:#fff;">
+                        <option value="">Todas</option></select>
+                </div>
+                
+                <!-- Aluno -->
+                <div>
+                    <label style="font-size:12px;font-weight:600;color:#4a5568;display:block;margin-bottom:3px;">Aluno</label>
+                    <input type="text" name="aluno" value="" placeholder="Nome do aluno..." style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;background:#fff;">
+                </div>
+                
+                <!-- Mês Referência -->
+                <div>
+                    <label style="font-size:12px;font-weight:600;color:#4a5568;display:block;margin-bottom:3px;">Mês Ref.</label>
+                    <select name="mes_referencia" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;background:#fff;">
+                        <option value="">Todos</option></select>
+                </div>
+                
+                <!-- Tipo Pagamento -->
+                <div>
+                    <label style="font-size:12px;font-weight:600;color:#4a5568;display:block;margin-bottom:3px;">Tipo Pagamento</label>
+                    <select name="tipo_pagamento" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;background:#fff;">
+                        <option value="">Todos</option><option value="dinheiro" >Dinheiro</option><option value="cartao" >Cartao</option><option value="transferencia" >Transferencia</option></select>
+                </div>
+                
+                <!-- Status -->
+                <div>
+                    <label style="font-size:12px;font-weight:600;color:#4a5568;display:block;margin-bottom:3px;">Status</label>
+                    <select name="status" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;background:#fff;">
+                        <option value="">Todos</option><option value="confirmado" >Confirmado</option><option value="pago" >Pago</option><option value="pendente" >Pendente</option><option value="cancelado" >Cancelado</option></select>
+                </div>
+                
+                <!-- Data Início -->
+                <div>
+                    <label style="font-size:12px;font-weight:600;color:#4a5568;display:block;margin-bottom:3px;">Data Início</label>
+                    <input type="date" name="data_inicio" value="" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;background:#fff;">
+                </div>
+                
+                <!-- Data Fim -->
+                <div>
+                    <label style="font-size:12px;font-weight:600;color:#4a5568;display:block;margin-bottom:3px;">Data Fim</label>
+                    <input type="date" name="data_fim" value="" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;background:#fff;">
+                </div>
+                
+                <!-- Ordenar por -->
+                <div>
+                    <label style="font-size:12px;font-weight:600;color:#4a5568;display:block;margin-bottom:3px;">Ordenar por</label>
+                    <select name="order_by" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;background:#fff;">
+                        <option value="nome" selected>Nome do Aluno</option>
+                        <option value="data" >Data</option>
+                        <option value="valor" >Valor</option>
+                        <option value="status" >Status</option>
+                        <option value="categoria" >Categoria</option>
+                    </select>
+                </div>
+                
+                <!-- Ordem -->
+                <div>
+                    <label style="font-size:12px;font-weight:600;color:#4a5568;display:block;margin-bottom:3px;">Ordem</label>
+                    <select name="order_dir" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;background:#fff;">
+                        <option value="ASC" selected>Crescente (A-Z)</option>
+                        <option value="DESC" >Decrescente (Z-A)</option>
+                    </select>
+                </div>
+            </form>
+            
+            <!-- Mostrar filtros aplicados -->
+            <div style="margin-top:10px;font-size:13px;color:#94a3b8;">📌 Nenhum filtro aplicado</div>
+        </div>
+            
+            <!-- RESUMO EXECUTIVO -->
+            <div class="resumo"><div class="resumo-item">
+                    <div class="label">Total Arrecadado</div>
+                    <div class="value positivo">Kz 0,00</div>
+                </div><div class="resumo-item">
+                    <div class="label">Arrecadado (Mês)</div>
+                    <div class="value destaque">Kz 0,00</div>
+                </div><div class="resumo-item">
+                    <div class="label">Alunos Ativos</div>
+                    <div class="value ">0</div>
+                </div></div><div class="sem-dados" style="background:#fef9e7;border:2px dashed #f39c12;border-radius:12px;padding:40px 20px;margin:20px 0;">
+                <span class="icon" style="font-size:64px;">📭</span>
+                <h3 style="color:#1a2332;margin-bottom:10px;">Nenhum pagamento encontrado</h3>
+                <p style="color:#64748b;font-size:15px;">Não há registros de pagamentos com os filtros selecionados.</p>
+                <p style="color:#94a3b8;font-size:13px;margin-top:10px;">Tente ajustar os filtros ou limpar a seleção.</p>
+            </div><div class="footer">
+                <div>
+                    <span class="selo">Documento Oficial AGT</span>
+                    <div style="margin-top:5px;">🔒 Válido para fins tributários</div>
+                </div>
+                <div>
+                    <div>Emissão: 17/09/2026 14:33:25</div>
+                    <div style="font-size:11px;color:#94a3b8;">Sistema AGT v2.0</div>
+                </div>
+            </div>
+            
+            <div style="display:flex;flex-wrap:wrap;gap:30px;margin-top:20px;padding-top:20px;border-top:1px solid #e2e8f0;">
+                <div class="assinatura">
+                    <div class="linha"></div>
+                    <div class="nome">__________________________________</div>
+                    <div class="cargo">Director Financeiro</div>
+                </div>
+                <div class="assinatura">
+                    <div class="linha"></div>
+                    <div class="nome">__________________________________</div>
+                    <div class="cargo">Coordenador AGT</div>
+                </div>
+            </div>
+            
+            <div class="info-extra">
+                Relatório completo gerado automaticamente em 17/09/2026 14:33:25 | ID: 6aac24658ee43 | Versão: 3.0
+            </div>
+        </div>
+        </body>
+        </html>

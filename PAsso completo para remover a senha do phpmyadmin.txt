@@ -1,0 +1,133 @@
+📋 PASSO A PASSO COMPLETO
+🔹 PASSO 1: Abrir o XAMPP Control Panel
+Abra o XAMPP Control Panel
+
+Se o MySQL estiver rodando, clique em Stop
+
+Deixe o MySQL parado
+
+🔹 PASSO 2: Abrir o Prompt de Comando
+Pressione Windows + R
+
+Digite cmd
+
+Clique em OK
+
+🔹 PASSO 3: Ir até a pasta do MySQL
+No prompt, digite:
+
+cmd
+cd C:\xampp\mysql\bin
+Pressione Enter
+
+🔹 PASSO 4: Iniciar o MySQL sem verificar senha
+Digite:
+
+cmd
+mysqld --skip-grant-tables
+Pressione Enter
+
+⚠️ ATENÇÃO: O prompt vai ficar parado, sem mostrar nada. ISSO É NORMAL! Deixe ele aberto.
+
+🔹 PASSO 5: Abrir um NOVO Prompt de Comando
+Pressione Windows + R novamente
+
+Digite cmd
+
+Clique em OK
+
+🔹 PASSO 6: Ir para a pasta do MySQL no NOVO prompt
+Digite:
+
+cmd
+cd C:\xampp\mysql\bin
+Pressione Enter
+
+🔹 PASSO 7: Conectar ao MySQL sem senha
+Digite:
+
+cmd
+mysql -u root
+Pressione Enter
+
+Você deve ver algo como:
+
+text
+Welcome to the MariaDB monitor. Commands end with ; or \g.
+Your MariaDB connection id is 1
+Server version: 10.4.28-MariaDB mariadb.org binary distribution
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]>
+🔹 PASSO 8: Resetar a senha do root
+Agora você está dentro do MySQL. Digite ESTES COMANDOS UM POR UM:
+
+Comando 1:
+
+sql
+FLUSH PRIVILEGES;
+Pressione Enter
+
+Comando 2:
+
+sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY '';
+Pressione Enter
+
+Comando 3:
+
+sql
+EXIT;
+Pressione Enter
+
+🔹 PASSO 9: Fechar os prompts
+Volte no PRIMEIRO prompt (o que estava parado)
+
+Pressione Ctrl + C para parar o MySQL
+
+Feche os dois prompts
+
+🔹 PASSO 10: Reinciar o MySQL no XAMPP
+Volte ao XAMPP Control Panel
+
+Clique em Start no MySQL
+
+Espere o ícone ficar VERDE
+
+🔹 PASSO 11: Configurar o phpMyAdmin
+Abra o arquivo: C:\xampp\phpMyAdmin\config.inc.php
+
+Substitua TODO o conteúdo por:
+
+php
+<?php
+$i = 0;
+$i++;
+
+$cfg['Servers'][$i]['auth_type'] = 'config';
+$cfg['Servers'][$i]['user'] = 'root';
+$cfg['Servers'][$i]['password'] = '';
+$cfg['Servers'][$i]['AllowNoPassword'] = true;
+$cfg['Servers'][$i]['host'] = 'localhost';
+$cfg['Servers'][$i]['port'] = '3306';
+$cfg['Servers'][$i]['extension'] = 'mysqli';
+
+$cfg['blowfish_secret'] = 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6';
+$cfg['DefaultLang'] = 'pt_BR';
+?>
+Salve o arquivo (Ctrl + S)
+
+🔹 PASSO 12: Limpar cache do navegador
+No navegador, pressione Ctrl + Shift + Delete
+
+Marque Cookies e dados de site
+
+Clique em Limpar dados
+
+🔹 PASSO 13: Testar
+Abra o navegador
+
+Acesse: http://localhost/phpmyadmin/
+
+DEVE ENTRAR DIRETO, SEM PEDIR SENHA! 🎉

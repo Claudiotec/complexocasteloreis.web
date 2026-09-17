@@ -1,0 +1,490 @@
+<?php
+// ============================================
+// modules/escola/financeiro/orcamento/index.php
+// Orçamento - Visualização e Gestão
+// ============================================
+
+// Carregar configurações
+require_once '../../../../config/database.php';
+require_once '../../../../config/app_modes.php';
+
+// Iniciar sessão
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Verificar login
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: ' . SITE_URL . 'login.php');
+    exit;
+}
+
+// Verificar permissão (apenas admin)
+if ($_SESSION['usuario_perfil'] !== 'admin') {
+    header('Location: ' . SITE_URL);
+    exit;
+}
+
+try {
+    $pdo = conectarBanco();
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (Exception $e) {
+    die("Erro de conexão: " . $e->getMessage());
+}
+
+// ============================================
+// BUSCAR DADOS DO ORÇAMENTO
+// ============================================
+$ano = isset($_GET['ano']) ? intval($_GET['ano']) : date('Y');
+$orcamento = null;
+$itens = [];
+$totais = [
+    'receita' => 0,
+    'despesa' => 0,
+    'liquido' => 0
+];
+
+try {
+    // Busca o orçamento
+    $stmt = $pdo->prepare("SELECT * FROM orcamento WHERE ano = ?");
+    $stmt->execute([$ano]);
+    $orcamento = $stmt->fetch();
+    
+    if ($orcamento) {
+        // Busca os itens do orçamento
+        $stmt = $pdo->prepare("
+            SELECT oi.*, pc.codigo, pc.nome as conta_nome, pc.tipo
+            FROM orcamento_itens oi
+            JOIN plano_contas pc ON oi.conta_id = pc.id
+            WHERE oi.orcamento_id = ?
+            ORDER BY pc.codigo
+        ");
+        $stmt->execute([$orcamento['id']]);
+        $itens = $stmt->fetchAll();
+        
+        $totais['receita'] = $orcamento['total_receita'] ?? 0;
+        $totais['despesa'] = $orcamento['total_despesa'] ?? 0;
+        $totais['liquido'] = $orcamento['total_liquido'] ?? 0;
+    }
+} catch (Exception $e) {
+    $orcamento = null;
+    $itens = [];
+}
+
+// ============================================
+// INCLUIR HEADER
+// ============================================
+include '../../includes/header_escola.php';
+?>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orçamento - Financeiro</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px 25px;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .page-header h1 {
+            font-size: 24px;
+            color: #1a2332;
+        }
+        
+        .page-header .subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        
+        .btn {
+            padding: 8px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary { background: #3498db; color: #fff; }
+        .btn-primary:hover { background: #2980b9; transform: translateY(-2px); }
+        
+        .btn-secondary { background: #e2e8f0; color: #1a2332; }
+        .btn-secondary:hover { background: #cbd5e1; transform: translateY(-2px); }
+        
+        .btn-success { background: #2ecc71; color: #fff; }
+        .btn-success:hover { background: #27ae60; transform: translateY(-2px); }
+        
+        .btn-warning { background: #f39c12; color: #fff; }
+        .btn-warning:hover { background: #d68910; transform: translateY(-2px); }
+        
+        .btn-gold {
+            background: linear-gradient(135deg, #c9a84c, #f5d76e);
+            color: #1a2332;
+        }
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3); }
+        
+        .submenu {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 25px;
+            padding: 12px 18px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            align-items: center;
+        }
+        
+        .submenu a {
+            padding: 6px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            color: #4a5568;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .submenu a:hover {
+            background: rgba(201, 168, 76, 0.1);
+            color: #c9a84c;
+            border-color: #c9a84c;
+        }
+        
+        .submenu a.active {
+            background: linear-gradient(135deg, #c9a84c, #f5d76e);
+            color: #1a2332;
+            border-color: #c9a84c;
+            font-weight: 600;
+        }
+        
+        .submenu .divider {
+            width: 1px;
+            height: 30px;
+            background: #e2e8f0;
+        }
+        
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid #c9a84c;
+        }
+        
+        .stat-card .number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a2332;
+        }
+        
+        .stat-card .label {
+            font-size: 12px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+        
+        .stat-card.receita { border-left-color: #2ecc71; }
+        .stat-card.despesa { border-left-color: #e74c3c; }
+        .stat-card.liquido { border-left-color: #3498db; }
+        
+        .stat-card .positivo { color: #2ecc71; }
+        .stat-card .negativo { color: #e74c3c; }
+        
+        /* Tabela */
+        .table-responsive {
+            overflow-x: auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 5px;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        
+        .table thead th {
+            background: #f8fafc;
+            padding: 10px 12px;
+            text-align: center;
+            font-weight: 600;
+            color: #1a2332;
+            border-bottom: 2px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .table thead th:first-child { text-align: left; }
+        .table thead th:last-child { text-align: right; }
+        
+        .table tbody td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        .table tbody td:first-child { text-align: left; }
+        .table tbody td:last-child { text-align: right; font-weight: 600; }
+        
+        .table tbody tr:hover { background: #f8fafc; }
+        
+        .table .codigo {
+            font-weight: 600;
+            color: #c9a84c;
+            font-family: monospace;
+        }
+        
+        .table .tipo-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        
+        .table .tipo-badge.receita { background: #d1fae5; color: #065f46; }
+        .table .tipo-badge.despesa { background: #fee2e2; color: #991b1b; }
+        
+        .table .total-receita { color: #2ecc71; font-weight: 700; }
+        .table .total-despesa { color: #e74c3c; font-weight: 700; }
+        .table .total-liquido { font-weight: 700; }
+        .table .total-liquido.positivo { color: #2ecc71; }
+        .table .total-liquido.negativo { color: #e74c3c; }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #94a3b8;
+        }
+        
+        .empty-state .icon {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 15px;
+        }
+        
+        .empty-state h3 {
+            font-size: 18px;
+            color: #1a2332;
+            margin-bottom: 5px;
+        }
+        
+        .ano-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .ano-selector select {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            font-size: 14px;
+            background: #fff;
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .submenu { flex-direction: column; align-items: stretch; }
+            .submenu a { text-align: center; }
+            .submenu .divider { display: none; }
+            .table { font-size: 11px; }
+            .table thead th, .table tbody td { padding: 6px 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1>📊 Orçamento <?= $ano ?></h1>
+            <p class="subtitle">Planejamento financeiro anual</p>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+            <a href="../index.php" class="btn btn-secondary">← Voltar</a>
+            <a href="?acao=exportar&ano=<?= $ano ?>" class="btn btn-success">📤 Exportar</a>
+        </div>
+    </div>
+    
+    <!-- Submenu -->
+    <div class="submenu">
+        <a href="../plano_contas/">📋 Plano de Contas</a>
+        <a href="index.php" class="active">📊 Orçamento</a>
+        <span class="divider"></span>
+        <span class="label">🔑 Admin</span>
+        <form method="GET" class="ano-selector" style="display: flex; gap: 8px; align-items: center;">
+            <select name="ano" onchange="this.form.submit()">
+                <?php for ($i = date('Y') - 2; $i <= date('Y') + 1; $i++): ?>
+                <option value="<?= $i ?>" <?= $i == $ano ? 'selected' : '' ?>><?= $i ?></option>
+                <?php endfor; ?>
+            </select>
+        </form>
+    </div>
+    
+    <!-- Stats -->
+    <?php if ($orcamento): ?>
+    <div class="stats-grid">
+        <div class="stat-card receita">
+            <div class="number positico">R$ <?= number_format($totais['receita'], 2, ',', '.') ?></div>
+            <div class="label">📈 Total Receita</div>
+        </div>
+        <div class="stat-card despesa">
+            <div class="number negativo">R$ <?= number_format($totais['despesa'], 2, ',', '.') ?></div>
+            <div class="label">📉 Total Despesa</div>
+        </div>
+        <div class="stat-card liquido">
+            <div class="number <?= $totais['liquido'] >= 0 ? 'positivo' : 'negativo' ?>">
+                R$ <?= number_format($totais['liquido'], 2, ',', '.') ?>
+            </div>
+            <div class="label">📊 Resultado Líquido</div>
+        </div>
+    </div>
+    <?php endif; ?>
+    
+    <!-- Tabela -->
+    <div class="table-responsive">
+        <?php if ($orcamento && count($itens) > 0): ?>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Conta</th>
+                    <th>Tipo</th>
+                    <th>Jan</th>
+                    <th>Fev</th>
+                    <th>Mar</th>
+                    <th>Abr</th>
+                    <th>Mai</th>
+                    <th>Jun</th>
+                    <th>Jul</th>
+                    <th>Ago</th>
+                    <th>Set</th>
+                    <th>Out</th>
+                    <th>Nov</th>
+                    <th>Dez</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                $total_receita = 0;
+                $total_despesa = 0;
+                foreach ($itens as $item): 
+                    $total_mes = $item['janeiro'] + $item['fevereiro'] + $item['marco'] + 
+                                  $item['abril'] + $item['maio'] + $item['junho'] + 
+                                  $item['julho'] + $item['agosto'] + $item['setembro'] + 
+                                  $item['outubro'] + $item['novembro'] + $item['dezembro'];
+                    
+                    if ($item['tipo'] === 'receita') {
+                        $total_receita += $total_mes;
+                    } else {
+                        $total_despesa += $total_mes;
+                    }
+                ?>
+                <tr>
+                    <td class="codigo"><?= htmlspecialchars($item['codigo']) ?></td>
+                    <td><?= htmlspecialchars($item['conta_nome']) ?></td>
+                    <td>
+                        <span class="tipo-badge <?= $item['tipo'] ?>">
+                            <?= ucfirst($item['tipo']) ?>
+                        </span>
+                    </td>
+                    <td><?= number_format($item['janeiro'], 2, ',', '.') ?></td>
+                    <td><?= number_format($item['fevereiro'], 2, ',', '.') ?></td>
+                    <td><?= number_format($item['marco'], 2, ',', '.') ?></td>
+                    <td><?= number_format($item['abril'], 2, ',', '.') ?></td>
+                    <td><?= number_format($item['maio'], 2, ',', '.') ?></td>
+                    <td><?= number_format($item['junho'], 2, ',', '.') ?></td>
+                    <td><?= number_format($item['julho'], 2, ',', '.') ?></td>
+                    <td><?= number_format($item['agosto'], 2, ',', '.') ?></td>
+                    <td><?= number_format($item['setembro'], 2, ',', '.') ?></td>
+                    <td><?= number_format($item['outubro'], 2, ',', '.') ?></td>
+                    <td><?= number_format($item['novembro'], 2, ',', '.') ?></td>
+                    <td><?= number_format($item['dezembro'], 2, ',', '.') ?></td>
+                    <td class="<?= $item['tipo'] === 'receita' ? 'total-receita' : 'total-despesa' ?>">
+                        R$ <?= number_format($total_mes, 2, ',', '.') ?>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+                <!-- Total -->
+                <tr style="font-weight: 700; background: #f8fafc; border-top: 2px solid #e2e8f0;">
+                    <td colspan="15" style="text-align: right; font-size: 14px;">
+                        📊 TOTAL GERAL
+                    </td>
+                    <td style="text-align: right;">
+                        <span style="color: #2ecc71;">R$ <?= number_format($total_receita, 2, ',', '.') ?></span>
+                        <br>
+                        <span style="color: #e74c3c;">R$ <?= number_format($total_despesa, 2, ',', '.') ?></span>
+                        <br>
+                        <span class="<?= ($total_receita - $total_despesa) >= 0 ? 'positivo' : 'negativo' ?>" style="font-size: 14px;">
+                            R$ <?= number_format($total_receita - $total_despesa, 2, ',', '.') ?>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <?php else: ?>
+        <div class="empty-state">
+            <span class="icon">📊</span>
+            <h3>Nenhum orçamento encontrado para <?= $ano ?></h3>
+            <p>Clique em "Criar Orçamento" no Dashboard para gerar o planejamento financeiro.</p>
+            <br>
+            <a href="../index.php" class="btn btn-gold">📊 Voltar ao Dashboard</a>
+        </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+<?php
+include '../../includes/footer_escola.php';
+?>
+</body>
+</html>

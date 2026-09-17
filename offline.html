@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - SoftGest</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .offline-box {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #1a2332;
+            margin: 0;
+        }
+        p {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #c9a84c;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #b8973a;
+            transform: translateY(-2px);
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #fee2e2;
+            color: #991b1b;
+            border-radius: 12px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-box">
+        <div class="icon">📡</div>
+        <h1>Você está Offline</h1>
+        <p>
+            Não foi possível conectar ao servidor.<br>
+            Verifique sua conexão com a internet.
+        </p>
+        <div style="margin: 20px 0;">
+            <span class="status">🔴 Sem conexão</span>
+        </div>
+        <button class="btn" onclick="tentarReconectar()">
+            🔄 Tentar Reconectar
+        </button>
+        <p style="font-size: 13px; color: #94a3b8; margin-top: 20px;">
+            Os dados serão sincronizados quando a conexão for restaurada.
+        </p>
+    </div>
+    
+    <script>
+        function tentarReconectar() {
+            location.reload();
+        }
+        
+        // Verificar conexão automaticamente
+        setInterval(() => {
+            if (navigator.onLine) {
+                location.reload();
+            }
+        }, 10000);
+    </script>
+</body>
+</html>

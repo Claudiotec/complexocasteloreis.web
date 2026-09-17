@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Fatura - FAT-20260720-000090</title>
+        <style>
+            @page { size: A4; margin: 5mm; }
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 0; margin: 0; }
+            .fatura-page { max-width: 200mm; width: 100%; margin: 0 auto; background: #fff; padding: 5mm; }
+            .fatura-container { background: #fff; padding: 4px 6px; border-radius: 3px; margin-bottom: 6px; page-break-inside: avoid; border: 1px solid #ddd; }
+            .via-header { padding: 4px 0; text-align: center; font-size: 10px; font-weight: bold; letter-spacing: 2px; border-radius: 3px 3px 0 0; }
+            .via-header.cliente { background: #1a2332; color: #fff; }
+            .via-header.escola { background: #c9a84c; color: #1a2332; }
+            .via-divider { text-align: center; font-size: 11px; font-weight: bold; color: #1a2332; padding: 6px 0; border-top: 2px dashed #ccc; border-bottom: 2px dashed #ccc; margin: 8px 0; }
+            .via-divider span { background: #fff; padding: 0 15px; }
+            .header-fatura { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 2px double #1a2332; margin-bottom: 6px; }
+            .header-fatura .logo { display: flex; align-items: center; gap: 8px; }
+            .header-fatura .logo-icon { width: 36px; height: 36px; background: #1a2332; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #c9a84c; font-size: 16px; font-weight: bold; border: 2px solid #c9a84c; }
+            .header-fatura .escola-nome { font-size: 14px; font-weight: 800; color: #1a2332; }
+            .header-fatura .escola-end { font-size: 8px; color: #666; }
+            .header-fatura .fatura-titulo { text-align: right; }
+            .header-fatura .fatura-titulo h2 { font-size: 14px; font-weight: 800; color: #c9a84c; letter-spacing: 1px; }
+            .header-fatura .fatura-num { font-size: 9px; color: #555; background: #f8fafc; padding: 2px 8px; border-radius: 3px; border: 1px solid #ddd; margin-top: 2px; }
+            .info-empresa { display: flex; justify-content: space-between; flex-wrap: wrap; padding: 3px 0; border-bottom: 1px solid #ddd; margin-bottom: 5px; font-size: 9px; }
+            .info-empresa .nif-box { background: #1a2332; color: #fff; padding: 1px 10px; border-radius: 3px; font-weight: bold; font-size: 9px; }
+            .dados-aluno { border: 1px solid #1a2332; padding: 4px 8px; margin-bottom: 5px; background: #fafafa; border-radius: 3px; }
+            .dados-aluno .titulo { font-weight: bold; font-size: 10px; text-align: center; border-bottom: 1px solid #1a2332; padding-bottom: 2px; margin-bottom: 4px; color: #1a2332; }
+            .dados-aluno .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px; font-size: 9px; }
+            .tabela-itens { width: 100%; border-collapse: collapse; margin-bottom: 5px; font-size: 8px; }
+            .tabela-itens th { background: #1a2332; color: #fff; padding: 3px 4px; text-align: center; border: 1px solid #1a2332; }
+            .tabela-itens td { padding: 3px 4px; border: 1px solid #ddd; text-align: center; }
+            .tabela-itens .text-left { text-align: left; }
+            .tabela-itens .text-right { text-align: right; }
+            .tabela-itens .total-row { background: #f8fafc; font-weight: bold; }
+            .tabela-itens .total-row td { border-top: 2px solid #1a2332; }
+            .tabela-itens .valor-total { color: #c0392b; font-size: 12px; }
+            .resumo-fatura { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px; padding: 4px 8px; background: #f8fafc; border: 1px solid #ddd; border-radius: 3px; margin-bottom: 5px; font-size: 8px; }
+            .resumo-fatura .total-destaque { text-align: right; border-left: 2px solid #c9a84c; padding-left: 10px; }
+            .resumo-fatura .total-destaque .label { font-size: 8px; color: #666; }
+            .resumo-fatura .total-destaque .valor { font-size: 16px; font-weight: 800; color: #c0392b; }
+            .rodape { display: flex; justify-content: space-between; flex-wrap: wrap; padding-top: 4px; border-top: 1px solid #1a2332; font-size: 7px; color: #666; }
+            .rodape .assinatura { text-align: center; }
+            .rodape .assinatura .linha { width: 120px; border-top: 1px solid #333; margin: 2px auto; }
+            @media print {
+                body { background: #fff !important; }
+                .fatura-page { box-shadow: none !important; padding: 3mm !important; }
+                .no-print { display: none !important; }
+                .fatura-container * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+                table { page-break-inside: avoid !important; }
+                tr { page-break-inside: avoid !important; }
+            }
+            @media screen and (max-width: 768px) {
+                .dados-aluno .grid { grid-template-columns: 1fr !important; }
+                .fatura-page { padding: 3mm; }
+            }
+        </style>
+        <script>
+            function imprimirFatura() { setTimeout(function() { window.print(); }, 800); }
+            window.onload = function() { if (window.location.search.indexOf("print=1") > -1) { imprimirFatura(); } };
+        </script>
+    </head>
+    <body>
+    <div class="fatura-page"><div class="fatura-container"><div class="via-header cliente">VIA DO CLIENTE</div>
+    <div class="header-fatura">
+        <div class="logo">
+            <div class="logo-icon">🎓</div>
+            <div>
+                <div class="escola-nome">COMPLEXO ESCOLAR CASTELO REIS</div>
+                <div class="escola-end">📍 Icolo e Bengo; Km44, Desvio do Bom Jesus, Km44, Centro, Icolo e Bengo, CEP: 500109175</div>
+            </div>
+        </div>
+        <div class="fatura-titulo">
+            <h2>FATURA</h2>
+            <div class="fatura-num"><strong>Nº:</strong> FAT-20260720-000090<br><span style="font-size:8px;">Emissão: 20/07/2026 07:39:16</span></div>
+        </div>
+    </div>
+    
+    <div class="info-empresa">
+        <div><strong>📞</strong> 972902412</div>
+        <div><strong>✉</strong> complexoescolarcasteloreis@gmail.com</div>
+        <div class="nif-box">NIF: 500 10923</div>
+    </div>
+    
+    <div class="dados-aluno">
+        <div class="titulo">📋 DADOS DO ALUNO</div>
+        <div class="grid">
+            <div><strong>Nome:</strong> Cristina bukaka Ngongo</div>
+            <div><strong>ID:</strong> #2026018</div>
+            <div><strong>Classe:</strong> PRÉ</div>
+            <div><strong>Turma:</strong> </div>
+            <div><strong>Gênero:</strong> Masculino</div>
+            <div><strong>Data Pagamento:</strong> 20/07/2026</div>
+        </div>
+    </div>
+    
+    <table class="tabela-itens">
+        <thead>
+            <tr>
+                <th style="width:25px;">#</th>
+                <th style="text-align:left;">Descrição</th>
+                <th style="width:12%;">Mês</th>
+                <th style="width:13%;text-align:right;">Valor Base</th>
+                <th style="width:10%;text-align:right;">Multa</th>
+                <th style="width:10%;text-align:right;">Desconto</th>
+                <th style="width:13%;text-align:right;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td class="text-left">Cartão Pré</td>
+                <td>-</td>
+                <td class="text-right">1.500,00 Kz</td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right"><strong>1.500,00 Kz</strong></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td class="text-left">Propina Pré</td>
+                <td>Julho/2026</td>
+                <td class="text-right">9.000,00 Kz</td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right"><strong>9.000,00 Kz</strong></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td class="text-left">Matrícula Pré</td>
+                <td>-</td>
+                <td class="text-right">6.000,00 Kz</td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right"><strong>6.000,00 Kz</strong></td>
+            </tr>
+            <tr class="total-row">
+                <td colspan="3" style="text-align:right;font-size:10px;">TOTAIS</td>
+                <td class="text-right">16.500,00 Kz</td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right valor-total">16.500,00 Kz</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="resumo-fatura">
+        <div>
+            <div><strong>📅 Data:</strong> 20/07/2026</div>
+            <div><strong>💳 Forma:</strong> cartao</div>
+            
+        </div>
+        <div>
+            <div><strong>✅ Status:</strong> <span style="color:#27ae60;font-weight:bold;">PAGO</span></div>
+            <div><strong>📦 Itens:</strong> 3</div>
+            
+        </div>
+        <div class="total-destaque">
+            <div class="label">VALOR TOTAL</div>
+            <div class="valor">16.500,00 Kz</div>
+        </div>
+    </div>
+    
+    <div class="rodape">
+        <div>
+            <p style="margin:1px 0;">Documento emitido eletronicamente</p>
+            <p style="margin:1px 0;">COMPLEXO ESCOLAR CASTELO REIS © 2026</p>
+        </div>
+        <div class="assinatura">
+            <p style="font-size:8px;font-weight:bold;margin:1px 0;">Assinatura do Responsável</p>
+            <div class="linha"></div>
+            <p style="font-size:7px;color:#999;margin:1px 0;">_________________________________</p>
+        </div>
+        <div style="text-align:right;font-size:7px;color:#999;">
+            <p style="margin:1px 0;">Impresso em: 20/07/2026 07:39:16</p>
+        </div>
+    </div></div><div class="via-divider"><span>✂️ CORTE AQUI ✂️</span></div><div class="fatura-container" style="border:2px dashed #c9a84c;"><div class="via-header escola">VIA DA ESCOLA</div>
+    <div class="header-fatura">
+        <div class="logo">
+            <div class="logo-icon">🎓</div>
+            <div>
+                <div class="escola-nome">COMPLEXO ESCOLAR CASTELO REIS</div>
+                <div class="escola-end">📍 Icolo e Bengo; Km44, Desvio do Bom Jesus, Km44, Centro, Icolo e Bengo, CEP: 500109175</div>
+            </div>
+        </div>
+        <div class="fatura-titulo">
+            <h2>FATURA</h2>
+            <div class="fatura-num"><strong>Nº:</strong> FAT-20260720-000090<br><span style="font-size:8px;">Emissão: 20/07/2026 07:39:16</span></div>
+        </div>
+    </div>
+    
+    <div class="info-empresa">
+        <div><strong>📞</strong> 972902412</div>
+        <div><strong>✉</strong> complexoescolarcasteloreis@gmail.com</div>
+        <div class="nif-box">NIF: 500 10923</div>
+    </div>
+    
+    <div class="dados-aluno">
+        <div class="titulo">📋 DADOS DO ALUNO</div>
+        <div class="grid">
+            <div><strong>Nome:</strong> Cristina bukaka Ngongo</div>
+            <div><strong>ID:</strong> #2026018</div>
+            <div><strong>Classe:</strong> PRÉ</div>
+            <div><strong>Turma:</strong> </div>
+            <div><strong>Gênero:</strong> Masculino</div>
+            <div><strong>Data Pagamento:</strong> 20/07/2026</div>
+        </div>
+    </div>
+    
+    <table class="tabela-itens">
+        <thead>
+            <tr>
+                <th style="width:25px;">#</th>
+                <th style="text-align:left;">Descrição</th>
+                <th style="width:12%;">Mês</th>
+                <th style="width:13%;text-align:right;">Valor Base</th>
+                <th style="width:10%;text-align:right;">Multa</th>
+                <th style="width:10%;text-align:right;">Desconto</th>
+                <th style="width:13%;text-align:right;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td class="text-left">Cartão Pré</td>
+                <td>-</td>
+                <td class="text-right">1.500,00 Kz</td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right"><strong>1.500,00 Kz</strong></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td class="text-left">Propina Pré</td>
+                <td>Julho/2026</td>
+                <td class="text-right">9.000,00 Kz</td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right"><strong>9.000,00 Kz</strong></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td class="text-left">Matrícula Pré</td>
+                <td>-</td>
+                <td class="text-right">6.000,00 Kz</td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right"><strong>6.000,00 Kz</strong></td>
+            </tr>
+            <tr class="total-row">
+                <td colspan="3" style="text-align:right;font-size:10px;">TOTAIS</td>
+                <td class="text-right">16.500,00 Kz</td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right">0,00 Kz</td>
+                <td class="text-right valor-total">16.500,00 Kz</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="resumo-fatura">
+        <div>
+            <div><strong>📅 Data:</strong> 20/07/2026</div>
+            <div><strong>💳 Forma:</strong> cartao</div>
+            
+        </div>
+        <div>
+            <div><strong>✅ Status:</strong> <span style="color:#27ae60;font-weight:bold;">PAGO</span></div>
+            <div><strong>📦 Itens:</strong> 3</div>
+            
+        </div>
+        <div class="total-destaque">
+            <div class="label">VALOR TOTAL</div>
+            <div class="valor">16.500,00 Kz</div>
+        </div>
+    </div>
+    
+    <div class="rodape">
+        <div>
+            <p style="margin:1px 0;">Documento emitido eletronicamente</p>
+            <p style="margin:1px 0;">COMPLEXO ESCOLAR CASTELO REIS © 2026</p>
+        </div>
+        <div class="assinatura">
+            <p style="font-size:8px;font-weight:bold;margin:1px 0;">Assinatura do Responsável</p>
+            <div class="linha"></div>
+            <p style="font-size:7px;color:#999;margin:1px 0;">_________________________________</p>
+        </div>
+        <div style="text-align:right;font-size:7px;color:#999;">
+            <p style="margin:1px 0;">Impresso em: 20/07/2026 07:39:16</p>
+        </div>
+    </div></div>
+    </div>
+    <div class="no-print" style="text-align:center;padding:15px;max-width:200mm;margin:0 auto;">
+        <button onclick="window.print()" style="padding:12px 35px;background:#1a2332;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;margin-right:10px;">🖨️ IMPRIMIR</button>
+        <button onclick="window.close()" style="padding:12px 35px;background:#e74c3c;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;">✕ FECHAR</button>
+    </div>
+    </body></html>

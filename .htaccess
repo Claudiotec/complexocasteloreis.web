@@ -1,0 +1,45 @@
+# ============================================================
+# SOFTGEST WEB - PROTEÇÃO DE ARQUIVOS
+# ============================================================
+
+# Ativar motor de reescrita
+RewriteEngine On
+
+# Impedir listagem de diretórios
+Options -Indexes
+
+# Página inicial
+DirectoryIndex index.php login.php
+
+# Proteger arquivos sensíveis
+<FilesMatch "\.(sql|log|ini|config|json|yml|yaml|md|sh|bat|py)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Proteger arquivos de configuração
+<Files "database.php">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "security.php">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Proteger pastas
+RedirectMatch 403 /softgest_web/config/.*$
+RedirectMatch 403 /softgest_web/includes/.*$
+RedirectMatch 403 /softgest_web/sql/.*$
+RedirectMatch 403 /softgest_web/data/.*$
+
+# Bloquear arquivos ocultos
+RedirectMatch 403 /\..*$
+
+# Segurança de cabeçalhos
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "DENY"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>

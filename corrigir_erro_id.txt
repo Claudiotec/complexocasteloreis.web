@@ -1,0 +1,102 @@
+<?php
+require_once 'config/database.php';
+
+echo "<h1>🔧 Corrigindo IDs dos Funcionários</h1>";
+
+try {
+    // Verificar estrutura
+    $stmt = $pdo->query("DESCRIBE funcionarios");
+    $estrutura = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    $temAutoIncrement = false;
+    foreach ($estrutura as $campo) {
+        if ($campo['Field'] == 'id' && strpos($campo['Extra'], 'auto_increment') !== false) {
+            $temAutoIncrement = true;
+            break;
+        }
+    }
+    
+    if (!$temAutoIncrement) {
+        echo "<p>⚠️ Corrigindo estrutura da tabela...</p>";
+        $pdo->exec("ALTER TABLE funcionarios MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT PRIMARY KEY");
+        echo "<p>✅ Estrutura corrigida!</p>";
+    }
+    
+    // Encontrar o próximo ID disponível
+    $stmt = $pdo->query("SELECT MAX(id) + 1 as proximo FROM funcionarios");
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $proximoId = $result['proximo'] ?? 1;
+    
+    echo "<p>📌 Próximo ID disponível: $proximoId</p>";
+    
+    // Corrigir registros com ID = 0
+    $stmt = $pdo->prepare("SELECT * FROM funcionarios WHERE id = 0");
+    $stmt->execute();
+    $funcionariosZero = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    if (!empty($funcionariosZero)) {
+        echo "<p>⚠️ Encontrados " . count($funcionariosZero) . " funcionários com ID = 0</p>";
+        
+        foreach ($funcionariosZero as $func) {
+            $novoId = $proximoId++;
+            
+            // Atualizar o ID
+            $stmt = $pdo->prepare("UPDATE funcionarios SET id = ? WHERE id = 0 AND nome = ?");
+            $stmt->execute([$novoId, $func['nome']]);
+            
+            echo "<p>✅ {$func['nome']} atualizado para ID: $novoId</p>";
+            
+            // Atualizar distribuições
+            $stmt = $pdo->prepare("UPDATE destribuicao_professores SET professor_id = ? WHERE professor_nome = ? AND professor_id = 0");
+            $stmt->execute([$novoId, $func['nome']]);
+            
+            echo "<p>   📚 Distribuições atualizadas: " . $stmt->rowCount() . "</p>";
+        }
+    } else {
+        echo "<p>✅ Nenhum funcionário com ID = 0 encontrado</p>";
+    }
+    
+    // Verificar resultado final
+    echo "<h2>📊 Funcionários:</h2>";
+    $stmt = $pdo->query("SELECT * FROM funcionarios ORDER BY id");
+    $funcionarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    echo "<table border='1' cellpadding='5'>";
+    echo "<tr><th>ID</th><th>Nome</th><th>Email</th><th>Status</th></tr>";
+    foreach ($funcionarios as $f) {
+        echo "<tr>";
+        echo "<td>{$f['id']}</td>";
+        echo "<td>{$f['nome']}</td>";
+        echo "<td>{$f['email']}</td>";
+        echo "<td>{$f['status']}</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+    
+    echo "<h2>📚 Distribuições:</h2>";
+    $stmt = $pdo->query("SELECT * FROM destribuicao_professores");
+    $distribuicoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    if (!empty($distribuicoes)) {
+        echo "<table border='1' cellpadding='5'>";
+        echo "<tr><th>ID</th><th>Professor</th><th>Professor ID</th><th>Turma</th><th>Disciplinas</th></tr>";
+        foreach ($distribuicoes as $d) {
+            echo "<tr>";
+            echo "<td>{$d['id']}</td>";
+            echo "<td>{$d['professor_nome']}</td>";
+            echo "<td>{$d['professor_id']}</td>";
+            echo "<td>{$d['turma_nome']}</td>";
+            echo "<td>{$d['disciplinas']}</td>";
+            echo "</tr>";
+        }
+        echo "</table>";
+    } else {
+        echo "<p>Nenhuma distribuição encontrada</p>";
+    }
+    
+    echo "<p><a href='dashboard.php'>Ir para o Dashboard</a></p>";
+    
+} catch (PDOException $e) {
+    echo "<p style='color:red;'>❌ Erro: " . $e->getMessage() . "</p>";
+}
+?>

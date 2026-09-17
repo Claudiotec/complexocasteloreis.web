@@ -1,0 +1,9 @@
+{
+    "tipo": "anual",
+    "prefixo": "SG",
+    "cliente_nome": "João Silva",
+    "cliente_email": "joao@empresa.com",
+    "cliente_empresa": "Tech Solutions",
+    "max_usuarios": 10,
+    "modulos": ["clientes", "produtos", "faturas", "caixa"]
+}

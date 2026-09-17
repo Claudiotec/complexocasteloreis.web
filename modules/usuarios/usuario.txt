@@ -1,0 +1,90 @@
+<?php
+require_once 'config/database.php';
+
+try {
+    echo "=== CORRIGINDO TABELA USUARIOS ===\n\n";
+    
+    // Verificar se existe ID 0
+    $stmt = $pdo->query("SELECT * FROM usuarios WHERE id = 0");
+    $user_zero = $stmt->fetch();
+    
+    if ($user_zero) {
+        echo "✅ Usuário com ID 0 encontrado:\n";
+        echo "ID: " . $user_zero['id'] . "\n";
+        echo "Nome: " . $user_zero['nome'] . "\n";
+        echo "Email: " . $user_zero['email'] . "\n\n";
+        
+        // Encontrar próximo ID
+        $stmt = $pdo->query("SELECT MAX(id) + 1 as proximo_id FROM usuarios WHERE id > 0");
+        $result = $stmt->fetch();
+        $novo_id = $result['proximo_id'] ?? 1;
+        
+        echo "Próximo ID disponível: " . $novo_id . "\n";
+        
+        // Atualizar ID 0
+        $pdo->beginTransaction();
+        
+        try {
+            // Atualizar o usuário
+            $stmt = $pdo->prepare("UPDATE usuarios SET id = ? WHERE id = 0");
+            $stmt->execute([$novo_id]);
+            echo "✅ Usuário atualizado para ID: " . $novo_id . "\n";
+            
+            // Atualizar tabelas relacionadas
+            $tabelas = ['permissoes', 'logs', 'sessoes'];
+            foreach ($tabelas as $tabela) {
+                // Verificar se a tabela existe
+                $stmt = $pdo->query("SHOW TABLES LIKE '$tabela'");
+                if ($stmt->rowCount() > 0) {
+                    $stmt = $pdo->prepare("UPDATE $tabela SET usuario_id = ? WHERE usuario_id = 0");
+                    $stmt->execute([$novo_id]);
+                    echo "✅ Tabela $tabela atualizada\n";
+                }
+            }
+            
+            // Corrigir a estrutura da tabela
+            try {
+                $pdo->exec("ALTER TABLE usuarios MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT");
+                echo "✅ Estrutura da tabela corrigida\n";
+            } catch (PDOException $e) {
+                // Se falhar, tenta outra abordagem
+                $pdo->exec("ALTER TABLE usuarios DROP PRIMARY KEY");
+                $pdo->exec("ALTER TABLE usuarios MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT");
+                $pdo->exec("ALTER TABLE usuarios ADD PRIMARY KEY (id)");
+                echo "✅ Estrutura da tabela recriada\n";
+            }
+            
+            $pdo->commit();
+            echo "\n✅ CORREÇÃO CONCLUÍDA COM SUCESSO!\n";
+            
+        } catch (Exception $e) {
+            $pdo->rollBack();
+            echo "❌ Erro: " . $e->getMessage() . "\n";
+        }
+        
+    } else {
+        echo "❌ Nenhum usuário com ID 0 encontrado\n";
+        
+        // Apenas corrigir a estrutura
+        try {
+            $pdo->exec("ALTER TABLE usuarios MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT");
+            echo "✅ Estrutura da tabela corrigida\n";
+        } catch (PDOException $e) {
+            $pdo->exec("ALTER TABLE usuarios DROP PRIMARY KEY");
+            $pdo->exec("ALTER TABLE usuarios MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT");
+            $pdo->exec("ALTER TABLE usuarios ADD PRIMARY KEY (id)");
+            echo "✅ Estrutura da tabela recriada\n";
+        }
+    }
+    
+    // Mostrar os usuários corrigidos
+    echo "\n=== USUÁRIOS CADASTRADOS ===\n";
+    $stmt = $pdo->query("SELECT id, nome, email, perfil FROM usuarios WHERE id > 0 ORDER BY id");
+    while ($user = $stmt->fetch()) {
+        echo "ID: {$user['id']} - {$user['nome']} ({$user['email']}) - Perfil: {$user['perfil']}\n";
+    }
+    
+} catch (PDOException $e) {
+    echo "❌ Erro no banco de dados: " . $e->getMessage() . "\n";
+}
+?>

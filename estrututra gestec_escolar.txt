@@ -1,0 +1,38 @@
+modules/escola/
+├── index.php              # Dashboard da escola
+├── alunos/
+│   ├── index.php          # Lista de alunos
+│   ├── add.php            # Cadastrar aluno
+│   ├── edit.php           # Editar aluno
+│   ├── view.php           # Visualizar aluno
+│   └── delete.php         # Excluir aluno
+├── professores/
+│   ├── index.php          # Lista de professores
+│   ├── add.php            # Cadastrar professor
+│   ├── edit.php           # Editar professor
+│   └── delete.php         # Excluir professor
+├── turmas/
+│   ├── index.php          # Lista de turmas
+│   ├── add.php            # Cadastrar turma
+│   ├── edit.php           # Editar turma
+│   └── delete.php         # Excluir turma
+├── disciplinas/
+│   ├── index.php          # Lista de disciplinas
+│   ├── add.php            # Cadastrar disciplina
+│   ├── edit.php           # Editar disciplina
+│   └── delete.php         # Excluir disciplina
+├── matriculas/
+│   ├── index.php          # Lista de matrículas
+│   ├── add.php            # Nova matrícula
+│   └── delete.php         # Cancelar matrícula
+├── frequencia/
+│   ├── index.php          # Lista de frequência
+│   └── registrar.php      # Registrar frequência
+├── notas/
+│   ├── index.php          # Lista de notas
+│   └── lancar.php         # Lançar notas
+├── horarios/
+│   ├── index.php          # Grade horária
+│   └── configurar.php     # Configurar horários
+└── relatorios/
+    └── index.php          # Relatórios escolares

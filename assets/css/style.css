@@ -1,0 +1,294 @@
+/* ============================================
+   PERFIL - CORREÇÃO DEFINITIVA
+   ============================================ */
+
+/* Container do perfil - USAR DENTRO DO content-area */
+.profile-page {
+    width: 100%;
+    max-width: 100%;
+    overflow: visible !important;
+}
+
+.profile-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0;
+    overflow: visible !important;
+    min-height: 500px;
+}
+
+/* Grid do perfil - CORRIGIDO */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 25px;
+    overflow: visible !important;
+    min-height: 500px;
+    align-items: start;
+}
+
+/* Sidebar */
+.profile-sidebar {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    border: 1px solid #eef2f7;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 200px;
+}
+
+/* Card do formulário */
+.profile-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    border: 1px solid #eef2f7;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 400px;
+}
+
+/* Formulário - FORÇAR VISIBILIDADE */
+.profile-card form {
+    overflow: visible !important;
+    height: auto !important;
+}
+
+.profile-card .form-group {
+    margin-bottom: 18px;
+    overflow: visible !important;
+    clear: both;
+}
+
+.profile-card input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s;
+    box-sizing: border-box;
+}
+
+.profile-card input:focus {
+    border-color: #c9a84c;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(197,165,50,0.1);
+}
+
+/* Botões - GARANTIR VISIBILIDADE */
+.btn-gold, .btn {
+    display: inline-block !important;
+    margin-bottom: 10px !important;
+    margin-right: 5px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Divider */
+.divider {
+    border-top: 1px solid #f1f5f9;
+    margin: 20px 0;
+    clear: both;
+}
+
+/* Alertas */
+.alert {
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    border: 1px solid;
+    overflow: visible !important;
+    word-wrap: break-word;
+    clear: both;
+}
+
+.alert-success {
+    background: #d1fae5;
+    color: #065f46;
+    border-color: #a7f3d0;
+}
+
+.alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border-color: #fecaca;
+}
+
+/* ============================================
+   ADMIN MENU E STATS - CORRIGIDOS
+   ============================================ */
+.admin-menu {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 15px;
+    overflow: visible !important;
+}
+
+.admin-menu a {
+    padding: 12px 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s;
+    text-align: center;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #4a5568;
+    min-height: 60px;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: visible !important;
+}
+
+.admin-menu a:hover {
+    background: #c9a84c;
+    color: #1a2332;
+    border-color: #c9a84c;
+    transform: translateY(-2px);
+}
+
+.admin-menu a .icon {
+    font-size: 24px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.admin-menu a .label {
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+.stats-mini {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 15px;
+    overflow: visible !important;
+}
+
+.stats-mini .item {
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    min-height: 50px;
+    overflow: visible !important;
+}
+
+.stats-mini .item .num {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a2332;
+}
+
+.stats-mini .item .label {
+    font-size: 10px;
+    color: #94a3b8;
+}
+
+.stats-mini .item.pendente .num { color: #f59e0b; }
+.stats-mini .item.ativo .num { color: #2ecc71; }
+.stats-mini .item.bloqueado .num { color: #ef4444; }
+
+.pendentes-box {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 15px;
+    text-align: center;
+    overflow: visible !important;
+}
+
+.pendentes-box .pendentes-num {
+    font-size: 28px;
+    font-weight: 700;
+    color: #92400e;
+}
+
+.pendentes-box .pendentes-label {
+    font-size: 13px;
+    color: #92400e;
+}
+
+.pendentes-box a {
+    color: #92400e;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.pendentes-box a:hover {
+    text-decoration: underline;
+}
+
+/* ============================================
+   RESPONSIVIDADE PERFIL
+   ============================================ */
+@media (max-width: 992px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .profile-sidebar,
+    .profile-card {
+        min-height: auto;
+    }
+    
+    .admin-menu {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .profile-sidebar,
+    .profile-card {
+        padding: 15px;
+    }
+    
+    .admin-menu {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-mini {
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+    }
+    
+    .stats-mini .item {
+        padding: 8px 6px;
+    }
+    
+    .stats-mini .item .num {
+        font-size: 16px;
+    }
+    
+    .stats-mini .item .label {
+        font-size: 9px;
+    }
+    
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+        font-size: 32px;
+    }
+    
+    .profile-name {
+        font-size: 16px;
+    }
+    
+    .btn-gold, .btn {
+        width: 100%;
+        text-align: center;
+        margin-right: 0 !important;
+    }
+}

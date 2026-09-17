@@ -1,0 +1,20 @@
+softgest_web/
+├── config/
+│   ├── cache_manager.php      ← Gerenciador de Cache
+│   ├── db_optimizer.php       ← Otimizador de Queries
+│   └── bootstrap_optimized.php ← Inicialização com otimização
+├── includes/
+│   ├── header_optimized.php   ← Header com otimização
+│   └── footer_optimized.php   ← Footer com otimização
+├── assets/
+│   ├── js/
+│   │   ├── network-detector.js
+│   │   ├── lazy-loader.js
+│   │   └── service-worker.js
+│   └── css/
+│       └── performance.css
+├── api/
+│   └── cache/
+│       ├── clear.php          ← Limpar cache
+│       └── stats.php          ← Estatísticas do cache
+└── .htaccess                   ← Configurações do servidor
