@@ -57,10 +57,13 @@ $mensagem_erro = '';
 try {
     // 🔑 CONECTA AO BANCO
     $pdo = conectarBanco();
+
+    // Verifica se a tabela alunos existe (PostgreSQL)
+    $check = $pdo->query("SELECT to_regclass('public.alunos') AS tabela");
+    $row = $check->fetch();
+    if ($row['tabela']) {
     
-    // Verifica se a tabela alunos existe
-    $check = $pdo->query("SHOW TABLES LIKE 'alunos'");
-    if ($check->rowCount() > 0) {
+
         // Totais
         $totalAlunos = $pdo->query("SELECT COUNT(*) FROM alunos WHERE status = 'ativo' OR status IS NULL")->fetchColumn() ?? 0;
         $totalMatriculados = $pdo->query("SELECT COUNT(*) FROM alunos WHERE Situacao_Cadastro = 'Matrícula' AND (status = 'ativo' OR status IS NULL)")->fetchColumn() ?? 0;
