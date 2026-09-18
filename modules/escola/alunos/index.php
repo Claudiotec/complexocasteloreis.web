@@ -57,23 +57,35 @@ $mensagem_erro = '';
 try {
     // 🔑 CONECTA AO BANCO
     $pdo = conectarBanco();
-
-    // Verifica se a tabela alunos existe (PostgreSQL)
+    
+    // ✅ Verifica se a tabela alunos existe (PostgreSQL)
     $check = $pdo->query("SELECT to_regclass('public.alunos') AS tabela");
     $row = $check->fetch();
-    if ($row['tabela']) {
     
-
+    if ($row['tabela']) {
         // Totais
-        $totalAlunos = $pdo->query("SELECT COUNT(*) FROM alunos WHERE status = 'ativo' OR status IS NULL")->fetchColumn() ?? 0;
-        $totalMatriculados = $pdo->query("SELECT COUNT(*) FROM alunos WHERE Situacao_Cadastro = 'Matrícula' AND (status = 'ativo' OR status IS NULL)")->fetchColumn() ?? 0;
-        $totalConfirmados = $pdo->query("SELECT COUNT(*) FROM alunos WHERE Situacao_Cadastro = 'Confirmação' AND (status = 'ativo' OR status IS NULL)")->fetchColumn() ?? 0;
+        $totalAlunos = $pdo->query("
+            SELECT COUNT(*) FROM alunos 
+            WHERE status = 'ativo' OR status IS NULL
+        ")->fetchColumn() ?? 0;
+        
+        $totalMatriculados = $pdo->query("
+            SELECT COUNT(*) FROM alunos 
+            WHERE \"Situacao_Cadastro\" = 'Matrícula' 
+              AND (status = 'ativo' OR status IS NULL)
+        ")->fetchColumn() ?? 0;
+        
+        $totalConfirmados = $pdo->query("
+            SELECT COUNT(*) FROM alunos 
+            WHERE \"Situacao_Cadastro\" = 'Confirmação' 
+              AND (status = 'ativo' OR status IS NULL)
+        ")->fetchColumn() ?? 0;
         
         // Lista de alunos
         $alunos = $pdo->query("
-            SELECT id, nome, Sexo, Idade, Morada, Contacto_do_Aluno, 
-                   Classe, Curso, TURMA, SALA, Periodo, Situacao_Cadastro,
-                   status, created_at
+            SELECT id, nome, \"Sexo\", \"Idade\", \"Morada\", \"Contacto_do_Aluno\", 
+                   \"Classe\", \"Curso\", \"TURMA\", \"SALA\", \"Periodo\", 
+                   \"Situacao_Cadastro\", status, created_at
             FROM alunos 
             WHERE status = 'ativo' OR status IS NULL
             ORDER BY nome ASC
