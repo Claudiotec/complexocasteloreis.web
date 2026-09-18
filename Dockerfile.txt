@@ -1,7 +1,7 @@
 # Usa a imagem oficial do PHP com Apache
 FROM php:8.2-apache
 
-# Instala extensões necessárias
+# Instala dependências do sistema e extensões PHP
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -10,13 +10,20 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo_mysql mysqli mbstring exif pcntl bcmath gd
+    libpq-dev \
+    && docker-php-ext-install \
+        pdo_mysql \
+        mysqli \
+        mbstring \
+        exif \
+        pcntl \
+        bcmath \
+        gd \
+        pdo_pgsql \
+        pgsql
 
 # Habilita o mod_rewrite do Apache
 RUN a2enmod rewrite
-
-# Instala o Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Define o diretório de trabalho
 WORKDIR /var/www/html
@@ -24,15 +31,15 @@ WORKDIR /var/www/html
 # Copia os arquivos do projeto
 COPY . .
 
-# Configura permissões
+# Configura permissões (ignora pastas que não existem)
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage \
-    && chmod -R 755 /var/www/html/bootstrap/cache
+    && ( [ -d /var/www/html/storage ] && chmod -R 755 /var/www/html/storage || true ) \
+    && ( [ -d /var/www/html/bootstrap/cache ] && chmod -R 755 /var/www/html/bootstrap/cache || true )
 
 # Configura o VirtualHost para o Apache
 RUN echo '<VirtualHost *:80>\n\
-    DocumentRoot /var/www/html/public\n\
-    <Directory /var/www/html/public>\n\
+    DocumentRoot /var/www/html\n\
+    <Directory /var/www/html>\n\
         Options -Indexes +FollowSymLinks\n\
         AllowOverride All\n\
         Require all granted\n\
@@ -43,3 +50,6 @@ RUN echo '<VirtualHost *:80>\n\
 
 # Porta exposta
 EXPOSE 80
+
+# Comando para iniciar o Apache
+CMD ["apache2-foreground"]
