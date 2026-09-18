@@ -1,6 +1,19 @@
 <?php
-session_start();
-require_once 'config/database.php';
+// ============================================
+// login.php
+// ============================================
+
+// Carregar dependências ANTES de qualquer coisa
+require_once __DIR__ . '/config/paths.php';
+require_once CONFIG_PATH . 'app_modes.php';
+require_once CONFIG_PATH . 'database.php';
+
+// Garantir acesso ao $pdo global
+global $pdo;
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 $erro = '';
 $perfis_disponiveis = [];
