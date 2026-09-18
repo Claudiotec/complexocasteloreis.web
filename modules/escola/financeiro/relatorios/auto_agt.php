@@ -1,20 +1,22 @@
 <?php
 // ============================================
-// modules/escola/financeiro/relatorios/auto_agt_completo.php
+// modules/escola/financeiro/relatorios/auto_agt.php
 // RELATÓRIO AGT COMPLETO - COM FILTROS DINÂMICOS
 // ============================================
 
 // Evitar execução múltipla
-if (defined('AUTO_AGT_COMPLETO_RUNNING')) {
+if (defined('AUTO_AGT_RUNNING')) {
     return;
 }
-define('AUTO_AGT_COMPLETO_RUNNING', true);
+define('AUTO_AGT_RUNNING', true);
 
 // ============================================
 // CARREGAR CAMINHOS E CONFIGURAÇÕES
 // ============================================
+// Este arquivo está em: modules/escola/financeiro/relatorios/
+// Para chegar à raiz, sobe 4 níveis: relatorios → financeiro → escola → modules → RAIZ
 
-require_once __DIR__ . '/../../../../config/paths.php';
+require_once dirname(__DIR__, 4) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'paths.php';
 require_once CONFIG_PATH . 'database.php';
 require_once CONFIG_PATH . 'app_modes.php';
 
