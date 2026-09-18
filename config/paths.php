@@ -14,9 +14,11 @@ $isRender  = (getenv('RENDER') !== false);
 if (!defined('BASE_PATH')) {
     define('BASE_PATH', realpath(__DIR__ . '/..') . DIRECTORY_SEPARATOR);
 }
+
 if (!defined('CONFIG_PATH')) {
     define('CONFIG_PATH', BASE_PATH . 'config' . DIRECTORY_SEPARATOR);
 }
+
 if (!defined('MODULES_PATH')) {
     define('MODULES_PATH', BASE_PATH . 'modules' . DIRECTORY_SEPARATOR);
 }
@@ -54,3 +56,4 @@ if (!defined('SITE_URL')) {
         define('SITE_URL', 'http://localhost/softgest_web/');
     }
 }
+?>
