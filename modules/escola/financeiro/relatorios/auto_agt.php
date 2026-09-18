@@ -11,13 +11,12 @@ if (defined('AUTO_AGT_COMPLETO_RUNNING')) {
 define('AUTO_AGT_COMPLETO_RUNNING', true);
 
 // ============================================
-// CAMINHO ABSOLUTO
+// CARREGAR CAMINHOS E CONFIGURAÇÕES
 // ============================================
-$rootPath = 'C:/xampp/htdocs/softgest_web/';
 
-// Carregar configurações
-require_once $rootPath . 'config/database.php';
-require_once $rootPath . 'config/app_modes.php';
+require_once __DIR__ . '/../../../../config/paths.php';
+require_once CONFIG_PATH . 'database.php';
+require_once CONFIG_PATH . 'app_modes.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
