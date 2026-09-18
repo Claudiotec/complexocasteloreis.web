@@ -4,50 +4,53 @@
 // Funciona no Windows (XAMPP) E no Linux (Render/Docker)
 // ============================================
 
-// ============================================
-// DETECTAR AMBIENTE
-// ============================================
-$isWindows = PHP_OS_FAMILY === 'Windows';
-$isRender  = getenv('RENDER') !== false || getenv('RENDER_SERVICE_ID') !== false;
+$isWindows = (PHP_OS_FAMILY === 'Windows');
+$isRender  = (getenv('RENDER') !== false);
 
 // ============================================
 // CAMINHOS BASE
 // ============================================
 
-if ($isWindows) {
-    // Windows / XAMPP
+if (!defined('BASE_PATH')) {
     define('BASE_PATH', realpath(__DIR__ . '/..') . DIRECTORY_SEPARATOR);
-    define('DOCUMENTOS_PATH', 'C:/xampp/htdocs/meus_documentos' . DIRECTORY_SEPARATOR);
-} else {
-    // Linux / Render / Docker
-    define('BASE_PATH', realpath(__DIR__ . '/..') . DIRECTORY_SEPARATOR);
-    define('DOCUMENTOS_PATH', getenv('DOCUMENTOS_PATH') ?: '/var/www/html/meus_documentos' . DIRECTORY_SEPARATOR);
+}
+if (!defined('CONFIG_PATH')) {
+    define('CONFIG_PATH', BASE_PATH . 'config' . DIRECTORY_SEPARATOR);
+}
+if (!defined('MODULES_PATH')) {
+    define('MODULES_PATH', BASE_PATH . 'modules' . DIRECTORY_SEPARATOR);
 }
 
-define('CONFIG_PATH',  BASE_PATH . 'config'  . DIRECTORY_SEPARATOR);
-define('MODULES_PATH', BASE_PATH . 'modules' . DIRECTORY_SEPARATOR);
-define('FATURAS_PATH', DOCUMENTOS_PATH . 'faturas' . DIRECTORY_SEPARATOR);
+if (!defined('DOCUMENTOS_PATH')) {
+    if ($isWindows) {
+        define('DOCUMENTOS_PATH', 'C:/xampp/htdocs/meus_documentos' . DIRECTORY_SEPARATOR);
+    } else {
+        define('DOCUMENTOS_PATH', getenv('DOCUMENTOS_PATH') ?: '/var/www/html/meus_documentos' . DIRECTORY_SEPARATOR);
+    }
+}
 
-// ============================================
-// URLS (dinâmicas conforme ambiente)
-// ============================================
-
-if ($isRender) {
-    // No Render, o domínio é dinâmico
-    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    define('BASE_URL', '/');
-    define('SITE_URL', $protocol . '://' . $host . '/');
-} else {
-    // Local (XAMPP)
-    define('BASE_URL', '/softgest_web/');
-    define('SITE_URL', 'http://localhost/softgest_web/');
+if (!defined('FATURAS_PATH')) {
+    define('FATURAS_PATH', DOCUMENTOS_PATH . 'faturas' . DIRECTORY_SEPARATOR);
 }
 
 // ============================================
-// GARANTIR QUE AS CONSTANTES NÃO SEJAM REDEFINIDAS
+// URLS
 // ============================================
-if (!defined('ROOT_PATH')) {
-    define('ROOT_PATH', BASE_PATH);
+
+if (!defined('BASE_URL')) {
+    if ($isRender) {
+        define('BASE_URL', '/');
+    } else {
+        define('BASE_URL', '/softgest_web/');
+    }
 }
-?>
+
+if (!defined('SITE_URL')) {
+    if ($isRender) {
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        define('SITE_URL', $protocol . '://' . $host . '/');
+    } else {
+        define('SITE_URL', 'http://localhost/softgest_web/');
+    }
+}
