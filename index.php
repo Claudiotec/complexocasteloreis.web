@@ -48,18 +48,14 @@ if (!verificarEBlquear()) {
 // =============================================
 function isProfessor($pdo, $usuario_id) {
     try {
-        // Buscar nome do usuário
         $stmt = $pdo->prepare("SELECT nome FROM usuarios WHERE id = ?");
         $stmt->execute([$usuario_id]);
         $usuario = $stmt->fetch();
         
-        if (!$usuario) {
-            return false;
-        }
+        if (!$usuario) return false;
         
         $nome_usuario = trim($usuario['nome']);
         
-        // Buscar na tabela distribuicao_professores
         $stmt = $pdo->prepare("
             SELECT * FROM distribuicao_professores 
             WHERE professor_nome = ? 
@@ -69,7 +65,6 @@ function isProfessor($pdo, $usuario_id) {
         $professor = $stmt->fetch();
         
         if ($professor) {
-            // Salvar dados do professor na sessão
             $_SESSION['professor_id'] = $professor['id'];
             $_SESSION['professor_nome'] = $professor['professor_nome'];
             $_SESSION['professor_dados'] = $professor;
@@ -79,10 +74,8 @@ function isProfessor($pdo, $usuario_id) {
             $_SESSION['professor_turma_nome'] = $professor['turma_nome'];
             $_SESSION['professor_classe'] = $professor['classe'];
             $_SESSION['professor_disciplinas'] = $professor['disciplinas'];
-            
             return true;
         }
-        
         return false;
     } catch (Exception $e) {
         error_log("Erro ao verificar professor: " . $e->getMessage());
@@ -96,18 +89,11 @@ function isAluno($pdo, $usuario_id) {
         $stmt->execute([$usuario_id]);
         $usuario = $stmt->fetch();
         
-        if (!$usuario) {
-            return false;
-        }
+        if (!$usuario) return false;
         
         $nome_usuario = trim($usuario['nome']);
         
-        $stmt = $pdo->prepare("
-            SELECT id 
-            FROM alunos 
-            WHERE nome = ? 
-            LIMIT 1
-        ");
+        $stmt = $pdo->prepare("SELECT id FROM alunos WHERE nome = ? LIMIT 1");
         $stmt->execute([$nome_usuario]);
         $aluno = $stmt->fetch();
         
@@ -116,7 +102,6 @@ function isAluno($pdo, $usuario_id) {
             $_SESSION['is_aluno'] = true;
             return true;
         }
-        
         return false;
     } catch (Exception $e) {
         error_log("Erro ao verificar aluno: " . $e->getMessage());
@@ -124,18 +109,15 @@ function isAluno($pdo, $usuario_id) {
     }
 }
 
-
 // ===== VERIFICAÇÃO E REDIRECIONAMENTO =====
 $isProfessor = isProfessor($pdo, $_SESSION['usuario_id']);
 $isAluno = isAluno($pdo, $_SESSION['usuario_id']);
 
-// Se for professor, redirecionar para o template de professor
 if ($isProfessor) {
     header('Location: modules/escola/professor_dashboard.php');
     exit;
 }
 
-// Se for aluno, redirecionar para o template de aluno
 if ($isAluno) {
     header('Location: modules/escola/aluno_dashboard.php');
     exit;
@@ -144,17 +126,10 @@ if ($isAluno) {
 // ===== VERIFICAR LICENÇA =====
 function verificarLicenca() {
     global $pdo;
-    
     try {
         $stmt = $pdo->query("SHOW TABLES LIKE 'licencas'");
         if ($stmt->rowCount() == 0) {
-            return [
-                'status' => 'ativa',
-                'tipo' => 'local',
-                'codigo_licenca' => 'LOCAL-' . date('Ymd'),
-                'data_expiracao' => null,
-                'dias_restantes' => '∞'
-            ];
+            return ['status' => 'ativa', 'tipo' => 'local', 'codigo_licenca' => 'LOCAL-' . date('Ymd'), 'data_expiracao' => null, 'dias_restantes' => '∞'];
         }
         
         $stmt = $pdo->prepare("SELECT * FROM licencas WHERE status = 'ativa' ORDER BY id DESC LIMIT 1");
@@ -162,68 +137,31 @@ function verificarLicenca() {
         $licenca = $stmt->fetch();
         
         if (!$licenca) {
-            return [
-                'status' => 'ativa',
-                'tipo' => 'local',
-                'codigo_licenca' => 'DEV-' . date('Ymd'),
-                'data_expiracao' => null,
-                'dias_restantes' => '∞'
-            ];
+            return ['status' => 'ativa', 'tipo' => 'local', 'codigo_licenca' => 'DEV-' . date('Ymd'), 'data_expiracao' => null, 'dias_restantes' => '∞'];
         }
-        
         return $licenca;
-        
     } catch (Exception $e) {
-        return [
-            'status' => 'ativa',
-            'tipo' => 'local',
-            'codigo_licenca' => 'FALLBACK-' . date('Ymd'),
-            'data_expiracao' => null,
-            'dias_restantes' => '∞'
-        ];
+        return ['status' => 'ativa', 'tipo' => 'local', 'codigo_licenca' => 'FALLBACK-' . date('Ymd'), 'data_expiracao' => null, 'dias_restantes' => '∞'];
     }
 }
 
-// ===== BUSCAR DADOS DA LICENÇA =====
 function getLicencaInfo() {
     global $pdo;
     try {
         $stmt = $pdo->query("SHOW TABLES LIKE 'licencas'");
         if ($stmt->rowCount() == 0) {
-            return [
-                'status' => 'ativa',
-                'tipo' => 'local',
-                'codigo_licenca' => 'LOCAL-' . date('Ymd'),
-                'data_expiracao' => null,
-                'data_expiracao_formatada' => 'Ilimitado',
-                'dias_restantes' => '∞',
-                'cor_status' => '#3498db',
-                'icone_status' => '🔵'
-            ];
+            return ['status' => 'ativa', 'tipo' => 'local', 'codigo_licenca' => 'LOCAL-' . date('Ymd'), 'data_expiracao' => null, 'data_expiracao_formatada' => 'Ilimitado', 'dias_restantes' => '∞', 'cor_status' => '#3498db', 'icone_status' => '🔵'];
         }
         
         $stmt = $pdo->prepare("
-            SELECT *, 
-            DATEDIFF(data_expiracao, NOW()) as dias_restantes
-            FROM licencas 
-            WHERE status = 'ativa' 
-            ORDER BY id DESC 
-            LIMIT 1
+            SELECT *, DATEDIFF(data_expiracao, NOW()) as dias_restantes
+            FROM licencas WHERE status = 'ativa' ORDER BY id DESC LIMIT 1
         ");
         $stmt->execute();
         $licenca = $stmt->fetch();
         
         if (!$licenca) {
-            return [
-                'status' => 'ativa',
-                'tipo' => 'local',
-                'codigo_licenca' => 'DEV-' . date('Ymd'),
-                'data_expiracao' => null,
-                'data_expiracao_formatada' => 'Ilimitado',
-                'dias_restantes' => '∞',
-                'cor_status' => '#3498db',
-                'icone_status' => '🔵'
-            ];
+            return ['status' => 'ativa', 'tipo' => 'local', 'codigo_licenca' => 'DEV-' . date('Ymd'), 'data_expiracao' => null, 'data_expiracao_formatada' => 'Ilimitado', 'dias_restantes' => '∞', 'cor_status' => '#3498db', 'icone_status' => '🔵'];
         }
         
         if ($licenca['data_expiracao']) {
@@ -246,20 +184,9 @@ function getLicencaInfo() {
             $licenca['cor_status'] = '#3498db';
             $licenca['icone_status'] = '🔵';
         }
-        
         return $licenca;
-        
     } catch (Exception $e) {
-        return [
-            'status' => 'ativa',
-            'tipo' => 'local',
-            'codigo_licenca' => 'ERROR-' . date('Ymd'),
-            'data_expiracao' => null,
-            'data_expiracao_formatada' => 'Ilimitado',
-            'dias_restantes' => '∞',
-            'cor_status' => '#3498db',
-            'icone_status' => '🔵'
-        ];
+        return ['status' => 'ativa', 'tipo' => 'local', 'codigo_licenca' => 'ERROR-' . date('Ymd'), 'data_expiracao' => null, 'data_expiracao_formatada' => 'Ilimitado', 'dias_restantes' => '∞', 'cor_status' => '#3498db', 'icone_status' => '🔵'];
     }
 }
 
@@ -268,34 +195,68 @@ $licenca = verificarLicenca();
 $licencaInfo = getLicencaInfo();
 $modo = getModoAtual();
 
-// ===== BUSCAR DADOS DA EMPRESA =====
+// ============================================
+// DADOS DA EMPRESA (CORRIGIDO)
+// ============================================
 function getEmpresaData() {
     global $pdo;
     try {
-        $stmt = $pdo->query("SELECT * FROM empresa LIMIT 1");
-        $empresa = $stmt->fetch();
+        $stmt = $pdo->query("SELECT * FROM empresa ORDER BY id ASC LIMIT 1");
+        $empresa = $stmt->fetch(PDO::FETCH_ASSOC);
+        
         if (!$empresa) {
             return [
+                'id' => 1,
                 'nome_fantasia' => 'SoftGest',
                 'razao_social' => 'SoftGest Sistemas Ltda',
-                'logo' => null,
-                'cnpj' => '00.000.000/0001-00'
+                'nif' => '0000000000',
+                'logo' => null
             ];
         }
-        return $empresa;
+        
+        // Garantir que todas as chaves existem
+        return array_merge([
+            'id' => 1,
+            'razao_social' => '',
+            'nome_fantasia' => '',
+            'nif' => '',
+            'inscricao_estadual' => '',
+            'inscricao_municipal' => '',
+            'endereco' => '',
+            'numero' => '',
+            'complemento' => '',
+            'bairro' => '',
+            'cidade' => '',
+            'estado' => '',
+            'cep' => '',
+            'telefone' => '',
+            'celular' => '',
+            'email' => '',
+            'site' => '',
+            'logo' => null,
+        ], $empresa);
+        
     } catch(PDOException $e) {
+        error_log("Erro em getEmpresaData: " . $e->getMessage());
         return [
+            'id' => 1,
             'nome_fantasia' => 'SoftGest',
             'razao_social' => 'SoftGest Sistemas Ltda',
-            'logo' => null,
-            'cnpj' => '00.000.000/0001-00'
+            'nif' => '0000000000',
+            'logo' => null
         ];
     }
 }
 
 $empresaData = getEmpresaData();
-$nomeEmpresa = $empresaData['nome_fantasia'] ?? $empresaData['razao_social'] ?? 'SoftGest';
+$nomeEmpresa = $empresaData['nome_fantasia'] ?: ($empresaData['razao_social'] ?? 'SoftGest');
 $logoEmpresa = $empresaData['logo'] ?? null;
+
+// ============================================
+// VERIFICAR SE O LOGO EXISTE (CAMINHO ABSOLUTO)
+// ============================================
+$logoPath = $_SERVER['DOCUMENT_ROOT'] . '/softgest_web/assets/uploads/' . $logoEmpresa;
+$logoExiste = !empty($logoEmpresa) && file_exists($logoPath);
 
 // ===== DADOS DO USUÁRIO =====
 $usuario_id = $_SESSION['usuario_id'] ?? 0;
@@ -309,9 +270,7 @@ function userHasAccess($modulo) {
     $usuario_id = $_SESSION['usuario_id'] ?? 0;
     $perfil = $_SESSION['usuario_perfil'] ?? 'usuario';
     
-    if ($perfil == 'admin') {
-        return true;
-    }
+    if ($perfil == 'admin') return true;
     
     try {
         $stmt = $pdo->prepare("SELECT visualizar FROM permissoes WHERE usuario_id = ? AND modulo = ?");
@@ -345,9 +304,7 @@ $totalTurmas = 0;
 $totalMatriculas = 0;
 
 if (userHasAccess('Clientes')) {
-    try {
-        $totalClientes = $pdo->query("SELECT COUNT(*) FROM clientes")->fetchColumn();
-    } catch (Exception $e) {}
+    try { $totalClientes = $pdo->query("SELECT COUNT(*) FROM clientes")->fetchColumn(); } catch (Exception $e) {}
 }
 if (userHasAccess('Produtos') || userHasAccess('Estoque')) {
     try {
@@ -356,14 +313,10 @@ if (userHasAccess('Produtos') || userHasAccess('Estoque')) {
     } catch (Exception $e) {}
 }
 if (userHasAccess('Faturas')) {
-    try {
-        $totalFaturas = $pdo->query("SELECT COUNT(*) FROM faturas_proforma")->fetchColumn();
-    } catch (Exception $e) {}
+    try { $totalFaturas = $pdo->query("SELECT COUNT(*) FROM faturas_proforma")->fetchColumn(); } catch (Exception $e) {}
 }
 if (userHasAccess('Recibos')) {
-    try {
-        $totalRecibos = $pdo->query("SELECT COUNT(*) FROM faturas_recibo")->fetchColumn();
-    } catch (Exception $e) {}
+    try { $totalRecibos = $pdo->query("SELECT COUNT(*) FROM faturas_recibo")->fetchColumn(); } catch (Exception $e) {}
 }
 if (userHasAccess('Fluxo de Caixa')) {
     try {
@@ -378,41 +331,25 @@ if (userHasAccess('Fluxo de Caixa')) {
     } catch (Exception $e) {}
 }
 if (userHasAccess('RH')) {
-    try {
-        $totalFuncionarios = $pdo->query("SELECT COUNT(*) FROM funcionarios")->fetchColumn();
-    } catch (Exception $e) {}
+    try { $totalFuncionarios = $pdo->query("SELECT COUNT(*) FROM funcionarios")->fetchColumn(); } catch (Exception $e) {}
 }
 if (userHasAccess('Marketing')) {
-    try {
-        $totalPlanos = $pdo->query("SELECT COUNT(*) FROM plano_marketing")->fetchColumn();
-    } catch (Exception $e) {}
+    try { $totalPlanos = $pdo->query("SELECT COUNT(*) FROM plano_marketing")->fetchColumn(); } catch (Exception $e) {}
 }
 if (userHasAccess('Correspondência')) {
-    try {
-        $totalCorrespondencias = $pdo->query("SELECT COUNT(*) FROM correspondencias")->fetchColumn();
-    } catch (Exception $e) {}
+    try { $totalCorrespondencias = $pdo->query("SELECT COUNT(*) FROM correspondencias")->fetchColumn(); } catch (Exception $e) {}
 }
 
 // ===== DADOS DO MÓDULO ESCOLA =====
 if (userHasAccess('Escola')) {
-    try {
-        $totalAlunos = $pdo->query("SELECT COUNT(*) FROM alunos")->fetchColumn() ?? 0;
-    } catch (Exception $e) {}
-    try {
-        $totalProfessores = $pdo->query("SELECT COUNT(*) FROM professores")->fetchColumn() ?? 0;
-    } catch (Exception $e) {}
-    try {
-        $totalTurmas = $pdo->query("SELECT COUNT(*) FROM turmas")->fetchColumn() ?? 0;
-    } catch (Exception $e) {}
-    try {
-        $totalMatriculas = $pdo->query("SELECT COUNT(*) FROM matriculas WHERE status = 'ativa'")->fetchColumn() ?? 0;
-    } catch (Exception $e) {}
+    try { $totalAlunos = $pdo->query("SELECT COUNT(*) FROM alunos")->fetchColumn() ?? 0; } catch (Exception $e) {}
+    try { $totalProfessores = $pdo->query("SELECT COUNT(*) FROM professores")->fetchColumn() ?? 0; } catch (Exception $e) {}
+    try { $totalTurmas = $pdo->query("SELECT COUNT(*) FROM turmas")->fetchColumn() ?? 0; } catch (Exception $e) {}
+    try { $totalMatriculas = $pdo->query("SELECT COUNT(*) FROM matriculas WHERE status = 'ativa'")->fetchColumn() ?? 0; } catch (Exception $e) {}
 }
 
 $isAdmin = ($usuario_perfil == 'admin');
 $perfilBadgeColor = $usuario_perfil == 'admin' ? '#e74c3c' : ($usuario_perfil == 'gerente' ? '#f59e0b' : '#3498db');
-
-include 'includes/header.php';
 ?>
 
 <!DOCTYPE html>
@@ -423,31 +360,43 @@ include 'includes/header.php';
     <title>Dashboard - <?= htmlspecialchars($nomeEmpresa) ?></title>
     
     <!-- ========================================== -->
-    <!-- SERVICE WORKER PARA OFFLINE -->
+    <!-- PWA - MANIFEST E SERVICE WORKER -->
     <!-- ========================================== -->
+    <link rel="manifest" href="<?= SITE_URL ?>manifest.json">
+    <meta name="theme-color" content="#1a2332">
+    
     <script>
-    // Registrar Service Worker
+    // ===== REGISTRAR SERVICE WORKER =====
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/softgest_web/sw.js')
-            .then(registration => {
-                console.log('✅ Service Worker registrado com sucesso!');
-                console.log('📦 Scope:', registration.scope);
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('<?= SITE_URL ?>sw.js', {
+                scope: '<?= SITE_URL ?>'
             })
-            .catch(error => {
+            .then(function(registration) {
+                console.log('✅ Service Worker registrado!');
+                console.log('📦 Scope:', registration.scope);
+                
+                setInterval(function() {
+                    registration.update();
+                }, 60 * 60 * 1000);
+            })
+            .catch(function(error) {
                 console.log('❌ Erro ao registrar Service Worker:', error);
             });
+        });
     }
     </script>
+    
+    <!-- ========================================== -->
+    <!-- OFFLINE MANAGER (Fila de sincronização) -->
+    <!-- ========================================== -->
+    <script src="<?= SITE_URL ?>assets/js/offline-manager.js" defer></script>
     
     <style>
         /* ============================================
            RESET E ESTILOS GERAIS
            ============================================ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -455,10 +404,7 @@ include 'includes/header.php';
             overflow-x: hidden;
         }
         
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
-        }
+        .dashboard-container { display: flex; min-height: 100vh; }
         
         /* ============================================
            SIDEBAR
@@ -479,19 +425,10 @@ include 'includes/header.php';
             box-shadow: 2px 0 20px rgba(0,0,0,0.2);
         }
         
-        .sidebar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .sidebar::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.05);
-        }
-        .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.2);
-            border-radius: 4px;
-        }
-        .sidebar::-webkit-scrollbar-thumb:hover {
-            background: rgba(255,255,255,0.3);
-        }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        .sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
         
         .sidebar-brand {
             padding: 25px 20px;
@@ -516,31 +453,18 @@ include 'includes/header.php';
             flex-shrink: 0;
         }
         
-        .brand-icon img {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-            border-radius: 8px;
+        .brand-icon img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            border-radius: 10px;
+            background: #fff;
         }
         
-        .brand-text h2 {
-            font-size: 20px;
-            font-weight: 700;
-            margin: 0;
-            line-height: 1.2;
-            color: #fff;
-        }
+        .brand-text h2 { font-size: 20px; font-weight: 700; margin: 0; line-height: 1.2; color: #fff; }
+        .brand-text span { font-size: 14px; color: #f5d76e; font-weight: 300; }
         
-        .brand-text span {
-            font-size: 14px;
-            color: #f5d76e;
-            font-weight: 300;
-        }
-        
-        .sidebar-nav {
-            flex: 1;
-            padding: 15px 10px;
-        }
+        .sidebar-nav { flex: 1; padding: 15px 10px; }
         
         .sidebar-nav a {
             display: flex;
@@ -567,18 +491,8 @@ include 'includes/header.php';
             box-shadow: inset 3px 0 0 #f5d76e;
         }
         
-        .sidebar-nav a .nav-icon {
-            font-size: 20px;
-            width: 30px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-        
-        .sidebar-nav a .nav-text {
-            flex: 1;
-            font-size: 14px;
-            font-weight: 500;
-        }
+        .sidebar-nav a .nav-icon { font-size: 20px; width: 30px; text-align: center; flex-shrink: 0; }
+        .sidebar-nav a .nav-text { flex: 1; font-size: 14px; font-weight: 500; }
         
         .sidebar-nav a .nav-badge {
             background: #f5d76e;
@@ -591,17 +505,9 @@ include 'includes/header.php';
             text-align: center;
         }
         
-        .sidebar-footer {
-            padding: 15px 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
+        .sidebar-footer { padding: 15px 20px; border-top: 1px solid rgba(255,255,255,0.1); }
         
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
+        .user-info { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
         
         .user-avatar {
             width: 40px;
@@ -615,16 +521,8 @@ include 'includes/header.php';
             flex-shrink: 0;
         }
         
-        .user-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: #fff;
-        }
-        
-        .user-email {
-            font-size: 12px;
-            color: rgba(255,255,255,0.5);
-        }
+        .user-name { font-size: 14px; font-weight: 600; color: #fff; }
+        .user-email { font-size: 12px; color: rgba(255,255,255,0.5); }
         
         .btn-logout-sidebar {
             display: block;
@@ -638,10 +536,7 @@ include 'includes/header.php';
             transition: all 0.3s;
         }
         
-        .btn-logout-sidebar:hover {
-            background: rgba(231, 76, 60, 0.5);
-            color: #fff;
-        }
+        .btn-logout-sidebar:hover { background: rgba(231, 76, 60, 0.5); color: #fff; }
         
         /* ============================================
            MAIN CONTENT
@@ -670,11 +565,7 @@ include 'includes/header.php';
             animation: slideDown 0.5s ease;
         }
         
-        .top-bar-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+        .top-bar-left { display: flex; align-items: center; gap: 20px; }
         
         .menu-toggle {
             background: none;
@@ -688,16 +579,9 @@ include 'includes/header.php';
             transition: background 0.3s;
         }
         
-        .menu-toggle:hover {
-            background: #f0f2f5;
-        }
+        .menu-toggle:hover { background: #f0f2f5; }
         
-        .top-bar-nav {
-            display: flex;
-            gap: 5px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
+        .top-bar-nav { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
         
         .top-bar-nav a {
             color: #4a5568;
@@ -710,10 +594,7 @@ include 'includes/header.php';
             position: relative;
         }
         
-        .top-bar-nav a:hover {
-            background: rgba(197,165,50,0.1);
-            color: #c9a84c;
-        }
+        .top-bar-nav a:hover { background: rgba(197,165,50,0.1); color: #c9a84c; }
         
         .top-bar-nav a.active {
             background: linear-gradient(135deg, #c9a84c, #f5d76e);
@@ -735,17 +616,9 @@ include 'includes/header.php';
             text-transform: uppercase;
         }
         
-        .top-bar-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+        .top-bar-right { display: flex; align-items: center; gap: 20px; }
         
-        .welcome-text {
-            font-size: 14px;
-            color: #4a5568;
-            font-weight: 500;
-        }
+        .welcome-text { font-size: 14px; color: #4a5568; font-weight: 500; }
         
         .date-time-gold {
             font-size: 14px;
@@ -768,40 +641,45 @@ include 'includes/header.php';
         .mode-banner {
             background: <?= APP_MODE_COLOR ?>;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 20px;
             border-radius: 8px;
             margin: 15px 30px 20px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
         .mode-banner .info { display: flex; align-items: center; gap: 10px; }
         .mode-banner .info .icon { font-size: 24px; }
         .mode-banner .info .text { font-weight: 600; }
         .mode-banner .info .sub { font-size: 13px; opacity: 0.8; }
-        .mode-banner .actions { display: flex; gap: 8px; }
+        .mode-banner .actions { display: flex; gap: 8px; flex-wrap: wrap; }
         .mode-banner .actions a {
             background: rgba(255,255,255,0.2);
             color: white;
-            padding: 5px 15px;
+            padding: 6px 14px;
             border-radius: 6px;
             text-decoration: none;
             font-size: 13px;
-            transition: background 0.3s;
+            font-weight: 500;
+            transition: all 0.3s;
+            white-space: nowrap;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
-        .mode-banner .actions a:hover { background: rgba(255,255,255,0.3); }
-        .mode-banner .actions a.active { background: rgba(255,255,255,0.4); }
+        .mode-banner .actions a:hover { background: rgba(255,255,255,0.35); transform: translateY(-1px); }
+        .mode-banner .actions a.active { background: rgba(255,255,255,0.4); font-weight: 700; }
+        .mode-banner .actions a:disabled,
+        .mode-banner .actions a[style*="pointer-events: none"] { opacity: 0.6; cursor: not-allowed; }
         
         @media (max-width: 768px) {
-            .mode-banner {
-                flex-direction: column;
-                align-items: stretch;
-                text-align: center;
-                margin: 15px 15px 20px 15px;
-            }
+            .mode-banner { flex-direction: column; align-items: stretch; text-align: center; margin: 15px 15px 20px 15px; }
+            .mode-banner .info { justify-content: center; }
             .mode-banner .actions { justify-content: center; flex-wrap: wrap; }
+            .mode-banner .actions a { font-size: 12px; padding: 6px 12px; }
         }
         
         @keyframes slideDown {
@@ -812,13 +690,8 @@ include 'includes/header.php';
         /* ============================================
            CONTENT AREA
            ============================================ */
-        .content-area {
-            padding: 25px 30px;
-        }
-        
-        .page-header {
-            margin-bottom: 30px;
-        }
+        .content-area { padding: 25px 30px; }
+        .page-header { margin-bottom: 30px; }
         
         .page-title {
             font-size: 28px;
@@ -833,12 +706,7 @@ include 'includes/header.php';
             opacity: 0;
         }
         
-        .page-subtitle {
-            color: #94a3b8;
-            font-size: 15px;
-            margin: 5px 0 0;
-            font-weight: 400;
-        }
+        .page-subtitle { color: #94a3b8; font-size: 15px; margin: 5px 0 0; font-weight: 400; }
         
         /* ===== BANNER PARA PROFESSORES ===== */
         .professor-warning {
@@ -853,23 +721,10 @@ include 'includes/header.php';
             flex-wrap: wrap;
         }
         
-        .professor-warning .icon {
-            font-size: 32px;
-        }
-        
-        .professor-warning .text {
-            flex: 1;
-        }
-        
-        .professor-warning .text h3 {
-            color: #f39c12;
-            margin: 0 0 5px 0;
-        }
-        
-        .professor-warning .text p {
-            color: #4a5568;
-            margin: 0;
-        }
+        .professor-warning .icon { font-size: 32px; }
+        .professor-warning .text { flex: 1; }
+        .professor-warning .text h3 { color: #f39c12; margin: 0 0 5px 0; }
+        .professor-warning .text p { color: #4a5568; margin: 0; }
         
         .professor-warning .btn-ir {
             background: #f39c12;
@@ -900,15 +755,8 @@ include 'includes/header.php';
             to { opacity: 1; transform: translateX(0); }
         }
         
-        .animate {
-            animation: fadeInUp 0.6s ease forwards;
-            opacity: 0;
-        }
-        
-        .animate-title {
-            animation: fadeInLeft 0.8s ease forwards;
-            opacity: 0;
-        }
+        .animate { animation: fadeInUp 0.6s ease forwards; opacity: 0; }
+        .animate-title { animation: fadeInLeft 0.8s ease forwards; opacity: 0; }
         
         /* ============================================
            BANNER DE LICENÇA
@@ -927,11 +775,7 @@ include 'includes/header.php';
             border: 1px solid #eef2f7;
         }
         
-        .license-banner .status {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .license-banner .status { display: flex; align-items: center; gap: 12px; }
         
         .license-banner .status .icon {
             width: 40px;
@@ -943,29 +787,11 @@ include 'includes/header.php';
             font-size: 20px;
         }
         
-        .license-banner .status .info h4 {
-            font-size: 14px;
-            color: #94a3b8;
-            font-weight: 500;
-            margin: 0;
-        }
+        .license-banner .status .info h4 { font-size: 14px; color: #94a3b8; font-weight: 500; margin: 0; }
+        .license-banner .status .info h3 { font-size: 18px; font-weight: 700; margin: 0; }
         
-        .license-banner .status .info h3 {
-            font-size: 18px;
-            font-weight: 700;
-            margin: 0;
-        }
-        
-        .license-banner .details {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-            flex-wrap: wrap;
-        }
-        
-        .license-banner .details .item {
-            text-align: center;
-        }
+        .license-banner .details { display: flex; align-items: center; gap: 25px; flex-wrap: wrap; }
+        .license-banner .details .item { text-align: center; }
         
         .license-banner .details .item .label {
             font-size: 11px;
@@ -974,16 +800,8 @@ include 'includes/header.php';
             font-weight: 600;
         }
         
-        .license-banner .details .item .value {
-            font-size: 16px;
-            font-weight: 600;
-            color: #1a2332;
-        }
-        
-        .license-banner .details .item .value .mono {
-            font-family: monospace;
-            font-size: 14px;
-        }
+        .license-banner .details .item .value { font-size: 16px; font-weight: 600; color: #1a2332; }
+        .license-banner .details .item .value .mono { font-family: monospace; font-size: 14px; }
         
         .license-banner .alert {
             padding: 6px 14px;
@@ -1035,14 +853,8 @@ include 'includes/header.php';
             transition: opacity 0.3s;
         }
         
-        .stat-card:hover::before {
-            opacity: 1;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-        }
+        .stat-card:hover::before { opacity: 1; }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
         
         .stat-icon {
             font-size: 32px;
@@ -1056,18 +868,8 @@ include 'includes/header.php';
             flex-shrink: 0;
         }
         
-        .stat-info h3 {
-            font-size: 24px;
-            font-weight: 700;
-            color: #1a2332;
-            margin: 0;
-        }
-        
-        .stat-info p {
-            font-size: 14px;
-            color: #94a3b8;
-            margin: 0;
-        }
+        .stat-info h3 { font-size: 24px; font-weight: 700; color: #1a2332; margin: 0; }
+        .stat-info p { font-size: 14px; color: #94a3b8; margin: 0; }
         
         .stat-trend {
             margin-left: auto;
@@ -1079,15 +881,8 @@ include 'includes/header.php';
             flex-shrink: 0;
         }
         
-        .stat-trend.up {
-            background: #d1fae5;
-            color: #059669;
-        }
-        
-        .stat-trend.down {
-            background: #fee2e2;
-            color: #dc2626;
-        }
+        .stat-trend.up { background: #d1fae5; color: #059669; }
+        .stat-trend.down { background: #fee2e2; color: #dc2626; }
         
         /* ============================================
            MODULES GRID
@@ -1123,33 +918,12 @@ include 'includes/header.php';
             transition: opacity 0.3s;
         }
         
-        .module-card:hover::before {
-            opacity: 1;
-        }
+        .module-card:hover::before { opacity: 1; }
+        .module-card:hover { transform: translateY(-5px); box-shadow: 0 10px 40px rgba(0,0,0,0.08); }
         
-        .module-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-        }
-        
-        .module-icon {
-            font-size: 36px;
-            margin-bottom: 12px;
-            display: block;
-        }
-        
-        .module-card h3 {
-            font-size: 16px;
-            color: #1a2332;
-            margin: 0 0 6px 0;
-            font-weight: 600;
-        }
-        
-        .module-card p {
-            font-size: 13px;
-            color: #94a3b8;
-            margin: 0 0 12px 0;
-        }
+        .module-icon { font-size: 36px; margin-bottom: 12px; display: block; }
+        .module-card h3 { font-size: 16px; color: #1a2332; margin: 0 0 6px 0; font-weight: 600; }
+        .module-card p { font-size: 13px; color: #94a3b8; margin: 0 0 12px 0; }
         
         .module-count {
             font-size: 12px;
@@ -1170,10 +944,7 @@ include 'includes/header.php';
             transition: all 0.3s;
         }
         
-        .module-card:hover .module-arrow {
-            color: #c9a84c;
-            transform: translateX(5px);
-        }
+        .module-card:hover .module-arrow { color: #c9a84c; transform: translateX(5px); }
         
         /* ============================================
            INDICADOR DE STATUS DA CONEXÃO
@@ -1225,6 +996,34 @@ include 'includes/header.php';
         }
         
         /* ============================================
+           INDICADOR DE FILA OFFLINE
+           ============================================ */
+        #offlineQueue {
+            position: fixed;
+            bottom: 65px;
+            right: 20px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            z-index: 9999;
+            background: #f39c12;
+            color: white;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 15px rgba(243, 156, 18, 0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: pulse 1.5s infinite;
+        }
+        
+        #offlineQueue:hover {
+            transform: scale(1.05);
+            background: #d68910;
+        }
+        
+        /* ============================================
            SIDEBAR OVERLAY (MOBILE)
            ============================================ */
         .sidebar-overlay {
@@ -1239,9 +1038,7 @@ include 'includes/header.php';
             cursor: pointer;
         }
         
-        .sidebar-overlay.active {
-            display: block !important;
-        }
+        .sidebar-overlay.active { display: block !important; }
         
         /* ============================================
            DASHBOARD FOOTER
@@ -1253,41 +1050,56 @@ include 'includes/header.php';
             margin-top: 20px;
         }
         
-        .dashboard-footer p {
-            color: #94a3b8;
+        .dashboard-footer p { color: #94a3b8; font-size: 14px; margin: 0; }
+        .dashboard-footer strong { color: #c9a84c; }
+        .footer-version { font-size: 12px !important; color: #cbd5e1 !important; margin-top: 4px !important; }
+        
+        /* ============================================
+           SINCRONIZAÇÃO - BARRA DE PROGRESSO
+           ============================================ */
+        #syncProgress {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, #c9a84c, #f5d76e);
+            color: #1a2332;
+            padding: 12px 20px;
+            z-index: 99999;
+            font-weight: 600;
             font-size: 14px;
-            margin: 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-align: center;
         }
         
-        .dashboard-footer strong {
-            color: #c9a84c;
-        }
-        
-        .footer-version {
-            font-size: 12px !important;
-            color: #cbd5e1 !important;
-            margin-top: 4px !important;
+        #syncLog {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            max-width: 400px;
+            max-height: 300px;
+            overflow-y: auto;
+            background: #1a2332;
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            z-index: 9999;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            border: 1px solid #c9a84c;
         }
         
         /* ============================================
            RESPONSIVIDADE
            ============================================ */
         @media (max-width: 992px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            
-            .sidebar.open {
-                transform: translateX(0);
-            }
-            
-            .main-content {
-                margin-left: 0;
-            }
-            
-            .menu-toggle {
-                display: block;
-            }
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .menu-toggle { display: block; }
             
             .top-bar-gold {
                 padding: 10px 15px;
@@ -1304,18 +1116,9 @@ include 'includes/header.php';
                 gap: 5px;
             }
             
-            .top-bar-nav.open {
-                display: flex;
-            }
-            
-            .top-bar-nav a {
-                font-size: 13px;
-                padding: 6px 14px;
-            }
-            
-            .top-bar-right .welcome-text {
-                display: none;
-            }
+            .top-bar-nav.open { display: flex; }
+            .top-bar-nav a { font-size: 13px; padding: 6px 14px; }
+            .top-bar-right .welcome-text { display: none; }
             
             #statusConexao {
                 bottom: 10px;
@@ -1323,49 +1126,30 @@ include 'includes/header.php';
                 font-size: 11px;
                 padding: 6px 12px;
             }
-        }
-        
-        @media (max-width: 768px) {
-            .content-area {
-                padding: 15px;
-            }
             
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-            }
-            
-            .modules-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .page-title {
-                font-size: 22px;
-            }
-            
-            .date-time-gold {
-                font-size: 12px;
+            #offlineQueue {
+                bottom: 55px;
+                right: 10px;
+                font-size: 11px;
                 padding: 4px 10px;
             }
             
-            .top-bar-gold {
-                padding: 8px 12px;
+            #syncLog {
+                max-width: 90%;
+                right: 5%;
             }
-            
-            .stat-card {
-                padding: 15px;
-            }
-            
-            .stat-icon {
-                font-size: 24px;
-                width: 45px;
-                height: 45px;
-            }
-            
-            .stat-info h3 {
-                font-size: 20px;
-            }
+        }
+        
+        @media (max-width: 768px) {
+            .content-area { padding: 15px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .modules-grid { grid-template-columns: 1fr; gap: 15px; }
+            .page-title { font-size: 22px; }
+            .date-time-gold { font-size: 12px; padding: 4px 10px; }
+            .top-bar-gold { padding: 8px 12px; }
+            .stat-card { padding: 15px; }
+            .stat-icon { font-size: 24px; width: 45px; height: 45px; }
+            .stat-info h3 { font-size: 20px; }
             
             #statusConexao {
                 bottom: 8px;
@@ -1375,37 +1159,163 @@ include 'includes/header.php';
                 gap: 5px;
             }
             
-            #statusConexao #statusDot {
-                width: 6px;
-                height: 6px;
-            }
+            #statusConexao #statusDot { width: 6px; height: 6px; }
         }
         
         @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .top-bar-right {
-                gap: 10px;
-            }
-            
-            .top-bar-gold {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .top-bar-left {
-                justify-content: space-between;
-            }
-            
-            .top-bar-right {
-                justify-content: space-between;
-            }
+            .stats-grid { grid-template-columns: 1fr; }
+            .top-bar-right { gap: 10px; }
+            .top-bar-gold { flex-direction: column; align-items: stretch; }
+            .top-bar-left { justify-content: space-between; }
+            .top-bar-right { justify-content: space-between; }
         }
     </style>
 </head>
 <body>
+
+<?php if (!empty($_SESSION['login_sucesso'])): ?>
+<!-- 💥 OVERLAY DE BOAS-VINDAS COM EXPLOSÃO DE ESTRELAS -->
+<div id="boomOverlay" style="position:fixed;inset:0;background:radial-gradient(circle,rgba(201,168,76,0.2) 0%,rgba(0,0,0,0.9) 70%);z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;">
+    <div style="color:#fff;font-size:2rem;font-weight:800;text-align:center;z-index:2;animation:boomMsgAppear 1s cubic-bezier(0.34,1.56,0.64,1) both;">
+        <span style="display:block;font-size:4.5rem;margin-bottom:15px;animation:boomEmoji 1.2s ease infinite;">🎉</span>
+        <span>Bem-vindo(a)!</span>
+        <span style="display:block;font-size:1.7rem;color:#c9a84c;margin-top:10px;text-shadow:0 0 20px rgba(201,168,76,0.9);"><?= htmlspecialchars($_SESSION['login_nome'] ?? '') ?></span>
+        <span style="display:block;font-size:1rem;color:#cbd5e0;margin-top:15px;font-weight:400;">A carregar o teu painel...</span>
+        <div style="display:inline-block;width:40px;height:40px;border:4px solid rgba(201,168,76,0.3);border-top-color:#c9a84c;border-radius:50%;margin-top:25px;animation:loaderSpin 0.8s linear infinite;"></div>
+    </div>
+</div>
+
+<style>
+@keyframes boomMsgAppear {
+    0%   { opacity: 0; transform: scale(0.3) translateY(30px); }
+    60%  { opacity: 1; transform: scale(1.15); }
+    100% { opacity: 1; transform: scale(1); }
+}
+@keyframes boomEmoji {
+    0%,100% { transform: scale(1) rotate(0deg); }
+    25%     { transform: scale(1.15) rotate(-12deg); }
+    75%     { transform: scale(1.15) rotate(12deg); }
+}
+@keyframes loaderSpin { to { transform: rotate(360deg); } }
+@keyframes starBoom {
+    0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 0; }
+    20% { transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(180deg); opacity: 1; }
+    80% { opacity: 1; }
+    100% { transform: translate(calc(var(--tx) * 2), calc(var(--ty) * 2 + 100px)) scale(0.3) rotate(720deg); opacity: 0; }
+}
+@keyframes particleBoom {
+    0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+@keyframes confettiFall {
+    0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+.star-particle {
+    position: fixed; font-size: 2rem;
+    pointer-events: none; z-index: 100000;
+    animation: starBoom 2.2s ease-out forwards;
+    filter: drop-shadow(0 0 10px currentColor);
+}
+.particle {
+    position: fixed; width: 8px; height: 8px;
+    border-radius: 50%; pointer-events: none; z-index: 99999;
+    animation: particleBoom 1.5s ease-out forwards;
+    box-shadow: 0 0 12px currentColor;
+}
+.confetti {
+    position: fixed; width: 12px; height: 12px;
+    pointer-events: none; z-index: 99999;
+    animation: confettiFall 3s linear forwards;
+}
+</style>
+
+<script>
+(function() {
+    const emojis = ['⭐','🌟','✨','💫','🌠','🎇','🎆','💥','🎉','🎊'];
+    const cores = ['#FFD700','#FFA500','#FFF8DC','#FFE4B5','#FFEFD5','#3498db','#e74c3c','#27ae60'];
+
+    function boomEstrelas() {
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+
+        // 50 ESTRELAS
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'star-particle';
+            star.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            star.style.left = cx + 'px';
+            star.style.top = cy + 'px';
+            star.style.color = cores[Math.floor(Math.random() * cores.length)];
+            const angulo = (Math.PI * 2 * i) / 50 + (Math.random() * 0.6);
+            const distancia = 200 + Math.random() * 600;
+            star.style.setProperty('--tx', Math.cos(angulo) * distancia + 'px');
+            star.style.setProperty('--ty', Math.sin(angulo) * distancia + 'px');
+            star.style.animationDelay = (Math.random() * 0.3) + 's';
+            star.style.fontSize = (1 + Math.random() * 2.2) + 'rem';
+            document.body.appendChild(star);
+            setTimeout(() => star.remove(), 2600);
+        }
+
+        // 100 PARTÍCULAS
+        for (let i = 0; i < 100; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = cx + 'px';
+            p.style.top = cy + 'px';
+            p.style.background = cores[Math.floor(Math.random() * cores.length)];
+            p.style.color = p.style.background;
+            const angulo = Math.random() * Math.PI * 2;
+            const distancia = 100 + Math.random() * 800;
+            p.style.setProperty('--tx', Math.cos(angulo) * distancia + 'px');
+            p.style.setProperty('--ty', Math.sin(angulo) * distancia + 'px');
+            p.style.animationDelay = (Math.random() * 0.4) + 's';
+            p.style.width = p.style.height = (4 + Math.random() * 10) + 'px';
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 2200);
+        }
+
+        // 120 CONFETES
+        const coresConfete = ['#FFD700','#FF6B6B','#4ECDC4','#95E1D3','#F38181','#AA96DA','#FCBAD3','#FFFFD2','#c9a84c'];
+        for (let i = 0; i < 120; i++) {
+            const c = document.createElement('div');
+            c.className = 'confetti';
+            c.style.left = Math.random() * 100 + 'vw';
+            c.style.top = '-20px';
+            c.style.background = coresConfete[Math.floor(Math.random() * coresConfete.length)];
+            c.style.animationDelay = (Math.random() * 1.5) + 's';
+            c.style.animationDuration = (2 + Math.random() * 2) + 's';
+            if (Math.random() > 0.5) c.style.borderRadius = '50%';
+            document.body.appendChild(c);
+            setTimeout(() => c.remove(), 5200);
+        }
+    }
+
+    // 3 explosões
+    boomEstrelas();
+    setTimeout(boomEstrelas, 400);
+    setTimeout(boomEstrelas, 900);
+
+    // Vibração
+    if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200, 50, 300]);
+
+    // Esconde overlay após 3s
+    setTimeout(() => {
+        const ov = document.getElementById('boomOverlay');
+        if (ov) {
+            ov.style.transition = 'opacity 0.5s';
+            ov.style.opacity = '0';
+            setTimeout(() => ov.remove(), 500);
+        }
+    }, 3000);
+})();
+</script>
+
+<?php
+// Limpa os dados para não repetir no F5
+unset($_SESSION['login_sucesso'], $_SESSION['login_nome']);
+endif;
+?>
 
 <div class="dashboard-container">
     <!-- ============================================
@@ -1414,10 +1324,10 @@ include 'includes/header.php';
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
             <div class="brand-icon">
-                <?php if (!empty($logoEmpresa) && file_exists("assets/uploads/" . $logoEmpresa)): ?>
-                    <img src="<?= $logoEmpresa ?>" alt="Logo">
+                <?php if ($logoExiste): ?>
+                    <img src="<?= SITE_URL ?>assets/uploads/<?= htmlspecialchars($logoEmpresa) ?>?t=<?= time() ?>" alt="Logo">
                 <?php else: ?>
-                    <?= substr($nomeEmpresa, 0, 2) ?>
+                    <?= htmlspecialchars(substr($nomeEmpresa, 0, 2)) ?>
                 <?php endif; ?>
             </div>
             <div class="brand-text">
@@ -1514,7 +1424,6 @@ include 'includes/header.php';
             </a>
             <?php endif; ?>
 
-
             <?php if (userHasAccess('Contabilidade')): ?>
             <a href="modules/contabilidade/" style="background: rgba(52, 152, 219, 0.1); border-left: 3px solid #3498db;">
                 <span class="nav-icon">📊</span>
@@ -1524,8 +1433,6 @@ include 'includes/header.php';
                 </span>
             </a>
             <?php endif; ?>
-
-    
             
             <div style="margin: 15px 10px 10px 10px; padding: 12px 15px; background: <?= APP_MODE_COLOR ?>15; border-radius: 8px; border-left: 3px solid <?= APP_MODE_COLOR ?>;">
                 <div style="display: flex; align-items: center; gap: 8px; color: <?= APP_MODE_COLOR ?>; font-size: 13px; font-weight: 600;">
@@ -1551,6 +1458,12 @@ include 'includes/header.php';
                 <span class="nav-badge" style="background: #e74c3c;">Admin</span>
             </a>
             <?php endif; ?>
+
+            <a href="admin/migracao_painel.php" 
+               title="Migração inteligente MySQL → Neon"
+               style="background: rgba(201, 168, 76, 0.3); border: 1px solid rgba(201, 168, 76, 0.5); font-weight: 700;">
+                🚀 Migrar para Neon
+            </a>
             
             <?php if ($isAdmin): ?>
             <a href="admin/sync_database.php">
@@ -1566,7 +1479,6 @@ include 'includes/header.php';
             </a>
             <?php endif; ?>
             
-            <!-- ===== NOVO BOTÃO IMPORTAR SQL ===== -->
             <?php if ($isAdmin): ?>
             <a href="admin/import_sql.php" style="background: rgba(52, 152, 219, 0.15); border-left: 3px solid #3498db;">
                 <span class="nav-icon">📥</span>
@@ -1597,16 +1509,12 @@ include 'includes/header.php';
             <?php endif; ?>
         </nav>
         
-
-        <!-- Adicione no menu lateral -->
         <a href="<?= SITE_URL ?>admin/sync_auto_start.php" class="menu-item" style="display: flex; align-items: center; gap: 10px; padding: 12px 18px; color: #1a2332; text-decoration: none; border-radius: 10px; transition: all 0.3s; background: linear-gradient(135deg, #2ecc7115, #27ae6015); border-left: 4px solid #2ecc71;">
             <span style="font-size: 20px;">🔄</span>
             <span>Sincronização Auto</span>
             <span style="margin-left: auto; font-size: 11px; background: #2ecc71; color: white; padding: 2px 10px; border-radius: 12px; animation: pulse 1.5s infinite;">ATIVO</span>
         </a>
 
-
-        <!-- ===== BOTÃO MODO DESENVOLVEDOR ===== -->
         <a href="admin/dev_auth.php" style="
             background: linear-gradient(135deg, rgba(108, 99, 255, 0.15), rgba(168, 85, 247, 0.15));
             border-left: 4px solid #6c63ff;
@@ -1623,18 +1531,13 @@ include 'includes/header.php';
             </span>
         </a>
 
-
-
-
-
-
         <div class="sidebar-footer">
             <div class="user-info">
                 <div class="user-avatar">👤</div>
                 <div>
                     <div class="user-name"><?= htmlspecialchars($usuario_nome) ?></div>
                     <div class="user-email"><?= htmlspecialchars($usuario_email) ?></div>
-                    <div style="font-size: 10px; color: #<?= $perfilBadgeColor ?>; margin-top: 2px; font-weight: 600;">
+                    <div style="font-size: 10px; color: <?= $perfilBadgeColor ?>; margin-top: 2px; font-weight: 600;">
                         <?= ucfirst($usuario_perfil) ?>
                     </div>
                 </div>
@@ -1686,7 +1589,9 @@ include 'includes/header.php';
             </div>
         </div>
 
-        <!-- ===== BANNER DO MODO ===== -->
+        <!-- ============================================
+             BANNER DE MODO COM BOTÕES DE SINCRONIZAÇÃO
+             ============================================ -->
         <div class="mode-banner">
             <div class="info">
                 <span class="icon"><?= APP_MODE_ICON ?></span>
@@ -1698,10 +1603,52 @@ include 'includes/header.php';
             <div class="actions">
                 <a href="?modo=local" class="<?= isModoLocal() ? 'active' : '' ?>">💻 Local</a>
                 <a href="?modo=public" class="<?= isModoPublico() ? 'active' : '' ?>">☁️ Público</a>
+                
                 <?php if ($isAdmin): ?>
-                <a href="admin/sync_database.php">🔄 Sincronizar</a>
+                <a href="admin/sync_database.php" title="Sincronizar estrutura da base de dados">🔄 Sincronizar</a>
+                
+                <a href="#" onclick="sincronizarLocalParaPublico(event)" 
+                   id="btnLocalParaPublico"
+                   title="Enviar dados do Local para o Público"
+                   style="background: rgba(46, 204, 113, 0.25); border: 1px solid rgba(46, 204, 113, 0.4);">
+                    📤 Local → Público
+                </a>
+
+                <a href="admin/migracao_painel.php" 
+                   title="Migração inteligente MySQL → Neon"
+                   style="background: rgba(201, 168, 76, 0.3); border: 1px solid rgba(201, 168, 76, 0.5); font-weight: 700;">
+                    🚀 Migrar para Neon
+                </a>
+                                
+                <a href="#" onclick="sincronizarPublicoParaLocal(event)" 
+                   id="btnPublicoParaLocal"
+                   title="Trazer dados do Público para o Local"
+                   style="background: rgba(52, 152, 219, 0.25); border: 1px solid rgba(52, 152, 219, 0.4);">
+                    📥 Público → Local
+                </a>
+                
+                <a href="#" onclick="toggleAutoSync(event)" 
+                   id="btnAutoSync"
+                   title="Sincronização automática Local → Público"
+                   style="background: rgba(155, 89, 182, 0.25); border: 1px solid rgba(155, 89, 182, 0.4);">
+                    🔄 Auto Sync: <span id="autoSyncStatus" style="font-weight: 700;">OFF</span>
+                </a>
                 <?php endif; ?>
             </div>
+        </div>
+
+        <!-- ===== INDICADOR DE PROGRESSO DE SINCRONIZAÇÃO ===== -->
+        <div id="syncProgress">
+            <span id="syncProgressText">🔄 Sincronizando...</span>
+        </div>
+
+        <!-- ===== LOG DE SINCRONIZAÇÃO ===== -->
+        <div id="syncLog">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
+                <strong style="color: #c9a84c;">📋 Log de Sincronização</strong>
+                <button onclick="document.getElementById('syncLog').style.display='none'" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 18px;">✕</button>
+            </div>
+            <div id="syncLogContent"></div>
         </div>
 
         <div class="content-area">
@@ -1710,7 +1657,6 @@ include 'includes/header.php';
                 <p class="page-subtitle">Visão geral do seu sistema de gestão</p>
             </div>
 
-            <!-- ===== BANNER PARA PROFESSORES ===== -->
             <?php if ($isProfessor): ?>
             <div class="professor-warning animate" style="animation-delay: 0.1s;">
                 <div class="icon">👨‍🏫</div>
@@ -1722,7 +1668,6 @@ include 'includes/header.php';
             </div>
             <?php endif; ?>
 
-            <!-- ===== BANNER DE LICENÇA ===== -->
             <?php if ($licencaInfo): ?>
             <div class="license-banner" style="border-left: 4px solid <?= $licencaInfo['cor_status'] ?>;">
                 <div class="status">
@@ -1780,7 +1725,6 @@ include 'includes/header.php';
             </div>
             <?php endif; ?>
 
-            <!-- Cards de Resumo -->
             <div class="stats-grid">
                 <?php if (userHasAccess('Clientes')): ?>
                 <div class="stat-card animate" style="animation-delay: 0.1s;">
@@ -1844,7 +1788,6 @@ include 'includes/header.php';
                 <?php endif; ?>
             </div>
 
-            <!-- Grid de Módulos -->
             <div class="modules-grid">
                 <?php if (userHasAccess('Clientes')): ?>
                 <div class="module-card animate" style="animation-delay: 0.6s;" onclick="window.location.href='modules/clientes/'">
@@ -1961,7 +1904,6 @@ include 'includes/header.php';
                 </div>
                 <?php endif; ?>
 
-                <!-- ===== NOVO CARD DE IMPORTAÇÃO SQL ===== -->
                 <?php if ($isAdmin): ?>
                 <div class="module-card animate" style="animation-delay: 1.7s; border: 2px solid rgba(52, 152, 219, 0.3);" onclick="window.location.href='admin/import_sql.php'">
                     <div class="module-icon">📥</div>
@@ -2031,11 +1973,17 @@ include 'includes/header.php';
 </div>
 
 <!-- ============================================ -->
-<!-- INDICADOR DE STATUS DA CONEXÃO -->
+<!-- INDICADORES DE CONEXÃO E FILA OFFLINE -->
 <!-- ============================================ -->
 <div id="statusConexao">
     <span id="statusDot"></span>
     <span id="statusTexto">🟢 Online</span>
+</div>
+
+<div id="offlineQueue" onclick="sincronizarAgora()" title="Clique para sincronizar agora">
+    <span>📤</span>
+    <span id="offlineQueueCount">0</span>
+    <span>pendente(s)</span>
 </div>
 
 <script>
@@ -2049,9 +1997,7 @@ function toggleSidebar() {
     if (!sidebar) return;
     
     sidebar.classList.toggle('open');
-    if (overlay) {
-        overlay.classList.toggle('active');
-    }
+    if (overlay) overlay.classList.toggle('active');
     
     if (sidebar.classList.contains('open')) {
         document.body.style.overflow = 'hidden';
@@ -2064,12 +2010,8 @@ function closeSidebar() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
     
-    if (sidebar) {
-        sidebar.classList.remove('open');
-    }
-    if (overlay) {
-        overlay.classList.remove('active');
-    }
+    if (sidebar) sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('active');
     document.body.style.overflow = '';
 }
 
@@ -2097,26 +2039,21 @@ document.addEventListener('DOMContentLoaded', function() {
     updateDateTime();
     setInterval(updateDateTime, 1000);
     
-    // Fechar sidebar ao clicar fora
     document.addEventListener('click', function(event) {
         const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
         const toggleBtn = document.querySelector('.menu-toggle');
         
         if (sidebar && sidebar.classList.contains('open')) {
             const isClickInside = sidebar.contains(event.target) || (toggleBtn && toggleBtn.contains(event.target));
-            if (!isClickInside) {
-                closeSidebar();
-            }
+            if (!isClickInside) closeSidebar();
         }
     });
     
-    // Fechar sidebar em resize
     window.addEventListener('resize', function() {
-        if (window.innerWidth > 992) {
-            closeSidebar();
-        }
+        if (window.innerWidth > 992) closeSidebar();
     });
+    
+    atualizarFilaOffline();
 });
 
 // ============================================
@@ -2139,13 +2076,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Status inicial
     updateConnectionStatus(navigator.onLine);
     
-    // Monitorar mudanças
     window.addEventListener('online', () => {
         updateConnectionStatus(true);
         console.log('🟢 Conexão restaurada!');
+        
+        setTimeout(function() {
+            if (window.OfflineManager && window.OfflineManager.sincronizar) {
+                window.OfflineManager.sincronizar().then(function(result) {
+                    if (result.sincronizados > 0) {
+                        atualizarFilaOffline();
+                    }
+                });
+            }
+        }, 1500);
     });
     
     window.addEventListener('offline', () => {
@@ -2153,36 +2098,378 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('🔴 Conexão perdida!');
     });
     
-    // Verificar servidor periodicamente
     function verificarServidor() {
-        fetch('/softgest_web/api/sync.php?acao=ping', {
+        fetch('<?= SITE_URL ?>api/sync.php?acao=ping', {
             method: 'GET',
-            headers: {
-                'Cache-Control': 'no-cache'
-            },
+            headers: { 'Cache-Control': 'no-cache' },
             credentials: 'same-origin'
         })
         .then(response => {
             if (response.ok) {
                 updateConnectionStatus(true);
-                console.log('✅ Servidor respondendo');
             } else {
                 updateConnectionStatus(false);
-                console.log('❌ Servidor sem resposta');
             }
         })
         .catch(() => {
             updateConnectionStatus(false);
-            console.log('❌ Erro ao conectar ao servidor');
         });
     }
     
-    // Verificar a cada 30 segundos
     setInterval(verificarServidor, 30000);
-    
-    // Verificar ao carregar
     setTimeout(verificarServidor, 2000);
 })();
+
+// ============================================
+// FILA OFFLINE - CONTADOR E SINCRONIZAÇÃO
+// ============================================
+async function atualizarFilaOffline() {
+    if (!window.OfflineManager || !window.OfflineManager.contarFila) return;
+    
+    try {
+        const total = await window.OfflineManager.contarFila();
+        const badge = document.getElementById('offlineQueue');
+        const countEl = document.getElementById('offlineQueueCount');
+        
+        if (badge && countEl) {
+            if (total > 0) {
+                countEl.textContent = total;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+    } catch (e) {
+        console.warn('Erro ao contar fila:', e);
+    }
+}
+
+async function sincronizarAgora() {
+    if (!window.OfflineManager || !window.OfflineManager.sincronizar) {
+        alert('⚠️ Gerenciador offline não carregado');
+        return;
+    }
+    
+    if (!navigator.onLine) {
+        alert('📴 Você está offline. Aguarde a conexão voltar.');
+        return;
+    }
+    
+    const result = await window.OfflineManager.sincronizar();
+    
+    if (result.sincronizados > 0) {
+        window.OfflineManager.mostrarNotificacao(
+            '✅ ' + result.sincronizados + ' registro(s) sincronizado(s)!',
+            'success'
+        );
+    } else if (result.erros && result.erros.length > 0) {
+        window.OfflineManager.mostrarNotificacao(
+            '❌ Erro ao sincronizar. Tente novamente.',
+            'error'
+        );
+    } else {
+        window.OfflineManager.mostrarNotificacao('✅ Nada para sincronizar', 'info');
+    }
+    
+    atualizarFilaOffline();
+}
+
+window.addEventListener('offline:updated', function(e) {
+    console.log('📦 Fila offline atualizada:', e.detail.total);
+    atualizarFilaOffline();
+});
+
+setInterval(atualizarFilaOffline, 30000);
+
+// ============================================
+// SINCRONIZAÇÃO DE DADOS — LOCAL ↔ PÚBLICO
+// ============================================
+
+let autoSyncInterval = null;
+const AUTO_SYNC_INTERVAL_MS = 60000;
+
+function mostrarProgresso(msg) {
+    const bar = document.getElementById('syncProgress');
+    const txt = document.getElementById('syncProgressText');
+    if (bar && txt) {
+        txt.textContent = msg;
+        bar.style.display = 'block';
+    }
+}
+
+function esconderProgresso() {
+    const bar = document.getElementById('syncProgress');
+    if (bar) bar.style.display = 'none';
+}
+
+function logSincronizacao(msg, tipo = 'info') {
+    const log = document.getElementById('syncLog');
+    const content = document.getElementById('syncLogContent');
+    if (!log || !content) return;
+    
+    const cores = {
+        'info': '#60a5fa',
+        'success': '#4ade80',
+        'error': '#f87171',
+        'warn': '#fbbf24'
+    };
+    
+    const hora = new Date().toLocaleTimeString('pt-BR');
+    const linha = document.createElement('div');
+    linha.style.cssText = `color: ${cores[tipo] || cores.info}; margin-bottom: 4px; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.05);`;
+    linha.textContent = `[${hora}] ${msg}`;
+    content.appendChild(linha);
+    content.scrollTop = content.scrollHeight;
+    
+    log.style.display = 'block';
+}
+
+function mostrarNotificacao(msg, tipo = 'info') {
+    const bg = {
+        'success': '#16a34a',
+        'error': '#dc2626',
+        'info': '#3b82f6',
+        'warn': '#f59e0b'
+    };
+    
+    const n = document.createElement('div');
+    n.style.cssText = `
+        position: fixed;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${bg[tipo] || bg.info};
+        color: white;
+        padding: 14px 28px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 15px;
+        z-index: 100000;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        animation: slideDown 0.3s ease;
+    `;
+    n.textContent = msg;
+    document.body.appendChild(n);
+    
+    setTimeout(() => {
+        n.style.transition = 'opacity 0.3s';
+        n.style.opacity = '0';
+        setTimeout(() => n.remove(), 300);
+    }, 4000);
+}
+
+// ============================================
+// 1. LOCAL → PÚBLICO (MANUAL)
+// ============================================
+async function sincronizarLocalParaPublico(event) {
+    if (event) event.preventDefault();
+    
+    if (!confirm('📤 Enviar TODOS os dados do Local para o Público?\n\nEsta ação pode demorar alguns minutos.')) {
+        return;
+    }
+    
+    const btn = document.getElementById('btnLocalParaPublico');
+    const textoOriginal = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.innerHTML = '⏳ A sincronizar...';
+        btn.style.pointerEvents = 'none';
+        btn.style.opacity = '0.6';
+    }
+    
+    mostrarProgresso('📤 A enviar dados do Local para o Público...');
+    logSincronizacao('🚀 Iniciando sincronização Local → Público', 'info');
+    
+    try {
+        const response = await fetch('<?= SITE_URL ?>admin/sync_local_para_publico.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify({ acao: 'sincronizar_tudo' })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            mostrarProgresso(`✅ ${data.total_registros || 0} registos enviados!`);
+            logSincronizacao(`✅ Sucesso! ${data.total_registros || 0} registos sincronizados`, 'success');
+            
+            if (data.detalhes) {
+                Object.entries(data.detalhes).forEach(([tabela, qtd]) => {
+                    if (qtd > 0) {
+                        logSincronizacao(`   • ${tabela}: ${qtd} registos`, 'success');
+                    }
+                });
+            }
+            
+            mostrarNotificacao(`✅ ${data.total_registros || 0} registos enviados!`, 'success');
+            setTimeout(esconderProgresso, 2000);
+        } else {
+            throw new Error(data.message || 'Erro desconhecido');
+        }
+        
+    } catch (error) {
+        logSincronizacao(`❌ Erro: ${error.message}`, 'error');
+        mostrarNotificacao(`❌ Erro: ${error.message}`, 'error');
+        setTimeout(esconderProgresso, 3000);
+        
+    } finally {
+        if (btn) {
+            btn.innerHTML = textoOriginal;
+            btn.style.pointerEvents = '';
+            btn.style.opacity = '';
+        }
+    }
+}
+
+// ============================================
+// 2. PÚBLICO → LOCAL (MANUAL)
+// ============================================
+async function sincronizarPublicoParaLocal(event) {
+    if (event) event.preventDefault();
+    
+    if (!confirm('📥 Trazer TODOS os dados do Público para o Local?\n\n⚠️ ATENÇÃO: Isto pode substituir dados locais existentes.')) {
+        return;
+    }
+    
+    const btn = document.getElementById('btnPublicoParaLocal');
+    const textoOriginal = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.innerHTML = '⏳ A sincronizar...';
+        btn.style.pointerEvents = 'none';
+        btn.style.opacity = '0.6';
+    }
+    
+    mostrarProgresso('📥 A trazer dados do Público para o Local...');
+    logSincronizacao('🚀 Iniciando sincronização Público → Local', 'info');
+    
+    try {
+        const response = await fetch('<?= SITE_URL ?>admin/sync_publico_para_local.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify({ acao: 'sincronizar_tudo' })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            mostrarProgresso(`✅ ${data.total_registros || 0} registos recebidos!`);
+            logSincronizacao(`✅ Sucesso! ${data.total_registros || 0} registos sincronizados`, 'success');
+            
+            if (data.detalhes) {
+                Object.entries(data.detalhes).forEach(([tabela, qtd]) => {
+                    if (qtd > 0) {
+                        logSincronizacao(`   • ${tabela}: ${qtd} registos`, 'success');
+                    }
+                });
+            }
+            
+            mostrarNotificacao(`✅ ${data.total_registros || 0} registos recebidos!`, 'success');
+            setTimeout(esconderProgresso, 2000);
+            setTimeout(() => location.reload(), 3000);
+        } else {
+            throw new Error(data.message || 'Erro desconhecido');
+        }
+        
+    } catch (error) {
+        logSincronizacao(`❌ Erro: ${error.message}`, 'error');
+        mostrarNotificacao(`❌ Erro: ${error.message}`, 'error');
+        setTimeout(esconderProgresso, 3000);
+        
+    } finally {
+        if (btn) {
+            btn.innerHTML = textoOriginal;
+            btn.style.pointerEvents = '';
+            btn.style.opacity = '';
+        }
+    }
+}
+
+// ============================================
+// 3. AUTO SYNC (TOGGLE)
+// ============================================
+function toggleAutoSync(event) {
+    if (event) event.preventDefault();
+    
+    const btn = document.getElementById('btnAutoSync');
+    const status = document.getElementById('autoSyncStatus');
+    
+    if (autoSyncInterval) {
+        clearInterval(autoSyncInterval);
+        autoSyncInterval = null;
+        if (status) status.textContent = 'OFF';
+        if (btn) {
+            btn.style.background = 'rgba(155, 89, 182, 0.25)';
+            btn.style.borderColor = 'rgba(155, 89, 182, 0.4)';
+        }
+        logSincronizacao('⏸️ Auto Sync desativado', 'warn');
+        mostrarNotificacao('⏸️ Auto Sync desativado', 'warn');
+        localStorage.setItem('autoSyncEnabled', 'false');
+    } else {
+        if (status) status.textContent = 'ON';
+        if (btn) {
+            btn.style.background = 'rgba(155, 89, 182, 0.5)';
+            btn.style.borderColor = 'rgba(155, 89, 182, 0.8)';
+        }
+        logSincronizacao('▶️ Auto Sync ativado (a cada 60s)', 'success');
+        mostrarNotificacao('▶️ Auto Sync ativado!', 'success');
+        
+        executarAutoSync();
+        autoSyncInterval = setInterval(executarAutoSync, AUTO_SYNC_INTERVAL_MS);
+        localStorage.setItem('autoSyncEnabled', 'true');
+    }
+}
+
+async function executarAutoSync() {
+    if (!navigator.onLine) {
+        logSincronizacao('⏸️ Auto Sync: offline, ignorando...', 'warn');
+        return;
+    }
+    
+    try {
+        const response = await fetch('<?= SITE_URL ?>admin/sync_local_para_publico.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify({ 
+                acao: 'sincronizar_tudo',
+                automatico: true
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success && data.total_registros > 0) {
+            logSincronizacao(`🔄 Auto Sync: ${data.total_registros} registos enviados`, 'success');
+            mostrarNotificacao(`🔄 ${data.total_registros} registos sincronizados`, 'info');
+        } else if (data.success) {
+            logSincronizacao('🔄 Auto Sync: nada para sincronizar', 'info');
+        } else {
+            logSincronizacao(`⚠️ Auto Sync: ${data.message}`, 'warn');
+        }
+        
+    } catch (error) {
+        logSincronizacao(`❌ Auto Sync: ${error.message}`, 'error');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const autoSyncEnabled = localStorage.getItem('autoSyncEnabled') === 'true';
+    
+    if (autoSyncEnabled) {
+        const status = document.getElementById('autoSyncStatus');
+        const btn = document.getElementById('btnAutoSync');
+        
+        if (status) status.textContent = 'ON';
+        if (btn) {
+            btn.style.background = 'rgba(155, 89, 182, 0.5)';
+            btn.style.borderColor = 'rgba(155, 89, 182, 0.8)';
+        }
+        
+        autoSyncInterval = setInterval(executarAutoSync, AUTO_SYNC_INTERVAL_MS);
+        logSincronizacao('▶️ Auto Sync restaurado (estava ativo)', 'success');
+    }
+});
 </script>
 
 </body>
